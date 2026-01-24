@@ -20,12 +20,12 @@
   ],
   "mounts": [
     {
-      "source": "${localEnv:HOME}/.git",
-      "target": "/home/vscode/.git",
+      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.gitconfig",
+      "target": "/home/vscode/.gitconfig",
       "type": "bind"
     },
     {
-      "source": "${localEnv:HOME}/.ssh",
+      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.ssh",
       "target": "/home/vscode/.ssh",
       "type": "bind"
     }
