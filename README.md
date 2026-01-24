@@ -27,3 +27,14 @@ docker run -it --rm -v $(pwd):/workspace dev-container
 ```
 
 This should give you a command-line environment with the necessary packages installed. Keep in mind that you'll need to either mount in a method of authenticating with GitHub (i.e. an SSH key) to commit inside the container, or you'll need to exit the container to perform Git actions.
+
+## Running the Application
+
+Run the following to spin up a development server of the application:
+
+```bash
+cd src
+python manage.py runserver
+```
+
+In a web browser, navigate to http://localhost:8080. You should see a rocket ship if you are successful.
