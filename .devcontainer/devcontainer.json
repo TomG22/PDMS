@@ -1,0 +1,26 @@
+{
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-containers",
+        "ms-python.python"
+      ]
+    }
+  },
+  "mounts": [
+    {
+      "source": "${localEnv:HOME}/.git",
+      "target": "/root/.git",
+      "type": "bind"
+    },
+    {
+      "source": "${localEnv:HOME}/.ssh",
+      "target": "/root/.ssh",
+      "type": "bind"
+    }
+  ]
+}
