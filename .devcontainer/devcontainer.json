@@ -3,6 +3,7 @@
     "dockerfile": "Dockerfile",
     "context": ".."
   },
+  "containerUser": "vscode",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -11,16 +12,20 @@
       ]
     }
   },
+  "features": {
+      "ghcr.io/nils-geistmann/devcontainers-features/create-remote-user:0": {}
+  },
   "mounts": [
     {
       "source": "${localEnv:HOME}/.git",
-      "target": "/root/.git",
+      "target": "/home/vscode/.git",
       "type": "bind"
     },
     {
       "source": "${localEnv:HOME}/.ssh",
-      "target": "/root/.ssh",
+      "target": "/home/vscode/.ssh",
       "type": "bind"
     }
-  ]
+  ],
+  "remoteUser": "vscode"
 }

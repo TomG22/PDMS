@@ -1,6 +1,6 @@
 FROM python:3.14.2
 
-WORKDIR /usr/app
+WORKDIR /tmp
 
 COPY requirements.txt .
 
@@ -9,3 +9,5 @@ RUN pip install -r requirements.txt && \
 
 RUN apt-get update && \
     apt-get install -y git vim
+
+WORKDIR /workspace
