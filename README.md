@@ -23,7 +23,7 @@ If you don't want to use VS Code, you can still use dev containers! Install the 
 # Example commands given for Docker.
 # You can also use Podman, but beware of file permission issues.
 docker build -f .devcontainer/Dockerfile -t dev-container .
-docker run -it --rm -v $(pwd):/workspace dev-container /bin/bash
+docker run -it --rm -v $(pwd):/workspace dev-container
 ```
 
 This should give you a command-line environment with the necessary packages installed. Keep in mind that you'll need to either mount in a method of authenticating with GitHub (i.e. an SSH key) to commit inside the container, or you'll need to exit the container to perform Git actions.

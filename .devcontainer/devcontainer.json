@@ -15,6 +15,9 @@
   "features": {
       "ghcr.io/nils-geistmann/devcontainers-features/create-remote-user:0": {}
   },
+  "forwardPorts": [
+    8000
+  ],
   "mounts": [
     {
       "source": "${localEnv:HOME}/.git",
