@@ -12,23 +12,8 @@
       ]
     }
   },
-  "features": {
-      "ghcr.io/nils-geistmann/devcontainers-features/create-remote-user:0": {}
-  },
   "forwardPorts": [
     8000
-  ],
-  "mounts": [
-    {
-      "source": "${localEnv:HOME}/.git",
-      "target": "/home/vscode/.git",
-      "type": "bind"
-    },
-    {
-      "source": "${localEnv:HOME}/.ssh",
-      "target": "/home/vscode/.ssh",
-      "type": "bind"
-    }
   ],
   "remoteUser": "vscode"
 }
