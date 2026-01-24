@@ -23,7 +23,19 @@ If you don't want to use VS Code, you can still use dev containers! Install the 
 # Example commands given for Docker.
 # You can also use Podman, but beware of file permission issues.
 docker build -f .devcontainer/Dockerfile -t dev-container .
-docker run -it --rm -v $(pwd):/workspace -p 8000:8000 dev-container
+docker run -it --rm -v $(pwd):/workspace -p 8000:8000 dev-container /bin/bash
 ```
 
 This should give you a command-line environment with the necessary packages installed. Keep in mind that you'll need to either mount in a method of authenticating with GitHub (i.e. an SSH key) to commit inside the container, or you'll need to exit the container to perform Git actions.
+
+## Confirm Git Access
+
+See [Sharing Git credentials with your container](https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials#_using-ssh-keys). To confirm that you have GitHub access, run the following from inside your container:
+
+```bash
+ssh -T git@github.com
+```
+
+You should see something like the following if you are successful:
+
+> Hi dentonmwood! You've successfully authenticated, but GitHub does not provide shell access.
