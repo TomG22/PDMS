@@ -1,0 +1,12 @@
+{
+    "configurations": [
+      {
+        "name": "Python",
+        "type": "python",
+        "request": "launch",
+        "program": "${workspaceFolder}/src/manage.py",
+        "args": ["runserver", "0.0.0.0:8000"],
+        "cwd": "${workspaceFolder}/src"
+      }
+    ]
+  }
