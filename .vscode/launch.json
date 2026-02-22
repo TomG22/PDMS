@@ -1,12 +1,11 @@
 {
-    "configurations": [
-      {
-        "name": "Python",
-        "type": "debugpy",
-        "request": "launch",
-        "program": "${workspaceFolder}/src/manage.py",
-        "args": ["runserver", "0.0.0.0:8000"],
-        "cwd": "${workspaceFolder}/src"
-      }
-    ]
-  }
+  "configurations": [
+    {
+      "name": "Run Docker Compose",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/.dummy.py",
+      "preLaunchTask": "docker-compose-up"
+    }
+  ]
+}

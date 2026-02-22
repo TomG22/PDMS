@@ -1,0 +1,25 @@
+services:
+  backend:
+    build: ./backend
+    container_name: pdms_backend
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DJANGO_SETTINGS_MODULE=pdms.settings
+      - WATCHMAN_USE_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+
+  frontend:
+    build: ./frontend
+    container_name: pdms_frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    command: pnpm start
+    environment:
+      - HOST=0.0.0.0
