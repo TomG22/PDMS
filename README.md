@@ -17,7 +17,7 @@ Currently, the only path that is active on the backend is the following:
 http://localhost:8000/api/tasks/
 
 This can be accessed in the browser or via curl in the command line with:
-curl http://localhost:8000/api/tasks
+curl http://localhost:8000/api/tasks/
 
 Currently, there's two main pages that are active on the frontend:
 http://localhost:3000/          - Static homepage with page navigation
