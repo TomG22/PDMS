@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-function ProjectCard({project, onRemove, onEdit}) {
+function ProjectCard({project, onRemove, onEditClick}) {
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -15,7 +15,7 @@ function ProjectCard({project, onRemove, onEdit}) {
                 Remove Project
             </button>
 
-            <button style={editStyle} onClick = {(e) => { e.stopPropagation(); onEdit(project.id, {title:"Updated Title", description : "New Description"})}}>
+            <button style={editStyle} onClick = {(e) => { e.stopPropagation(); onEditClick(project)}}>
                 Edit Project
             </button>
         </div>

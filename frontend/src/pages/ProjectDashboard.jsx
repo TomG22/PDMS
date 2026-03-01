@@ -2,6 +2,8 @@ import { useState } from "react";
 
 import Sidebar from "../components/Sidebar";
 import ProjectCard from "../components/ProjectCard";
+import ProjectCreate from "../components/ProjectCreate";
+import ProjectEdit from "../components/ProjectEdit";
 
 function ProjectDashboard() {
     const sidebarLinks = [
@@ -11,15 +13,18 @@ function ProjectDashboard() {
     ]
 
     const [projects, setProjects] = useState([]); 
+    const [showCreate, setShowCreate] = useState(false);
+    const [editingProject, setEditingProject] = useState(null);
 
-    const handleAdd = () => {
+    const handleAdd = (title, description) => {
         const newProject = {
             id : Date.now(),
-            title: "New Project", 
-            description: "Project Description"
+            title, 
+            description
         }
 
-        setProjects(prev => [...prev, newProject])
+        setProjects(prev => [...prev, newProject]);
+        setShowCreate(false);
     }
 
     const handleRemove = (id) => {
@@ -38,7 +43,7 @@ function ProjectDashboard() {
             />
             <div style={mainStyle}>
                 <h2>Project Dashboard</h2>
-                <button style={addProjectStyle} onClick={handleAdd}>
+                <button style={addProjectStyle} onClick={() => setShowCreate(true)}>
                     + Add Project
                 </button>
                 <div style={gridStyle}>
@@ -47,12 +52,27 @@ function ProjectDashboard() {
                             key={project.id}
                             project={project}
                             onRemove={handleRemove}
-                            onEdit={handleEdit}
+                            onEditClick={setEditingProject}
                         />
                     ))}
                 </div>
                 
             </div>
+
+            {showCreate && (
+                <ProjectCreate
+                    onCreate={handleAdd}
+                    onClose={() => setShowCreate(false)}
+                />
+            )}
+
+            {editingProject && (
+                <ProjectEdit
+                    project={editingProject}
+                    onEdit={handleEdit}
+                    onClose={() => setEditingProject(null)}
+                />
+            )}
         </div>
     );
 }
