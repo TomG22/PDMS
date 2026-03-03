@@ -9,7 +9,7 @@ function ProjectCard({project, onRemove, onEditClick}) {
     return (
         <div onClick={handleClick} style={cardStyle}>
             <h3 style={{textAlign:"center"}}>{project.title}</h3>
-            <p>{project.description}</p>
+            <p style={descStyle}>{project.description}</p>
 
             <button style={removeStyle} onClick = {(e) => {e.stopPropagation(); onRemove(project.id)}}>
                 Remove Project
@@ -22,6 +22,11 @@ function ProjectCard({project, onRemove, onEditClick}) {
     );
 }
 
+const descStyle = {
+    lineHeight: "1.5rem",
+    minHeight: "4.5rem", // 1.5rem × 3 lines
+    overflowWrap: "break-word",
+};
 
 const removeStyle = {
     margin: "5px",
