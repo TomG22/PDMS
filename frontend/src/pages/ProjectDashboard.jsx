@@ -89,19 +89,20 @@ const containerStyle = {
 }
 const mainStyle = {
     flex: 1, 
-    padding: "40px", 
+    padding: "30px", 
     backgroundColor: "#f5f5f5", 
 }; 
 
 const addProjectStyle = {
     borderRadius: "3px", 
-    padding: "5px",
+    padding: "15px",
     border : "0px",
     color: "white", 
-    background : "green",
-    marginLeft: "90%", 
-    width:"100px",
-    cursor: "pointer"
+    background : "#862424",
+    marginLeft: "80%", 
+    width:"150px",
+    cursor: "pointer",
+    fontSize: "18px"
 }
 
 export default ProjectDashboard; 

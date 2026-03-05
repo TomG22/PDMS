@@ -65,7 +65,7 @@ const descStyle = {
 
 const buttonStyle = {
   padding: "12px 32px",
-  background: "#121619",
+  background: "#862424",
   color: "white",
   borderRadius: "8px",
   border: "none",
@@ -88,7 +88,7 @@ const exitButton = {
     fontSize: "20px", 
     border : "0",
     background : "transparent", 
-    color: "red",
+    color: "#862424",
     cursor : "pointer"
 };
 

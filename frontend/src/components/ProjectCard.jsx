@@ -30,7 +30,7 @@ const descStyle = {
 
 const removeStyle = {
     margin: "5px",
-    background:"red",
+    background:"#862424",
     borderRadius: "3px", 
     color: "white",
     padding: "5px", 
