@@ -1,11 +1,17 @@
+# JS files
 node_modules
 frontend/node_modules
 frontend/build
-.git
-.gitignore
+
+# Python files
 __pycache__
 *.pyc
 *.pyo
 *.pyd
+
+# Other
+.git
+.gitignore
 test/
 .env
+Dockerfile
