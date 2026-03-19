@@ -16,8 +16,10 @@ services:
     build: ./frontend
     container_name: pdms_frontend
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      # Exclude node modules since we build that into the container image
+      - ./frontend/html_pages:/app/html_pages
+      - ./frontend/public:/app/public
+      - ./frontend/src:/app/src
     ports:
       - "3000:3000"
     command: pnpm start
