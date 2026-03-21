@@ -13,6 +13,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
 
     steps:
     - uses: actions/checkout@v4
@@ -25,4 +28,4 @@ jobs:
     - run: pnpm run build --if-present
     - run: pnpm test
     - name: Build the Docker image
-      run: docker build frontend --file frontend/Dockerfile --tag pdms-backend:$(date +%s)
+      run: docker build . --file Dockerfile --tag pdms-backend:$(date +%s)
