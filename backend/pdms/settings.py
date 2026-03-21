@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'api',
 
+    # Authentication - allow refresh tokens to be blacklisted for logout
     # See https://medium.com/@aayushtcp/implementing-jwt-authentication-with-django-and-react-68fe92468873
     'rest_framework_simplejwt.token_blacklist'
 ]
@@ -129,6 +130,9 @@ STATIC_URL = 'static/'
 CORS_ALLOW_ALL_ORIGINS = True
 CSRF_ALLOW_ALL_ORIGINS = True
 
+### Authentication Configuration ###
+
+# See https://django-rest-framework-simplejwt.readthedocs.io/en/latest/getting_started.html#project-configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication'
@@ -136,15 +140,13 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=2),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True
 }
 
 APPEND_SLASH = False
 
-# Logging
+### Logging ###
 
 # See https://docs.djangoproject.com/en/6.0/topics/logging/
 LOGGING = {

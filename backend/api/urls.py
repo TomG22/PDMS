@@ -1,11 +1,14 @@
 from django.urls import path
-from rest_framework_simplejwt import views as jwt_views
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView
+)
 from .views import TaskListView, ProjectListView, ProjectView, UserLogoutAPIView
 
 urlpatterns = [
     # JWT token endpoints (see https://medium.com/@aayushtcp/implementing-jwt-authentication-with-django-and-react-68fe92468873)
-    path('token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # Auth endpoints
     path('logout/', UserLogoutAPIView.as_view(), name="logout"),

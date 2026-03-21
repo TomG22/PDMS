@@ -15,10 +15,8 @@ class UserLogoutAPIView(APIView):
     def post(self, request):
         """Logs the user out"""
         try:
-            request_data = request.data
-            print(request_data)
-            token = RefreshToken(request.data['refresh_token'])
-            token.blacklist()
+            refresh_token = RefreshToken(request.data["refresh_token"])
+            refresh_token.blacklist()
             return Response(status=status.HTTP_200_OK)
         except Exception as e:
             logger.error("Error while logging out", e)
