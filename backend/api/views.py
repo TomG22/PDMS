@@ -1,6 +1,7 @@
+from django.contrib.auth.models import User
 import logging
 from rest_framework import generics, status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -20,6 +21,27 @@ class UserLogoutAPIView(APIView):
             return Response(status=status.HTTP_200_OK)
         except Exception as e:
             logger.error("Error while logging out", e)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class UserRegisterAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        """Creates a user"""
+        username = request.data.get("username")
+        password = request.data.get("password")
+        email = request.data.get("email")
+
+        try:
+            user = User.objects.create(username=username, email=email)
+            user.set_password(password)
+            user.save()
+            return Response(
+                {"detail": "User registered successfully"},
+                status=status.HTTP_201_CREATED
+            )
+        except Exception as e:
+            logger.error("Error while registering", e)
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class TaskListView(generics.ListCreateAPIView):
