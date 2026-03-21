@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+from datetime import timedelta
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -40,6 +42,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'api',
+
+    # Authentication - allow refresh tokens to be blacklisted for logout
+    # See https://medium.com/@aayushtcp/implementing-jwt-authentication-with-django-and-react-68fe92468873
+    'rest_framework_simplejwt.token_blacklist'
 ]
 
 MIDDLEWARE = [
@@ -122,3 +128,44 @@ STATIC_URL = 'static/'
 
 # Frontend
 CORS_ALLOW_ALL_ORIGINS = True
+CSRF_ALLOW_ALL_ORIGINS = True
+
+### Authentication Configuration ###
+
+# See https://django-rest-framework-simplejwt.readthedocs.io/en/latest/getting_started.html#project-configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication'
+    ]
+}
+
+SIMPLE_JWT = {
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True
+}
+
+APPEND_SLASH = False
+
+### Logging ###
+
+# See https://docs.djangoproject.com/en/6.0/topics/logging/
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": False
+        },
+    }
+}
