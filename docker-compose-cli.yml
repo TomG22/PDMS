@@ -1,0 +1,4 @@
+name: pdms
+include:
+  - backend/docker-compose-cli.yml
+  - frontend/docker-compose-cli.yml

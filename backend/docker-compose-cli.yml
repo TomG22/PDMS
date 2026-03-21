@@ -1,0 +1,12 @@
+services:
+  backend:
+    build:
+      dockerfile: Dockerfile.cli
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - DJANGO_SETTINGS_MODULE=pdms.settings
+      - WATCHMAN_USE_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
