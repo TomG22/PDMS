@@ -12,7 +12,7 @@ urlpatterns = [
 
     # Auth endpoints
     path('logout/', UserLogoutAPIView.as_view(), name="logout"),
-    path('register/', UserRegisterAPIView.as_view(), name="logout"),
+    path('register/', UserRegisterAPIView.as_view(), name="register"),
 
     path("tasks/", TaskListView.as_view(), name="tasks"),
 
