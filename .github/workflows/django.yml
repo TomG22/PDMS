@@ -28,3 +28,5 @@ jobs:
     - name: Run Tests
       run: |
         python backend/manage.py test
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag pdms-backend:$(date +%s)
