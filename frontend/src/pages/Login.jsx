@@ -1,12 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
+import { authLogin } from "../auth/auth";
+
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await authLogin(username, password);
+      console.log("Form clicked");
+    } catch (error) {
+      console.error("Login failed:", error.response?.data || error.message);
+    }
+  };
+
   return (
     <>
-      <Navbar ctaText="Register" />
-
+      <Navbar ctaText="Register" ctaPath="/register" />
       <div style={{ padding: "120px 5%", display: "flex", justifyContent: "center" }}>
         <div style={{ width: "100%", maxWidth: "600px" }}>
           <div
@@ -20,19 +34,35 @@ const Login = () => {
             Login
           </div>
 
-          <div style={{ marginBottom: "24px" }}>
-            <label>Email Address</label>
-            <input type="email" style={inputStyle} />
-          </div>
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: "24px" }}>
+              <label>Username</label>
+              <input
+                type="username"
+                onChange={(e) => setUsername(e.target.value)}
+                value={username}
+                style={inputStyle}
+                required
+              />
+            </div>
 
-          <div style={{ marginBottom: "24px" }}>
-            <label>Password</label>
-            <input type="password" style={inputStyle} />
-          </div>
+            <div style={{ marginBottom: "24px" }}>
+              <label>Password</label>
+              <input
+                type="password"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+                style={inputStyle}
+                required
+              />
+            </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <button style={buttonStyle}>Login</button>
-          </div>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <button type="submit" style={buttonStyle}>
+                Login
+              </button>
+            </div>
+          </form>
         </div>
       </div>
 
