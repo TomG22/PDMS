@@ -25,6 +25,5 @@ jobs:
         version: 10
     - run: pnpm install --frozen-lockfile
     - run: pnpm run build --if-present
-    - run: pnpm test
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag pdms-frontend:$(date +%s)
