@@ -1,9 +1,7 @@
 import React from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
-const Navbar = ({ ctaText }) => {
-  const ctaPath = ctaText === "Login" ? "/login" : "/register";
-
+const Navbar = ({ ctaText, ctaPath }) => {
   return (
     <div style={{ width: "100%", background: "#B65353", borderBottom: "1px solid #D9D9D9" }}>
       <div

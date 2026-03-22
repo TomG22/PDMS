@@ -1,71 +1,88 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { authRegister } from "../auth/auth";
 
 const Register = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await authRegister(username, password, username);
+    } catch (error) {
+      console.error(
+        "Registration failed:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   return (
     <>
-      <Navbar ctaText="Login" />
+      <Navbar ctaText="Login" ctaPath="/login" />
 
-      <div style={{ padding: "120px 5%", display: "flex", justifyContent: "center" }}>
-        <div style={{ width: "100%", maxWidth: "600px" }}>
-          
-          <div
-            style={{
-              textAlign: "center",
-              fontSize: "clamp(40px, 5vw, 72px)",
-              fontWeight: 700,
-              marginBottom: "40px",
-            }}
-          >
-            Register
-          </div>
-
-          {/* First + Last Name */}
-          <div style={{ display: "flex", gap: "16px", marginBottom: "24px", flexWrap: "wrap" }}>
-            <div style={{ flex: 1 }}>
-              <label>First Name</label>
-              <input type="text" style={inputStyle} />
+      <form onSubmit={handleSubmit}>
+        <div style={{ padding: "120px 5%", display: "flex", justifyContent: "center" }}>
+          <div style={{ width: "100%", maxWidth: "600px" }}>
+            
+            <div
+              style={{
+                textAlign: "center",
+                fontSize: "clamp(40px, 5vw, 72px)",
+                fontWeight: 700,
+                marginBottom: "40px",
+              }}
+            >
+              Register
             </div>
 
-            <div style={{ flex: 1 }}>
-              <label>Last Name</label>
-              <input type="text" style={inputStyle} />
+            {/* Email */}
+            <div style={{ marginBottom: "24px" }}>
+              <label>Email Address</label>
+              <input
+                type="email"
+                style={inputStyle}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
-          </div>
 
-          {/* Email */}
-          <div style={{ marginBottom: "24px" }}>
-            <label>Email Address</label>
-            <input type="email" style={inputStyle} />
-          </div>
+            {/* Username */}
+            <div style={{ marginBottom: "24px" }}>
+              <label>Username</label>
+              <input
+                type="username"
+                style={inputStyle}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
 
-          {/* Password */}
-          <div style={{ marginBottom: "24px" }}>
-            <label>Password</label>
-            <input type="password" style={inputStyle} />
-          </div>
+            {/* Password */}
+            <div style={{ marginBottom: "24px" }}>
+              <label>Password</label>
+              <input
+                type="password"
+                style={inputStyle}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
 
-          {/* Confirm Password */}
-          <div style={{ marginBottom: "24px" }}>
-            <label>Confirm Password</label>
-            <input type="password" style={inputStyle} />
-          </div>
+            {/* Register Button */}
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <button type="submit" style={buttonStyle}>
+                Register
+              </button>
+            </div>
 
-          {/* Newsletter */}
-          <div style={{ marginBottom: "24px", fontSize: "14px" }}>
-            <label>
-              <input type="checkbox" /> Subscribe to Newsletter
-            </label>
           </div>
-
-          {/* Register Button */}
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <button style={buttonStyle}>Register</button>
-          </div>
-
         </div>
-      </div>
+      </form>
 
       <Footer />
     </>

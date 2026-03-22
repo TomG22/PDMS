@@ -1,7 +1,23 @@
-import React from "react";
-import {Link} from "react-router"
+import React, { useEffect, useState } from "react";
+import homefetch from "../components/fetchings";
+import {Link} from "react-router-dom"
+
+import Register from "./Register";
 
 const Home = () => {
+    const [message, setMessage] = useState("Fetching...");
+    const token = localStorage.getItem("access_token");
+
+    useEffect(() => {
+      const fetchData = async () => {
+        const fetchedMessage = await homefetch();
+        setMessage(fetchedMessage || "Failed to fetch message");
+      };
+
+      fetchData();
+    }, []);
+
+
   return (
     <div style={{ width: "100%", background: "white", fontFamily: "Inter, sans-serif" }}>
 
