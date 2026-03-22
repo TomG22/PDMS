@@ -1,10 +1,8 @@
 # PDMS
 
-## Running the Application
+## Running the Application for Production
 
-### With Docker
-
-Either run in VSC to automatically launch the docker configuration or use the following command in the command line:
+Run the following:
 
 ```bash
 docker compose up -d --build
@@ -12,8 +10,10 @@ docker compose up -d --build
 
 Either approach launches two Docker containers:
 
-* pdms_backend  - localhost:8000
-* pdms_frontend - localhost:3000
+* pdms_backend-1  - localhost:8000
+* pdms_frontend-1 - localhost:3000
+
+## Running the Application for Development
 
 ### Without Docker
 
@@ -34,6 +34,14 @@ pnpm install --frozen-lockfile
 
 # Run server
 pnpm start
+```
+
+### With Docker
+
+For Docker-based CLI development, run the following:
+
+```bash
+docker compose -f docker-compose-cli.yml up -d --build
 ```
 
 ## Latest Development

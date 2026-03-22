@@ -3,3 +3,6 @@ django-cors-headers==4.0.0
 djangorestframework==3.15.0
 djangorestframework-simplejwt==5.5.1
 watchdog==6.0.0
+
+# Production packages
+gunicorn==25.1.0
