@@ -66,11 +66,31 @@ class TaskListView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
 
 class ProjectListView(generics.ListCreateAPIView):
-    queryset = Project.objects.all().order_by("-id")
     serializer_class = ProjectSerializer
     permission_classes = (IsAuthenticated,)
 
+    def get_queryset(self):
+        return Project.objects.filter(
+            users=self.request.user,
+            is_deleted=False
+        ).order_by("-id").distinct()
+
+    def perform_create(self, serializer):
+        project = serializer.save(
+            created_by=self.request.user,
+            modified_by=self.request.user,
+        )
+        project.users.add(self.request.user)
+
 class ProjectView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Project.objects.filter(
+            users=self.request.user,
+            is_deleted=False
+        ).distinct()
+
+    def perform_update(self, serializer):
+        serializer.save(modified_by=self.request.user)
