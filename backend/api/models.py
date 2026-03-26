@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 from django.utils.text import slugify
+from django.contrib.auth.models import User
 
 # Was an example, but now TODO
 class Task(models.Model):
@@ -15,9 +16,22 @@ class Project(models.Model):
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    # TODO stuff involving users and auth
-    created_by = models.CharField(max_length=100)
-    modified_by = models.CharField(max_length=100)
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name="projects_created",
+    )
+    modified_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name="projects_modified",
+    )
+
+    users = models.ManyToManyField(
+        User,
+        related_name="projects",
+        blank=True,
+    )
     #soft delete feature possibly to be implemented
     is_deleted = models.BooleanField(default=False)
 
