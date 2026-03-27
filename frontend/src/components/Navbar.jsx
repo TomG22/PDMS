@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router";
+import DeleteUser from "./DeleteUser";
 
 const Navbar = ({ ctaText, ctaPath }) => {
   return (
@@ -54,6 +55,9 @@ const Navbar = ({ ctaText, ctaPath }) => {
         >
           {ctaText}
         </Link>
+
+        {/* Delete User */}
+        <DeleteUser />
       </div>
     </div>
   );
