@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 function ProjectEdit({project, onEdit, onClose}) {
-    const [title, setTitle] = useState(project.title)
+    const [title, setTitle] = useState(project.name)
     const [description, setDescription] = useState(project.description)
 
     return (

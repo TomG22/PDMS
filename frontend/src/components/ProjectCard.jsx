@@ -8,7 +8,7 @@ function ProjectCard({project, onRemove, onEditClick}) {
     }
     return (
         <div onClick={handleClick} style={cardStyle}>
-            <h3 style={{textAlign:"center"}}>{project.title}</h3>
+            <h3 style={{textAlign:"center"}}>{project.name}</h3>
             <p style={descStyle}>{project.description}</p>
 
             <button style={removeStyle} onClick = {(e) => {e.stopPropagation(); onRemove(project.id)}}>

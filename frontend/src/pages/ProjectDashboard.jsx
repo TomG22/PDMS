@@ -1,11 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios"; 
 
 import Sidebar from "../components/Sidebar";
 import ProjectCard from "../components/ProjectCard";
 import ProjectCreate from "../components/ProjectCreate";
 import ProjectEdit from "../components/ProjectEdit";
-
+ 
 function ProjectDashboard() {
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                const token = localStorage.getItem("access_token"); 
+
+                const res = await axios.get("http://localhost:8000/api/projects/", {
+                    headers : {
+                        Authorization : `Bearer ${token}`,
+                    }, 
+                }); 
+
+                setProjects(res.data); 
+            } catch (err) {
+                console.error("Failed to fetch projects:", err); 
+            }
+        }; 
+
+        fetchProjects(); 
+    }, []);
+
     const sidebarLinks = [
         {label: "Task View", to:"/test"},
         {label: "Profile View", to:"/test"},
@@ -16,23 +38,68 @@ function ProjectDashboard() {
     const [showCreate, setShowCreate] = useState(false);
     const [editingProject, setEditingProject] = useState(null);
 
-    const handleAdd = (title, description) => {
-        const newProject = {
-            id : Date.now(),
-            title, 
-            description
+    const handleAdd = async (title, description) => {
+        try {
+            const token = localStorage.getItem("access_token"); 
+
+            const res = await axios.post("http://localhost:8000/api/projects/", 
+                {
+                    name: title, 
+                    description: description,
+                }, 
+                {
+                    headers : {
+                        Authorization : `Bearer ${token}`,
+                    },
+                }
+            ); 
+            
+            setProjects(prev => [...prev, res.data]); 
+            setShowCreate(false); 
+        } catch (err) {
+            console.error("Failed to create project:", err); 
         }
-
-        setProjects(prev => [...prev, newProject]);
-        setShowCreate(false);
     }
 
-    const handleRemove = (id) => {
-        setProjects(prev => prev.filter(project => project.id !== id));
+
+    const handleRemove = async (id) => {
+        try {
+            const token = localStorage.getItem("access_token"); 
+
+            await axios.delete(`http://localhost:8000/api/projects/${id}/`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`, 
+                    },
+                } 
+            );
+
+            setProjects(prev => prev.filter(p => p.id !== id));
+        } catch (err) {
+            console.error("Failed to remove project:", err); 
+        }
     }
 
-    const handleEdit = (id, updatedFields) => {
-        setProjects(prev => prev.map(project => project.id === id ? {...project, ...updatedFields} : project));
+    const handleEdit = async (id, updatedFields) => {
+        try {
+            const token = localStorage.getItem("access_token"); 
+
+            const res = await axios.put(`http://localhost:8000/api/projects/${id}/`,
+                {
+                    name: updatedFields.title, 
+                    description: updatedFields.description,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`, 
+                    },
+                } 
+            );
+
+            setProjects(prev => prev.map(p => p.id === id ? res.data : p));
+        } catch (err) {
+            console.error("Failed to update/edit project:", err); 
+        }
     }
 
     return (
