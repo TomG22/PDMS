@@ -3,9 +3,12 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView
 )
-from .views import ( TaskListView,
-                     ProjectListView, ProjectView,
-                     UserLogoutAPIView, UserRegisterAPIView, UserDeleteAPIView )
+from .views import (
+    ProjectListView, ProjectView,
+    TaskListView, TaskView,
+    UserLogoutAPIView, UserRegisterAPIView,
+    UserDeleteAPIView
+)
 
 urlpatterns = [
     # JWT token endpoints (see https://medium.com/@aayushtcp/implementing-jwt-authentication-with-django-and-react-68fe92468873)
@@ -17,7 +20,15 @@ urlpatterns = [
     path('register/', UserRegisterAPIView.as_view(), name="register"),
     path('user/', UserDeleteAPIView.as_view(), name="user"),
 
+    ### Task Endpoints ###
+
+    # api/tasks/ - GET, POST
     path("tasks/", TaskListView.as_view(), name="tasks"),
+
+    # api/tasks/<int:pk>/ - GET, PUT, DELETE
+    path("tasks/<int:pk>/", TaskView.as_view(), name="task-detail"),
+
+    ### Project Endpoints ###
 
     # api/projects/ - GET, POST
     path("projects/", ProjectListView.as_view(), name="projects"),

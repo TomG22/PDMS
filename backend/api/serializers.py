@@ -1,13 +1,8 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Task, Project
+from .models import Task, Project, PersistedObject
 
-class TaskSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Task
-        fields = ["id", "name", "completed"]
-
-class ProjectSerializer(serializers.ModelSerializer):
+class PersistedObjectSerializer(serializers.ModelSerializer):
     created_by = serializers.CharField(source="created_by.username", read_only=True)
     modified_by = serializers.CharField(source="modified_by.username", read_only=True)
 
@@ -22,13 +17,11 @@ class ProjectSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = Project
+        model = PersistedObject
         fields = [
             "id",
             "uuid",
             "name",
-            "slug",
-            "description",
             "created_at",
             "modified_at",
             "created_by",
@@ -41,15 +34,35 @@ class ProjectSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "id",
             "uuid",
-            "slug",
             "created_at",
             "modified_at",
             "created_by",
             "modified_by",
             "users",
         ]
+
     def get_users(self, obj):
         return [
         {"id": user.id, "username": user.username}
         for user in obj.users.all()
         ]
+
+class TaskSerializer(PersistedObjectSerializer):
+    class Meta:
+        model = Task
+        fields = ["name", "completed", "description"]
+        depth = 1
+
+class ProjectSerializer(PersistedObjectSerializer):
+    class Meta:
+        model = Project
+        fields = [
+            "name",
+            "slug",
+            "description",
+        ]
+        read_only_fields = [
+            "slug",
+        ]
+
+        depth = 1
