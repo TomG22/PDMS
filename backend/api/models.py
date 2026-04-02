@@ -10,22 +10,25 @@ class PersistedObject(models.Model):
     created_by = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
-        related_name="projects_created",
+        related_name="%(class)s_created",
     )
     modified_by = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
-        related_name="projects_modified",
+        related_name="%(class)s_modified",
     )
 
     users = models.ManyToManyField(
         User,
-        related_name="projects",
+        related_name="%(class)s",
         blank=True,
     )
 
     #soft delete feature possibly to be implemented
     is_deleted = models.BooleanField(default=False)
+
+    class Meta:
+        abstract = True
 
 class Task(PersistedObject):
     name = models.CharField(max_length=200)

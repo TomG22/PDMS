@@ -50,19 +50,34 @@ class PersistedObjectSerializer(serializers.ModelSerializer):
 class TaskSerializer(PersistedObjectSerializer):
     class Meta:
         model = Task
-        fields = ["name", "completed", "description"]
-        depth = 1
+        fields = [
+            "id",
+            "name",
+            "completed",
+            "description",
+            "users",
+            "user_ids"
+        ]
+        read_only_fields = [
+            "id",
+            "users",
+            "user_ids"
+        ]
 
 class ProjectSerializer(PersistedObjectSerializer):
     class Meta:
         model = Project
         fields = [
+            "id",
             "name",
             "slug",
             "description",
+            "users",
+            "user_ids"
         ]
         read_only_fields = [
+            "id",
             "slug",
+            "users",
+            "user_ids"
         ]
-
-        depth = 1

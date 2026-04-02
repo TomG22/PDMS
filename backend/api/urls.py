@@ -25,7 +25,7 @@ urlpatterns = [
     # api/tasks/ - GET, POST
     path("tasks/", TaskListView.as_view(), name="tasks"),
 
-    # api/tasks/<int:pk>/ - GET, PUT, DELETE
+    # api/tasks/<int:pk>/ - GET, PUT, PATCH, DELETE
     path("tasks/<int:pk>/", TaskView.as_view(), name="task-detail"),
 
     ### Project Endpoints ###
@@ -33,10 +33,10 @@ urlpatterns = [
     # api/projects/ - GET, POST
     path("projects/", ProjectListView.as_view(), name="projects"),
 
-    # api/projects/<int:pk>/ - GET, PUT, DELETE
+    # api/projects/<int:pk>/ - GET, PUT, PATCH, DELETE
     path("projects/<int:pk>/", ProjectView.as_view(), name="project-detail"),
 
-    # api/projects/<int:pk>/<slug:slug>/ - GET, PUT, DELETE
+    # api/projects/<int:pk>/<slug:slug>/ - GET, PUT, PATCH, DELETE
     # still uses pk to find the project, slug just makes url look nicer
     path("projects/<int:pk>/<slug:slug>/", ProjectView.as_view(), name="project-detail-slug")
 ]
