@@ -3,8 +3,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Tasks from "./pages/Tasks";
-import ProjectDashboard from "./pages/ProjectDashboard";
-import ProjectCreate from "./components/ProjectCreate";
+import ProjectsView from "./pages/ProjectsView";
 
 function App() {
   return (
@@ -14,8 +13,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/tasks" element={<Tasks />} />
-        <Route path="/project-dash-test" element={<ProjectDashboard />} />
-        <Route path="/project-create-window" element={<ProjectCreate/>}/>
+        <Route path="/project-view" element={<ProjectsView />} />
       </Routes>
     </BrowserRouter>
   );
