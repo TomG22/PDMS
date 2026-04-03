@@ -1,6 +1,14 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Task, Project, PersistedObject
+from .models import Task, Project, PersistedObject, UserProfile
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = [
+            "email",
+            "bio"
+        ]
 
 class PersistedObjectSerializer(serializers.ModelSerializer):
     created_by = serializers.CharField(source="created_by.username", read_only=True)

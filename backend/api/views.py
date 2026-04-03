@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Task, Project
-from .serializers import TaskSerializer, ProjectSerializer
+from .serializers import TaskSerializer, ProjectSerializer, UserProfileSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +73,11 @@ class UserDeleteAPIView(APIView):
 
         user.delete()
         return Response({"detail": "User deleted successfully"}, status=204)
+
+class UserProfileView(generics.RetrieveUpdateAPIView):
+    queryset = Task.objects.all().order_by("-id")
+    serializer_class = UserProfileSerializer
+    permission_classes = (IsAuthenticated,)
 
 class TaskListView(generics.ListCreateAPIView):
     serializer_class = TaskSerializer
