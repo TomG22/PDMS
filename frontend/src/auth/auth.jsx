@@ -24,7 +24,7 @@ const authRegister = async (username, password, email) => {
   try {
     const { data } = await axios.post(
       "http://127.0.0.1:8000/api/register/",
-      {username, password, email},
+      { username, password, email },
       {
         headers: { "Content-Type": "application/json" },
       }
@@ -68,4 +68,23 @@ const authLogout = async () => {
   }
 };
 
-export { authLogin, authRegister, authLogout };
+const authDeleteUser = async (password) => {
+  const accessToken = localStorage.getItem('access_token');
+  try {
+    const { data } = await axios.delete(
+      "http://127.0.0.1:8000/api/user/",
+      {
+        data: { password },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export { authLogin, authRegister, authLogout, authDeleteUser };

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
+import DeleteUser from "../components/DeleteUser";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { authLogout } from "../auth/auth";
@@ -55,6 +56,9 @@ const Tasks = () => {
   return (
     <>
       <Navbar ctaText="Logout" ctaPath="/login" ctaAction={handleLogout} />
+
+      {/* Delete User */}
+      <DeleteUser />
 
       <div style={{ padding: "120px 5%", maxWidth: "800px", margin: "0 auto" }}>
         <h1 style={{ fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 700, marginBottom: "40px", textAlign: "center" }}>
