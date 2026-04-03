@@ -22,7 +22,8 @@ For non-Dockerized runs (ex. when inside a dev container), run the following:
 #### Backend
 
 ```bash
-python backend/manage.py runserver 0.0.0.0:8000
+cd backend
+python manage.py runserver 0.0.0.0:8000
 ```
 
 #### UI

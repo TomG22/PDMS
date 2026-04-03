@@ -75,9 +75,34 @@ class UserDeleteAPIView(APIView):
         return Response({"detail": "User deleted successfully"}, status=204)
 
 class TaskListView(generics.ListCreateAPIView):
-    queryset = Task.objects.all().order_by("-id")
     serializer_class = TaskSerializer
     permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Task.objects.filter(
+            users=self.request.user,
+            is_deleted=False
+        ).order_by("-id").distinct()
+
+    def perform_create(self, serializer):
+        task = serializer.save(
+            created_by=self.request.user,
+            modified_by=self.request.user,
+        )
+        task.users.add(self.request.user)
+
+class TaskView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TaskSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Task.objects.filter(
+            users=self.request.user,
+            is_deleted=False
+        ).distinct()
+
+    def perform_update(self, serializer):
+        serializer.save(modified_by=self.request.user)
 
 class ProjectListView(generics.ListCreateAPIView):
     serializer_class = ProjectSerializer

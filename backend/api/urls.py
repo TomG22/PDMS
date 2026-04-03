@@ -3,9 +3,12 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView
 )
-from .views import ( TaskListView,
-                     ProjectListView, ProjectView,
-                     UserLogoutAPIView, UserRegisterAPIView, UserDeleteAPIView )
+from .views import (
+    ProjectListView, ProjectView,
+    TaskListView, TaskView,
+    UserLogoutAPIView, UserRegisterAPIView,
+    UserDeleteAPIView
+)
 
 urlpatterns = [
     # JWT token endpoints (see https://medium.com/@aayushtcp/implementing-jwt-authentication-with-django-and-react-68fe92468873)
@@ -17,15 +20,23 @@ urlpatterns = [
     path('register/', UserRegisterAPIView.as_view(), name="register"),
     path('user/', UserDeleteAPIView.as_view(), name="user"),
 
+    ### Task Endpoints ###
+
+    # api/tasks/ - GET, POST
     path("tasks/", TaskListView.as_view(), name="tasks"),
+
+    # api/tasks/<int:pk>/ - GET, PUT, PATCH, DELETE
+    path("tasks/<int:pk>/", TaskView.as_view(), name="task-detail"),
+
+    ### Project Endpoints ###
 
     # api/projects/ - GET, POST
     path("projects/", ProjectListView.as_view(), name="projects"),
 
-    # api/projects/<int:pk>/ - GET, PUT, DELETE
+    # api/projects/<int:pk>/ - GET, PUT, PATCH, DELETE
     path("projects/<int:pk>/", ProjectView.as_view(), name="project-detail"),
 
-    # api/projects/<int:pk>/<slug:slug>/ - GET, PUT, DELETE
+    # api/projects/<int:pk>/<slug:slug>/ - GET, PUT, PATCH, DELETE
     # still uses pk to find the project, slug just makes url look nicer
     path("projects/<int:pk>/<slug:slug>/", ProjectView.as_view(), name="project-detail-slug")
 ]
