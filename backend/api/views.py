@@ -60,6 +60,20 @@ class UserRegisterAPIView(APIView):
             return Response({"detail": "Unexpected server error"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class UserDeleteAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def delete(self, request):
+        """Deletes a user"""
+        password = request.data.get("password")
+        user = request.user
+
+        if not password or not user.check_password(password):
+            return Response({"detail": "Invalid credentials"}, status=400)
+
+        user.delete()
+        return Response({"detail": "User deleted successfully"}, status=204)
+
 class TaskListView(generics.ListCreateAPIView):
     queryset = Task.objects.all().order_by("-id")
     serializer_class = TaskSerializer

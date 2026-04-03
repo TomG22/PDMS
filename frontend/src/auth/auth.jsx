@@ -71,10 +71,10 @@ const authLogout = async () => {
 const authDeleteUser = async (password) => {
   const accessToken = localStorage.getItem('access_token');
   try {
-    const { data } = await axios.post(
-      "http://127.0.0.1:8000/api/delete/",
-      { password },
+    const { data } = await axios.delete(
+      "http://127.0.0.1:8000/api/user/",
       {
+        data: { password },
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
