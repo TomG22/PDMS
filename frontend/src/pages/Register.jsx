@@ -26,19 +26,28 @@ const Register = () => {
       <Navbar ctaText="Login" ctaPath="/login" />
 
       <form onSubmit={handleSubmit}>
-        <div style={{ padding: "120px 5%", display: "flex", justifyContent: "center" }}>
-          <div style={{ width: "100%", maxWidth: "600px" }}>
-            
-            <div
-              style={{
-                textAlign: "center",
-                fontSize: "clamp(40px, 5vw, 72px)",
-                fontWeight: 700,
-                marginBottom: "40px",
-              }}
-            >
-              Register
+
+      <div style={{ padding: "120px 5%", display: "flex", justifyContent: "center" }}>
+        <div style={{ width: "100%", maxWidth: "600px" }}>
+          
+          <div
+            style={{
+              textAlign: "center",
+              fontSize: "clamp(40px, 5vw, 56px)",
+              fontWeight: 700,
+              marginBottom: "40px",
+            }}
+          >
+            Register
+          </div>
+
+          {/* First + Last Name */}
+          <div style={{ display: "flex", gap: "16px", marginBottom: "24px", flexWrap: "wrap" }}>
+            <div style={{ flex: 1 }}>
+              <label>First Name</label>
+              <input type="text" style={inputStyle} />
             </div>
+          </div>
 
             {/* Email */}
             <div style={{ marginBottom: "24px" }}>
@@ -91,13 +100,14 @@ const Register = () => {
 
 const inputStyle = {
   width: "100%",
-  height: "48px",
+  height: "20px",
   marginTop: "8px",
   padding: "12px 16px",
   background: "#F2F4F8",
   border: "none",
   borderBottom: "1px solid #C1C7CD",
   fontSize: "16px",
+  borderRadius: "7px"
 };
 
 const buttonStyle = {

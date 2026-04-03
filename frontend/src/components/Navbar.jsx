@@ -8,7 +8,7 @@ const Navbar = ({ ctaText, ctaPath }) => {
         style={{
           maxWidth: "1200px",
           margin: "auto",
-          padding: "32px 24px",
+          padding: "16px 12px",
           display: "flex",
           alignItems: "center",
           gap: "24px",

@@ -26,7 +26,7 @@ const Login = () => {
           <div
             style={{
               textAlign: "center",
-              fontSize: "clamp(40px, 5vw, 72px)",
+              fontSize: "clamp(40px, 5vw, 56px)",
               fontWeight: 700,
               marginBottom: "40px",
             }}
@@ -73,13 +73,14 @@ const Login = () => {
 
 const inputStyle = {
   width: "100%",
-  height: "48px",
+  height: "20px",
   marginTop: "8px",
   padding: "12px 16px",
   background: "#F2F4F8",
   border: "none",
   borderBottom: "1px solid #C1C7CD",
   fontSize: "16px",
+  borderRadius : "7px", 
 };
 
 const buttonStyle = {
