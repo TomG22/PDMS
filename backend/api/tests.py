@@ -5,11 +5,12 @@ from rest_framework.test import APITestCase, APIClient
 
 class TaskTestCase(APITestCase):
     @classmethod
-    def setUp(self):
-        self.client = APIClient()
-        self.user = User.objects.create_user(username="test", password="password")
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username="test", password="password")
 
+    def setUp(self):
         # Log in
+        self.client = APIClient()
         response = self.client.post(path="/api/token/", data={"username": "test", "password": "password"})
         access_token = response.data['access']
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {access_token}')
@@ -62,11 +63,13 @@ class TaskTestCase(APITestCase):
         self.assertEqual(get_response.status_code, 404)
 
 class ProjectTestCase(APITestCase):
-    def setUp(self):
-        self.client = APIClient()
-        self.user = User.objects.create_user(username="test", password="password")
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username="test", password="password")
 
+    def setUp(self):
         # Log in
+        self.client = APIClient()
         response = self.client.post(path="/api/token/", data={"username": "test", "password": "password"})
         access_token = response.data['access']
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {access_token}')
