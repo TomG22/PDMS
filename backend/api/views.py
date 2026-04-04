@@ -7,8 +7,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Task, Project
-from .serializers import TaskSerializer, ProjectSerializer, UserProfileSerializer
+from .models import Task, Project, UserProfile
+from .serializers import TaskSerializer, ProjectSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -40,11 +40,16 @@ class UserRegisterAPIView(APIView):
         username = request.data.get("username")
         password = request.data.get("password")
         email = request.data.get("email")
+        first_name = request.data.get("firstName")
+        last_name = request.data.get("lastName")
 
         try:
             user = User.objects.create(username=username, email=email)
             user.set_password(password)
             user.save()
+
+            user_profile = UserProfile.objects.create(user=user, first_name=first_name, last_name=last_name)
+            user_profile.save()
             return Response(
                 {"detail": "User registered successfully"},
                 status=status.HTTP_201_CREATED
@@ -60,8 +65,46 @@ class UserRegisterAPIView(APIView):
             return Response({"detail": "Unexpected server error"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class UserDeleteAPIView(APIView):
+class UserView(APIView):
     permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        user = request.user
+
+        response = {
+            "email": user.email,
+            "first_name": user.userprofile.first_name,
+            "last_name": user.userprofile.last_name,
+            "bio": user.userprofile.bio
+        }
+
+        return Response(response, status=200)
+    
+    def put(self, request):
+        user = request.user
+        user_profile = user.userprofile
+
+        email = request.data.get("email")
+        first_name = request.data.get("firstName")
+        last_name = request.data.get("lastName")
+        bio = request.data.get("bio")
+
+        user.email = email
+        user_profile.first_name = first_name
+        user_profile.last_name = last_name
+        user_profile.bio = bio
+
+        user.save()
+        user_profile.save()
+
+        response = {
+            "email": user.email,
+            "first_name": user.userprofile.first_name,
+            "last_name": user.userprofile.last_name,
+            "bio": user.userprofile.bio
+        }
+
+        return Response(response, status=200)
 
     def delete(self, request):
         """Deletes a user"""
@@ -70,14 +113,9 @@ class UserDeleteAPIView(APIView):
 
         if not password or not user.check_password(password):
             return Response({"detail": "Invalid credentials"}, status=400)
-
+        
         user.delete()
         return Response({"detail": "User deleted successfully"}, status=204)
-
-class UserProfileView(generics.RetrieveUpdateAPIView):
-    queryset = Task.objects.all().order_by("-id")
-    serializer_class = UserProfileSerializer
-    permission_classes = (IsAuthenticated,)
 
 class TaskListView(generics.ListCreateAPIView):
     serializer_class = TaskSerializer

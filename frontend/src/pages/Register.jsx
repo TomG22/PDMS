@@ -4,6 +4,8 @@ import Footer from "../components/Footer";
 import { authRegister } from "../auth/auth";
 
 const Register = () => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -12,7 +14,7 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      await authRegister(username, password, username);
+      await authRegister(firstName, lastName, username, password, username);
     } catch (error) {
       console.error(
         "Registration failed:",
@@ -26,28 +28,45 @@ const Register = () => {
       <Navbar ctaText="Login" ctaPath="/login" />
 
       <form onSubmit={handleSubmit}>
-
-      <div style={{ padding: "120px 5%", display: "flex", justifyContent: "center" }}>
-        <div style={{ width: "100%", maxWidth: "600px" }}>
-          
-          <div
-            style={{
-              textAlign: "center",
-              fontSize: "clamp(40px, 5vw, 56px)",
-              fontWeight: 700,
-              marginBottom: "40px",
-            }}
-          >
-            Register
-          </div>
-
-          {/* First + Last Name */}
-          <div style={{ display: "flex", gap: "16px", marginBottom: "24px", flexWrap: "wrap" }}>
-            <div style={{ flex: 1 }}>
-              <label>First Name</label>
-              <input type="text" style={inputStyle} />
+        <div style={{ padding: "120px 5%", display: "flex", justifyContent: "center" }}>
+          <div style={{ width: "100%", maxWidth: "600px" }}>
+            
+            <div
+              style={{
+                textAlign: "center",
+                fontSize: "clamp(40px, 5vw, 56px)",
+                fontWeight: 700,
+                marginBottom: "40px",
+              }}
+            >
+              Register
             </div>
-          </div>
+
+            <div style={{ display: "flex", gap: "16px", marginBottom: "24px", flexWrap: "wrap" }}>
+
+              {/* First Name */}
+              <div style={{ flex: 1 }}>
+                <label>First Name</label>
+                <input
+                  type="text"
+                  style={inputStyle}
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Last Name */}
+            <div style={{ marginBottom: "24px" }}>
+              <label>Last Name</label>
+              <input
+                type="text"
+                style={inputStyle}
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
+            </div>
+            
 
             {/* Email */}
             <div style={{ marginBottom: "24px" }}>
