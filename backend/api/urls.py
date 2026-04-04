@@ -7,7 +7,7 @@ from .views import (
     ProjectListView, ProjectView,
     TaskListView, TaskView,
     UserLogoutAPIView, UserRegisterAPIView,
-    UserDeleteAPIView
+    UserView
 )
 
 urlpatterns = [
@@ -18,7 +18,7 @@ urlpatterns = [
     # Auth endpoints
     path('logout/', UserLogoutAPIView.as_view(), name="logout"),
     path('register/', UserRegisterAPIView.as_view(), name="register"),
-    path('user/', UserDeleteAPIView.as_view(), name="user"),
+    path('user/', UserView.as_view(), name="user"),
 
     ### Task Endpoints ###
 

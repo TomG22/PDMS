@@ -52,7 +52,9 @@ class Project(PersistedObject):
     def __str__(self):
         return self.name
 
-
-
-
-
+class UserProfile(models.Model):
+    """Represents a profile of a user. Contains additional metadata not in the default Django user object"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.TextField(default="")
+    last_name = models.TextField(default="")
+    bio = models.TextField(default="")

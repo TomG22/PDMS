@@ -20,11 +20,11 @@ const authLogin = async (username, password) => {
   }
 };
 
-const authRegister = async (username, password, email) => {
+const authRegister = async (firstName, lastName, email, password) => {
   try {
     const { data } = await axios.post(
       "http://127.0.0.1:8000/api/register/",
-      { username, password, email },
+      { firstName, lastName, email, password },
       {
         headers: { "Content-Type": "application/json" },
       }
