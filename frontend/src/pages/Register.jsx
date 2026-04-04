@@ -8,13 +8,12 @@ const Register = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await authRegister(firstName, lastName, username, password, username);
+      await authRegister(firstName, lastName, email, password);
     } catch (error) {
       console.error(
         "Registration failed:",
@@ -76,17 +75,6 @@ const Register = () => {
                 style={inputStyle}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-
-            {/* Username */}
-            <div style={{ marginBottom: "24px" }}>
-              <label>Username</label>
-              <input
-                type="username"
-                style={inputStyle}
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
 

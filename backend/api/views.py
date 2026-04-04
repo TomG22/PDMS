@@ -37,14 +37,13 @@ class UserRegisterAPIView(APIView):
 
     def post(self, request):
         """Creates a user"""
-        username = request.data.get("username")
         password = request.data.get("password")
         email = request.data.get("email")
         first_name = request.data.get("firstName")
         last_name = request.data.get("lastName")
 
         try:
-            user = User.objects.create(username=username, email=email)
+            user = User.objects.create(username=email, email=email)
             user.set_password(password)
             user.save()
 
@@ -55,7 +54,7 @@ class UserRegisterAPIView(APIView):
                 status=status.HTTP_201_CREATED
             )
         except KeyError as e:
-            return Response({"detail": "Expected fields: (username, password, email)"},
+            return Response({"detail": "Expected fields: (email, password)"},
                             status=status.HTTP_400_BAD_REQUEST)
         except IntegrityError as e:
             return Response({"detail": "Invalid or non-unique user given"},
