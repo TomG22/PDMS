@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import axios from "axios"; 
+import axios from "axios";
+import { useNavigate } from "react-router";
 
 import Sidebar from "../components/Sidebar";
 import ProjectCard from "../components/ProjectCard";
@@ -7,15 +8,21 @@ import ProjectCreate from "../components/ProjectCreate";
 import ProjectEdit from "../components/ProjectEdit";
  
 function ProjectDashboard() {
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const token = localStorage.getItem("access_token"); 
+                const accessToken = localStorage.getItem("access_token"); 
+                if (!accessToken) {
+                    navigate("/login"); // Redirect to login if no token
+                    console.error("Access token is missing or expired");
+                    return;
+                }
 
                 const res = await axios.get("http://localhost:8000/api/projects/", {
                     headers : {
-                        Authorization : `Bearer ${token}`,
+                        Authorization : `Bearer ${accessToken}`,
                     }, 
                 }); 
 
@@ -26,7 +33,7 @@ function ProjectDashboard() {
         }; 
 
         fetchProjects(); 
-    }, []);
+    }, [navigate]);
 
     const sidebarLinks = [
         {label: "Task View", to:"/test"},
