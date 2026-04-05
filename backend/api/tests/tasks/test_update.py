@@ -1,29 +1,31 @@
 from django.test import tag
 from api.tests.base import AuthenticatedAPITestCase
+from api.models import Project, Task
 
 
 class TaskUpdateTests(AuthenticatedAPITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.create_user()
+        cls.project = Project.objects.create(name="Test Project", description="This is a test project", created_by=cls.user, modified_by=cls.user)
+        cls.project.users.add(cls.user)
+
     def setUp(self):
         super().setUp()
-        response = self.client.post(
-            "/api/tasks/",
-            {"name": "task a", "description": "this is task a", "completed": "false"},
-            format="json",
-        )
-        self.task_id = response.data["id"]
+        self.task = Task.objects.create(name="task a", description="This is task a", completed=False, project=self.project, created_by=self.user, modified_by=self.user)
 
     @tag("task")
     def test_update_task_returns_200(self):
-        task = self.client.get(f"/api/tasks/{self.task_id}/").data
+        task = self.client.get(f"/api/tasks/{self.task.id}/").data
         task["completed"] = True
-        response = self.client.put(f"/api/tasks/{self.task_id}/", task, format="json")
+        response = self.client.put(f"/api/tasks/{self.task.id}/", task, format="json")
         self.assertEqual(response.status_code, 200)
 
     @tag("task")
     def test_update_task_persists(self):
-        task = self.client.get(f"/api/tasks/{self.task_id}/").data
+        task = self.client.get(f"/api/tasks/{self.task.id}/").data
         task["completed"] = True
-        self.client.put(f"/api/tasks/{self.task_id}/", task, format="json")
+        self.client.put(f"/api/tasks/{self.task.id}/", task, format="json")
 
-        updated = self.client.get(f"/api/tasks/{self.task_id}/").data
+        updated = self.client.get(f"/api/tasks/{self.task.id}/").data
         self.assertEqual(updated["completed"], True)

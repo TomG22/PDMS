@@ -45,6 +45,29 @@ For Docker-based CLI development, run the following:
 docker compose -f docker-compose-cli.yml up -d --build
 ```
 
+## Troubleshooting
+
+If you are getting database failures, ensure that your database is up-to-date:
+
+```bash
+cd backend/
+python manage.py migrate
+```
+
+If you have made model changes, you first need to run the following, then rerun the above:
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+If all else fails, remove your local database file before continuing:
+
+```bash
+rm db.sqlite3
+python manage.py migrate
+```
+
 ## Latest Development
 
 Currently, the only path that is active on the backend is the following:
