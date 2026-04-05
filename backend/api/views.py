@@ -175,3 +175,15 @@ class ProjectView(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_update(self, serializer):
         serializer.save(modified_by=self.request.user)
+
+class ProjectTaskListView(generics.ListAPIView):
+    serializer_class = TaskSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        project_id = self.kwargs["pk"]
+        return Task.objects.filter(
+            users=self.request.user,
+            project__id=project_id,
+            is_deleted=False
+        ).order_by("-id").distinct()

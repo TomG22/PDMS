@@ -48,6 +48,8 @@ class PersistedObjectSerializer(serializers.ModelSerializer):
         ]
 
 class TaskSerializer(PersistedObjectSerializer):
+    project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
+
     class Meta:
         model = Task
         fields = [
@@ -56,7 +58,8 @@ class TaskSerializer(PersistedObjectSerializer):
             "completed",
             "description",
             "users",
-            "user_ids"
+            "user_ids",
+            "project"
         ]
         read_only_fields = [
             "id",

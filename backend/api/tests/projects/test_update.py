@@ -1,29 +1,26 @@
 from django.test import tag
+from api.models import Project
 from api.tests.base import AuthenticatedAPITestCase
 
 
 class ProjectUpdateTests(AuthenticatedAPITestCase):
     def setUp(self):
         super().setUp()
-        response = self.client.post(
-            "/api/projects/",
-            {"name": "project 1", "description": "this is the first project"},
-            format="json",
-        )
-        self.project_id = response.data["id"]
+        self.project = Project.objects.create(name="project 1", description="this is the first project", created_by=self.user, modified_by=self.user)
+        self.project.users.add(self.user)
 
     @tag("project")
     def test_update_project_returns_200(self):
-        project = self.client.get(f"/api/projects/{self.project_id}/").data
+        project = self.client.get(f"/api/projects/{self.project.id}/").data
         project["description"] = "new description"
-        response = self.client.put(f"/api/projects/{self.project_id}/", project, format="json")
+        response = self.client.put(f"/api/projects/{self.project.id}/", project, format="json")
         self.assertEqual(response.status_code, 200)
 
     @tag("project")
     def test_update_project_persists(self):
-        project = self.client.get(f"/api/projects/{self.project_id}/").data
+        project = self.client.get(f"/api/projects/{self.project.id}/").data
         project["description"] = "new description"
-        self.client.put(f"/api/projects/{self.project_id}/", project, format="json")
+        self.client.put(f"/api/projects/{self.project.id}/", project, format="json")
 
-        updated = self.client.get(f"/api/projects/{self.project_id}/").data
+        updated = self.client.get(f"/api/projects/{self.project.id}/").data
         self.assertEqual(updated["description"], "new description")
