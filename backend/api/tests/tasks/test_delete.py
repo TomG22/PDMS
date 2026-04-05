@@ -13,7 +13,6 @@ class TaskDeleteTests(AuthenticatedAPITestCase):
     def setUp(self):
         super().setUp()
         self.task = Task.objects.create(name="task a", description="This is task a", completed=False, project=self.project, created_by=self.user, modified_by=self.user)
-        self.task.users.add(self.user)
 
     @tag("task")
     def test_delete_task_returns_204(self):

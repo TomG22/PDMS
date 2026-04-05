@@ -18,12 +18,6 @@ class PersistedObject(models.Model):
         related_name="%(class)s_modified",
     )
 
-    users = models.ManyToManyField(
-        User,
-        related_name="%(class)s",
-        blank=True,
-    )
-
     #soft delete feature possibly to be implemented
     is_deleted = models.BooleanField(default=False)
 
@@ -35,6 +29,13 @@ class Project(PersistedObject):
     # Note: slug isn't unique so not used for actual lookups, just for nicer urls. pk is still used for lookups
     slug = models.SlugField()
     description = models.TextField()
+
+    # Only a user added to a project can view it
+    users = models.ManyToManyField(
+        User,
+        related_name="%(class)s",
+        blank=True,
+    )
 
     # making slug based off name
     def save(self, *args, **kwargs):

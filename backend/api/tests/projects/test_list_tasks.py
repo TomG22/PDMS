@@ -14,11 +14,8 @@ class ProjectListTasksTests(AuthenticatedAPITestCase):
         self.project_three.users.add(self.user)
 
         self.task_one = Task.objects.create(name="task one", description="This is task one", completed=False, project=self.project_one, created_by=self.user, modified_by=self.user)
-        self.task_one.users.add(self.user)
         self.task_two = Task.objects.create(name="task two", description="This is task two", completed=False, project=self.project_one, created_by=self.user, modified_by=self.user)
-        self.task_two.users.add(self.user)
         self.task_three = Task.objects.create(name="task three", description="This is task three", completed=False, project=self.project_two, created_by=self.user, modified_by=self.user)
-        self.task_three.users.add(self.user)
     
     @tag("project")
     def test_two_tasks(self):
