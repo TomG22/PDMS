@@ -122,16 +122,14 @@ class TaskListView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         return Task.objects.filter(
-            users=self.request.user,
             is_deleted=False
         ).order_by("-id").distinct()
 
     def perform_create(self, serializer):
-        task = serializer.save(
+        serializer.save(
             created_by=self.request.user,
             modified_by=self.request.user,
         )
-        task.users.add(self.request.user)
 
 class TaskView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
@@ -139,7 +137,6 @@ class TaskView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Task.objects.filter(
-            users=self.request.user,
             is_deleted=False
         ).distinct()
 
@@ -175,3 +172,15 @@ class ProjectView(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_update(self, serializer):
         serializer.save(modified_by=self.request.user)
+
+class ProjectTaskListView(generics.ListAPIView):
+    serializer_class = TaskSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        project_id = self.kwargs["pk"]
+        return Task.objects.filter(
+            project__id=project_id,
+            project__users__email=self.request.user,
+            is_deleted=False
+        ).order_by("-id").distinct()

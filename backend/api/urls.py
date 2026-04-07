@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView
 )
 from .views import (
-    ProjectListView, ProjectView,
+    ProjectListView, ProjectView, ProjectTaskListView,
     TaskListView, TaskView,
     UserLogoutAPIView, UserRegisterAPIView,
     UserView
@@ -38,5 +38,8 @@ urlpatterns = [
 
     # api/projects/<int:pk>/<slug:slug>/ - GET, PUT, PATCH, DELETE
     # still uses pk to find the project, slug just makes url look nicer
-    path("projects/<int:pk>/<slug:slug>/", ProjectView.as_view(), name="project-detail-slug")
+    path("projects/<int:pk>/<slug:slug>/", ProjectView.as_view(), name="project-detail-slug"),
+
+    # api/projects/<int:pk>/tasks - GET
+    path("projects/<int:pk>/tasks", ProjectTaskListView.as_view(), name="project-tasks"),
 ]
