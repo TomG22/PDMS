@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import { authLogin } from "../auth/auth";
 
 import Navbar from "../components/Navbar";
@@ -7,12 +8,14 @@ import Footer from "../components/Footer";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await authLogin(username, password);
       console.log("Form clicked");
+      navigate("/projects-view");
     } catch (error) {
       console.error("Login failed:", error.response?.data || error.message);
     }

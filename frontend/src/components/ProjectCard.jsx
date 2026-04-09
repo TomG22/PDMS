@@ -4,7 +4,7 @@ function ProjectCard({project, onRemove, onEditClick}) {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        navigate("/test");
+        navigate(`/projects/${project.id}/tasks`);
     }
     return (
         <div onClick={handleClick} style={cardStyle}>
