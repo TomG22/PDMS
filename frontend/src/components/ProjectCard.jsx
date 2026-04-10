@@ -24,7 +24,7 @@ function ProjectCard({project, onRemove, onEditClick}) {
 
 const descStyle = {
     lineHeight: "1.5rem",
-    minHeight: "4.5rem", // 1.5rem × 3 lines
+    minHeight: "4.5rem",
     overflowWrap: "break-word",
 };
 

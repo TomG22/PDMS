@@ -57,7 +57,6 @@ const authLogout = async () => {
     
     console.log("Logout successful", response);
 
-    // Clear tokens and redirect to login
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     window.location.href = "/login";
