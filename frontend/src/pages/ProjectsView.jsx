@@ -36,12 +36,6 @@ function ProjectDashboard() {
         fetchProjects(); 
     }, [navigate]);
 
-    const sidebarLinks = [
-        {label: "Task View", to:"/test"},
-        {label: "Profile View", to:"/test"},
-        {label: "What Else?", to:"/test"}
-    ]
-
     const [projects, setProjects] = useState([]); 
     const [showCreate, setShowCreate] = useState(false);
     const [editingProject, setEditingProject] = useState(null);
