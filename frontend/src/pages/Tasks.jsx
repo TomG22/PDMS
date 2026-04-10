@@ -49,12 +49,11 @@ const Tasks = () => {
     try {
         let token = localStorage.getItem("access_token");
 
-        // Add the project ID to the payload
         const taskPayload = { 
             name, 
             description, 
             completed: false, 
-            project: projectId  // <--- Add this line
+            project: projectId
         };
 
         console.log("Payload being sent:", taskPayload);
@@ -73,7 +72,7 @@ const Tasks = () => {
                 localStorage.setItem("access_token", token);
 
                 return axios.post("http://localhost:8000/api/tasks/",
-                    taskPayload, // <--- Use the updated payload here too
+                    taskPayload,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
             }
@@ -84,7 +83,6 @@ const Tasks = () => {
         setShowCreate(false);
 
     } catch (err) {
-        // This log will now show you the validation error from Django
         console.error("Failed to create task:", err.response?.status, err.response?.data);
         if (err.response?.status === 401) {
             alert("Session expired. Please log in again.");
