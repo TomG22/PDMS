@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 
-import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 import ProjectCard from "../components/ProjectCard";
 import ProjectCreate from "../components/ProjectCreate";
 import ProjectEdit from "../components/ProjectEdit";
- 
+import { authLogout } from "../auth/auth";
+import Footer from "../components/Footer";
 function ProjectDashboard() {
     const navigate = useNavigate();
 
@@ -109,17 +110,42 @@ function ProjectDashboard() {
         }
     }
 
+      const handleLogout = async () => {
+        // Remove tokens locally
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+
+        try {
+        await authLogout();
+        console.log("Logged out from backend");
+        } catch (error) {
+        console.error("Logout failed:", error.response?.data || error.message);
+        }
+
+        // Something went wrong with authentication. Log out on the client anyways
+        navigate("/login");
+    };
+
     return (
-        <div style={containerStyle}>
-            <Sidebar
-                title="Project View"
-                links={sidebarLinks}
+        <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+            <Navbar 
+                ctaText="Logout" 
+                ctaPath="/login" 
+                ctaAction={handleLogout} 
+                links={[
+                    {label: "My Tasks", to:"/tasks"}, 
+                    {label:"My Profile", to:"/profile"}
+                ]}
             />
+
             <div style={mainStyle}>
-                <h2>Project Dashboard</h2>
-                <button style={addProjectStyle} onClick={() => setShowCreate(true)}>
-                    + Add Project
-                </button>
+                <div style={{display: "flex", alignItems:"center", justifyContent:"space-between"}}>
+                    <h1 style={{margin: 0,}}>Project Dashboard</h1>
+                    <button style={addProjectStyle} onClick={() => setShowCreate(true)}>
+                        + Add Project
+                    </button>
+                </div>
+                
                 <div style={gridStyle}>
                     {projects.map(project => (
                         <ProjectCard
@@ -147,6 +173,8 @@ function ProjectDashboard() {
                     onClose={() => setEditingProject(null)}
                 />
             )}
+
+            <Footer/>
         </div>
     );
 }
@@ -157,10 +185,7 @@ const gridStyle = {
     gap: "20px"
 }
 
-const containerStyle = {
-    display: "flex", 
-    height: "100vh", 
-}
+
 const mainStyle = {
     flex: 1, 
     padding: "30px", 
@@ -168,15 +193,15 @@ const mainStyle = {
 }; 
 
 const addProjectStyle = {
-    borderRadius: "3px", 
-    padding: "15px",
+    borderRadius: "8px", 
+    padding: "8px 16px",
     border : "0px",
     color: "white", 
     background : "#862424",
-    marginLeft: "80%", 
-    width:"150px",
+     
+    width:"auto",
     cursor: "pointer",
-    fontSize: "18px"
+    fontSize: "16px"
 }
 
 export default ProjectDashboard; 

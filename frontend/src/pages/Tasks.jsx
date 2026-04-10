@@ -54,12 +54,18 @@ const Tasks = () => {
   };
 
   return (
-    <>
-      <Navbar ctaText="Logout" ctaPath="/login" ctaAction={handleLogout} />
+  <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <Navbar 
+      ctaText="Logout" 
+      ctaPath="/login" 
+      ctaAction={handleLogout} 
+      links={[
+        {label: "My Projects", to:"/projects-view"}, 
+        {label:"My Profile", to:"/profile"}
+      ]}
+    />
 
-      {/* Delete User */}
-      <DeleteUser />
-
+    <div style={{ flex: 1 }}>
       <div style={{ padding: "120px 5%", maxWidth: "800px", margin: "0 auto" }}>
         <h1 style={{ fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 700, marginBottom: "40px", textAlign: "center" }}>
           Your Tasks
@@ -80,16 +86,18 @@ const Tasks = () => {
               >
                 {task.name} {task.completed ? "(Completed)" : "(Pending)"}
               </li>
-           ))
+            ))
           ) : (
-            <li style={{ textAlign: "center", fontStyle: "italic" }}>No tasks to display.</li>
+            <li style={{ textAlign: "center", fontStyle: "italic" }}>
+              No tasks to display.
+            </li>
           )}
         </ul>
       </div>
+    </div>
 
-      <Footer />
-    </>
-  );
+    <Footer />
+  </div>)
 };
 
 export default Tasks;
