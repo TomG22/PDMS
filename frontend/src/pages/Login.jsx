@@ -36,7 +36,7 @@ const Login = () => {
 
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: "24px" }}>
-              <label>Username</label>
+              <label>Email</label>
               <input
                 type="username"
                 onChange={(e) => setUsername(e.target.value)}
