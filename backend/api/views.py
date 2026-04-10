@@ -7,8 +7,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Task, Project, UserProfile
-from .serializers import TaskSerializer, ProjectSerializer
+from .models import Task, Project, UserProfile, Sprint
+from .serializers import TaskSerializer, ProjectSerializer, SprintSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -123,7 +123,7 @@ class TaskListView(generics.ListCreateAPIView):
     def get_queryset(self):
         return Task.objects.filter(
             is_deleted=False
-        ).order_by("-id").distinct()
+        ).distinct()
 
     def perform_create(self, serializer):
         serializer.save(
@@ -179,8 +179,78 @@ class ProjectTaskListView(generics.ListAPIView):
 
     def get_queryset(self):
         project_id = self.kwargs["pk"]
-        return Task.objects.filter(
+        sprint_id = self.request.query_params.get("sprint_id")
+        
+        queryset = Task.objects.filter(
             project__id=project_id,
-            project__users__email=self.request.user,
+            project__users=self.request.user,
+            is_deleted=False)
+        
+        if sprint_id == "null":
+            queryset = queryset.filter(sprint__isnull=True)
+        elif sprint_id:
+            queryset = queryset.filter(sprint__id=sprint_id)
+        return queryset.distinct()
+
+class SprintListView(generics.ListCreateAPIView):
+    serializer_class = SprintSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Sprint.objects.filter(
+            project__users=self.request.user,
             is_deleted=False
         ).order_by("-id").distinct()
+
+    def perform_create(self, serializer):
+        serializer.save(
+            created_by=self.request.user,
+            modified_by=self.request.user,
+        )
+
+class SprintView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = SprintSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Sprint.objects.filter(
+            project__users=self.request.user,
+            is_deleted=False
+        ).distinct()
+
+    def perform_update(self, serializer):
+        serializer.save(modified_by=self.request.user)
+
+class SprintTaskListView(generics.ListAPIView):
+    serializer_class = TaskSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Task.objects.filter(
+            project_id=self.kwargs["project_id"],
+            sprint_id=self.kwargs["sprint_id"],
+            project__users=self.request.user,
+            is_deleted=False,
+        ).distinct()
+    
+class MyTaskListView(generics.ListAPIView):
+    serializer_class = TaskSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Task.objects.filter(
+            assigned_to_id=self.request.user,
+            project__users=self.request.user,
+            is_deleted=False,
+        ).distinct()
+    
+class ProjectSprintListView(generics.ListAPIView):
+    serializer_class = SprintSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return Sprint.objects.filter(
+            project_id=self.kwargs["project_id"],
+            project__users=self.request.user,
+            is_deleted=False,
+        ).distinct()
