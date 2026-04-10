@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import Sidebar from "../components/Sidebar";
 import TaskCreate from "../components/TaskCreate";
 import { authLogout } from "../auth/auth";
 
@@ -114,14 +113,8 @@ const Tasks = () => {
         navigate("/login");
     };
 
-    const sidebarLinks = [
-        { label: "← Back to Projects", to: "/dashboard" },
-        { label: "Project Settings", to: "/test" },
-    ];
-
     return (
         <div style={{ display: "flex", minHeight: "100vh" }}>
-            {/* <Sidebar title="Project View" links={sidebarLinks} /> */}
             
             <div style={{ flex: 1, display: "flex", flexDirection: "column", backgroundColor: "#fff" }}>
                 {<Navbar ctaText="Logout" ctaPath="/login" ctaAction={handleLogout} />}
@@ -168,10 +161,6 @@ const Tasks = () => {
                             </div>
                         )}
                     </ul>
-                    
-                    <div style={{ marginTop: "60px", borderTop: "1px solid #eee", paddingTop: "20px" }}>
-                        {<DeleteUser />}
-                    </div>
                 </div>
                 {<Footer />}
             </div>
