@@ -92,9 +92,15 @@ const Profile = () => {
 
   return (
     <>
-      <Navbar ctaText="Logout" ctaPath="/login" ctaAction={handleLogout} links={[{label: "My Tasks", to:"/tasks"},
-        {label: "My Projects", to:"/projects-view"},
-        {label: "What Else?", to:"/test"}]}/>
+      <Navbar 
+        ctaText="Logout" 
+        ctaPath="/login" 
+        ctaAction={handleLogout} 
+        links={[
+            {label: "My Tasks", to: "/tasks"},
+            {label: "My Projects", to:"/projects-view"}, 
+            {label:"My Profile", to:"/profile"}
+        ]}/>
 
       <div style={{ padding: "120px 5%", maxWidth: "560px", margin: "0 auto" }}>
         <h1 style={{ fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, marginBottom: "8px", textAlign: "center" }}>

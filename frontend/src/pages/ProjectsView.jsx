@@ -133,7 +133,8 @@ function ProjectDashboard() {
                 ctaPath="/login" 
                 ctaAction={handleLogout} 
                 links={[
-                    {label: "My Tasks", to:"/tasks"}, 
+                    {label: "My Tasks", to: "/tasks"},
+                    {label: "My Projects", to:"/projects-view"}, 
                     {label:"My Profile", to:"/profile"}
                 ]}
             />
