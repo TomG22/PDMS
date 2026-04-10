@@ -12,7 +12,7 @@ const authLogin = async (username, password) => {
     localStorage.clear();
     localStorage.setItem("access_token", data.access);
     localStorage.setItem("refresh_token", data.refresh);
-    window.location.href = "/tasks";
+    return data;
   } catch (error) {
     console.error("Login failed:", error.response?.data || error.message);
     alert("Login failed. Please check your credentials.");
@@ -30,7 +30,6 @@ const authRegister = async (firstName, lastName, email, password) => {
       }
     );
     console.log("Registration successful", data);
-    window.location.href = "/login";
     return data;
   } catch (error) {
     console.error(
@@ -58,7 +57,6 @@ const authLogout = async () => {
     
     console.log("Logout successful", response);
 
-    // Clear tokens and redirect to login
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     window.location.href = "/login";

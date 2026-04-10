@@ -16,7 +16,7 @@ function ProjectDashboard() {
             try {
                 const accessToken = localStorage.getItem("access_token"); 
                 if (!accessToken) {
-                    navigate("/login"); // Redirect to login if no token
+                    navigate("/login");
                     console.error("Access token is missing or expired");
                     return;
                 }
