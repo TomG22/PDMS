@@ -32,6 +32,7 @@ const DeleteUser = () => {
           fontSize: "15px",
           border: "none",
           cursor: "pointer",
+          boxShadow: "0 0 20px rgba(255, 0, 0, 0.5)",
         }}
       >
         Delete My Account

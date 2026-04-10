@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router";
 
-const Navbar = ({ ctaText, ctaPath }) => {
+const Navbar = ({ ctaText, ctaPath, links=[] }) => {
   return (
     <div style={{ width: "100%", background: "#B65353", borderBottom: "1px solid #D9D9D9" }}>
       <div
@@ -33,12 +33,11 @@ const Navbar = ({ ctaText, ctaPath }) => {
             flexWrap: "wrap",
           }}
         >
-          <Link to="/" style={navLinkStyle}>Products</Link>
-          <Link to="/" style={navLinkStyle}>Solutions</Link>
-          <Link to="/" style={navLinkStyle}>Community</Link>
-          <Link to="/" style={navLinkStyle}>Resources</Link>
-          <Link to="/" style={navLinkStyle}>Pricing</Link>
-          <Link to="/" style={navLinkStyle}>Contact</Link>
+          {links.map((link, index) => (
+            <Link key={index} to={link.to} style={navLinkStyle}>
+              {link.label}
+            </Link>
+          ))}
         </div>
 
         {/* CTA */}
