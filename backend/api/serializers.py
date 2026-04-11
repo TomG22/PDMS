@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Task, Project, PersistedObject
+from .models import Task, Project, PersistedObject, Sprint
 
 class PersistedObjectSerializer(serializers.ModelSerializer):
     created_by = serializers.CharField(source="created_by.username", read_only=True)
@@ -31,6 +31,25 @@ class PersistedObjectSerializer(serializers.ModelSerializer):
 class TaskSerializer(PersistedObjectSerializer):
     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
 
+    assigned_to_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
+        required=False,
+        allow_null=True,
+    )
+    
+    # assigned_to_username is just for display purposes and is read only
+    assigned_to_username = serializers.CharField(
+        source="assigned_to.username",
+        read_only=True
+    )
+
+    # sprint is null == product backlog task
+    sprint = serializers.PrimaryKeyRelatedField(
+        queryset=Sprint.objects.all(),
+        required=False,
+        allow_null=True,
+    )
+
     class Meta:
         model = Task
         fields = [
@@ -38,11 +57,43 @@ class TaskSerializer(PersistedObjectSerializer):
             "name",
             "completed",
             "description",
-            "project"
+            "priority",
+            "project",
+            "assigned_to_id",
+            "assigned_to_username",
+            "sprint",
         ]
+
         read_only_fields = [
-            "id"
+            "id",
+            "assigned_to_username",
         ]
+
+    def validate(self, attrs):
+        project = attrs.get("project")
+        assigned_to_id = attrs.get("assigned_to_id")
+        sprint = attrs.get("sprint")  
+
+        # handling patch requests where not all fields are required
+        if self.instance:
+            if project is None:
+                project = self.instance.project
+            if assigned_to_id is None:
+                assigned_to_id = self.instance.assigned_to_id
+            if sprint is None:
+                sprint = self.instance.sprint
+
+        # ensure user is part of the project
+        if assigned_to_id and not project.users.filter(id=assigned_to_id.id).exists():
+            raise serializers.ValidationError("User assigned to task must be part of the project")
+        
+        # ensure sprint is part of the project
+        if sprint and sprint.project_id != project.id:
+            raise serializers.ValidationError("Sprint must belong to the same project as the task")
+        
+        return attrs
+        
+
 
 class ProjectSerializer(PersistedObjectSerializer):
     users = serializers.SerializerMethodField(read_only=True)
@@ -54,6 +105,7 @@ class ProjectSerializer(PersistedObjectSerializer):
         required=False,
         source="users",
     )
+
     class Meta:
         model = Project
         fields = [
@@ -64,6 +116,7 @@ class ProjectSerializer(PersistedObjectSerializer):
             "users",
             "user_ids"
         ]
+
         read_only_fields = [
             "id",
             "slug",
@@ -75,4 +128,22 @@ class ProjectSerializer(PersistedObjectSerializer):
         return [
         {"id": user.id, "username": user.username}
         for user in obj.users.all()
+        ]
+    
+class SprintSerializer(PersistedObjectSerializer):
+    project = serializers.PrimaryKeyRelatedField(read_only=True)
+    
+    class Meta:
+        model = Sprint
+        fields = [
+            "id",
+            "name",
+            "start_date",
+            "end_date",
+            "project",
+        ]
+
+        read_only_fields = [
+            "id",
+            "project",
         ]
