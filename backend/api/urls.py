@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView
 )
 from .views import (
-    MyTaskListView, ProjectListView, ProjectView, ProjectTaskListView, SprintTaskListView, ProjectSprintListView,
+    MyTaskListView, ProjectListView, ProjectView, ProjectTaskListView, SprintTaskListView,
     TaskListView, TaskView,
     SprintListView, SprintView,
     UserLogoutAPIView, UserRegisterAPIView,
@@ -34,8 +34,11 @@ urlpatterns = [
     # api/projects/ - GET, POST
     path("projects/", ProjectListView.as_view(), name="projects"),
 
-    # api/projects/<int:project_id>/sprints/ - GET
-    path("projects/<int:project_id>/sprints/", ProjectSprintListView.as_view(), name="project-sprints"),
+    # api/projects/<int:project_id>/sprints/ - GET, POST
+    path("projects/<int:project_id>/sprints/", SprintListView.as_view(), name="project-sprints"),
+
+    # api/projects/<int:project_id>/sprints/<int:pk>/ - GET, PUT, PATCH, DELETE
+    path("projects/<int:project_id>/sprints/<int:pk>/", SprintView.as_view(), name="project-sprint-detail"),
 
     # api/projects/<int:pk>/ - GET, PUT, PATCH, DELETE
     path("projects/<int:pk>/", ProjectView.as_view(), name="project-detail"),
@@ -46,12 +49,6 @@ urlpatterns = [
 
     # api/projects/<int:pk>/tasks - GET
     path("projects/<int:pk>/tasks", ProjectTaskListView.as_view(), name="project-tasks"),
-
-    # api/sprints/ - GET, POST
-    path("sprints/", SprintListView.as_view(), name="sprints"),
-
-    # api/sprints/<int:pk>/ - GET, PUT, PATCH, DELETE
-    path("sprints/<int:pk>/", SprintView.as_view(), name="sprint-detail"),
 
     # api/projects/<int:project_id>/sprints/<int:sprint_id>/tasks - GET
     path("projects/<int:project_id>/sprints/<int:sprint_id>/tasks", SprintTaskListView.as_view(), name="sprint-tasks"),

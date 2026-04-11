@@ -198,22 +198,45 @@ class SprintListView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         return Sprint.objects.filter(
+            project_id=self.kwargs["project_id"],
             project__users=self.request.user,
-            is_deleted=False
-        ).order_by("-id").distinct()
+            is_deleted=False,
+        ).distinct()
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
+        project_id = self.kwargs.get("project_id")
+
+        project = Project.objects.filter(
+            id=project_id,
+            users=request.user,
+            is_deleted=False,
+        ).first()
+
+        if not project:
+            return Response(
+                {"detail": "Project not found or access denied"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         serializer.save(
-            created_by=self.request.user,
-            modified_by=self.request.user,
+            project=project,
+            created_by=request.user,
+            modified_by=request.user,
         )
 
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
 class SprintView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SprintSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         return Sprint.objects.filter(
+            id=self.kwargs["pk"],
+            project_id=self.kwargs["project_id"],
             project__users=self.request.user,
             is_deleted=False
         ).distinct()
@@ -244,13 +267,3 @@ class MyTaskListView(generics.ListAPIView):
             is_deleted=False,
         ).distinct()
     
-class ProjectSprintListView(generics.ListAPIView):
-    serializer_class = SprintSerializer
-    permission_classes = (IsAuthenticated,)
-
-    def get_queryset(self):
-        return Sprint.objects.filter(
-            project_id=self.kwargs["project_id"],
-            project__users=self.request.user,
-            is_deleted=False,
-        ).distinct()

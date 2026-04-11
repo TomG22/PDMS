@@ -131,7 +131,7 @@ class ProjectSerializer(PersistedObjectSerializer):
         ]
     
 class SprintSerializer(PersistedObjectSerializer):
-    project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
+    project = serializers.PrimaryKeyRelatedField(read_only=True)
     
     class Meta:
         model = Sprint
@@ -145,4 +145,5 @@ class SprintSerializer(PersistedObjectSerializer):
 
         read_only_fields = [
             "id",
+            "project",
         ]
