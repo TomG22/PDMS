@@ -34,24 +34,24 @@ urlpatterns = [
     # api/projects/ - GET, POST
     path("projects/", ProjectListView.as_view(), name="projects"),
 
+    # api/projects/<int:pk>/ - GET, PUT, PATCH, DELETE
+    path("projects/<int:pk>/", ProjectView.as_view(), name="project-detail"),
+
+    # api/projects/<int:pk>/tasks - GET
+    path("projects/<int:pk>/tasks/", ProjectTaskListView.as_view(), name="project-tasks"),
+
     # api/projects/<int:project_id>/sprints/ - GET, POST
     path("projects/<int:project_id>/sprints/", SprintListView.as_view(), name="project-sprints"),
 
     # api/projects/<int:project_id>/sprints/<int:pk>/ - GET, PUT, PATCH, DELETE
     path("projects/<int:project_id>/sprints/<int:pk>/", SprintView.as_view(), name="project-sprint-detail"),
 
-    # api/projects/<int:pk>/ - GET, PUT, PATCH, DELETE
-    path("projects/<int:pk>/", ProjectView.as_view(), name="project-detail"),
+    # api/projects/<int:project_id>/sprints/<int:sprint_id>/tasks - GET
+    path("projects/<int:project_id>/sprints/<int:sprint_id>/tasks/", SprintTaskListView.as_view(), name="sprint-tasks"),
 
     # api/projects/<int:pk>/<slug:slug>/ - GET, PUT, PATCH, DELETE
     # still uses pk to find the project, slug just makes url look nicer
     path("projects/<int:pk>/<slug:slug>/", ProjectView.as_view(), name="project-detail-slug"),
-
-    # api/projects/<int:pk>/tasks - GET
-    path("projects/<int:pk>/tasks/", ProjectTaskListView.as_view(), name="project-tasks"),
-
-    # api/projects/<int:project_id>/sprints/<int:sprint_id>/tasks - GET
-    path("projects/<int:project_id>/sprints/<int:sprint_id>/tasks/", SprintTaskListView.as_view(), name="sprint-tasks"),
 
     # api/tasks/my/ - GET
     path("tasks/my/", MyTaskListView.as_view(), name="my-tasks"),

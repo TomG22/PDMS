@@ -181,17 +181,11 @@ class ProjectTaskListView(generics.ListAPIView):
 
     def get_queryset(self):
         project_id = self.kwargs["pk"]
-        sprint_id = self.request.query_params.get("sprint_id")
         
         queryset = Task.objects.filter(
             project__id=project_id,
             project__users=self.request.user,
             is_deleted=False)
-        
-        if sprint_id == "null":
-            queryset = queryset.filter(sprint__isnull=True)
-        elif sprint_id:
-            queryset = queryset.filter(sprint__id=sprint_id)
         return queryset.distinct()
 
 class SprintListView(generics.ListCreateAPIView):

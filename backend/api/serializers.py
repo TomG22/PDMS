@@ -59,6 +59,7 @@ class TaskSerializer(PersistedObjectSerializer):
             "completed",
             "description",
             "priority",
+            "status",
             "project",
             "assigned_to",
             "assigned_to_username",

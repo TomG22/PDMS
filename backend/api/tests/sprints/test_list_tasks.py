@@ -24,7 +24,6 @@ class SprintListTasksTests(AuthenticatedAPITestCase):
         self.task_three = Task.objects.create(name="task three", description="This is task three", completed=False, sprint=self.sprint_two,
                                               project=self.project_one, created_by=self.user, modified_by=self.user)
     
-    # TODO broken
     @tag("sprint")
     def test_two_tasks(self):
         response = self.client.get(f"/api/projects/{self.project_one.id}/sprints/{self.sprint_one.id}/tasks/")
@@ -34,7 +33,6 @@ class SprintListTasksTests(AuthenticatedAPITestCase):
         ids.sort()
         self.assertEqual(ids, [self.task_one.id, self.task_two.id])
     
-    # TODO broken
     @tag("sprint")
     def test_one_task(self):
         response = self.client.get(f"/api/projects/{self.project_one.id}/sprints/{self.sprint_two.id}/tasks/")
@@ -42,7 +40,6 @@ class SprintListTasksTests(AuthenticatedAPITestCase):
         self.assertEqual(len(response.data), 1)
         self.assertEqual([task["id"] for task in response.data], [self.task_three.id])
     
-    # TODO broken
     @tag("sprint")
     def test_no_tasks(self):
         response = self.client.get(f"/api/projects/{self.project_one.id}/sprints/{self.sprint_three.id}/tasks/")
