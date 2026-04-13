@@ -31,7 +31,7 @@ class PersistedObjectSerializer(serializers.ModelSerializer):
 class TaskSerializer(PersistedObjectSerializer):
     project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
 
-    assigned_to_id = serializers.PrimaryKeyRelatedField(
+    assigned_to = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(),
         required=False,
         allow_null=True,
@@ -40,7 +40,8 @@ class TaskSerializer(PersistedObjectSerializer):
     # assigned_to_username is just for display purposes and is read only
     assigned_to_username = serializers.CharField(
         source="assigned_to.username",
-        read_only=True
+        read_only=True,
+        default="",
     )
 
     # sprint is null == product backlog task
@@ -59,7 +60,7 @@ class TaskSerializer(PersistedObjectSerializer):
             "description",
             "priority",
             "project",
-            "assigned_to_id",
+            "assigned_to",
             "assigned_to_username",
             "sprint",
         ]
@@ -71,20 +72,20 @@ class TaskSerializer(PersistedObjectSerializer):
 
     def validate(self, attrs):
         project = attrs.get("project")
-        assigned_to_id = attrs.get("assigned_to_id")
+        assigned_to = attrs.get("assigned_to")
         sprint = attrs.get("sprint")  
 
         # handling patch requests where not all fields are required
         if self.instance:
             if project is None:
                 project = self.instance.project
-            if assigned_to_id is None:
-                assigned_to_id = self.instance.assigned_to_id
+            if assigned_to is None:
+                assigned_to = self.instance.assigned_to
             if sprint is None:
                 sprint = self.instance.sprint
 
         # ensure user is part of the project
-        if assigned_to_id and not project.users.filter(id=assigned_to_id.id).exists():
+        if assigned_to and not project.users.filter(id=assigned_to.id).exists():
             raise serializers.ValidationError("User assigned to task must be part of the project")
         
         # ensure sprint is part of the project

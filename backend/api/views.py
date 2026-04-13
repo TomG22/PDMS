@@ -264,7 +264,7 @@ class MyTaskListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Task.objects.filter(
-            assigned_to_id=self.request.user,
+            assigned_to=self.request.user,
             project__users=self.request.user,
             is_deleted=False,
         ).distinct()

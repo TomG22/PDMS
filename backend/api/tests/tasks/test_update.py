@@ -27,5 +27,25 @@ class TaskUpdateTests(AuthenticatedAPITestCase):
         task["completed"] = True
         self.client.put(f"/api/tasks/{self.task.id}/", task, format="json")
 
-        updated_task = Task.objects.get(id=id)
+        updated_task = Task.objects.get(id=self.task.id)
         self.assertEqual(updated_task.completed, True)
+    
+    @tag("task")
+    def test_update_task_priority(self):
+        task = self.client.get(f"/api/tasks/{self.task.id}/").data
+        task["priority"] = Task.Priority.HIGH
+        self.client.put(f"/api/tasks/{self.task.id}/", task, format="json")
+
+        updated_task = Task.objects.get(id=self.task.id)
+        self.assertEqual(updated_task.priority, Task.Priority.HIGH)
+    
+    # TODO broken
+    # @tag("task")
+    # def test_update_task_status(self):
+    #     task = self.client.get(f"/api/tasks/{self.task.id}/").data
+    #     task["status"] = Task.Status.IN_PROGRESS
+
+    #     self.client.put(f"/api/tasks/{self.task.id}/", task, format="json")
+
+    #     updated_task = Task.objects.get(id=self.task.id)
+    #     self.assertEqual(updated_task.status, Task.Status.IN_PROGRESS)

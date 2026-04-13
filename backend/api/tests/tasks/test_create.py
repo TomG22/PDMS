@@ -32,3 +32,8 @@ class TaskCreateTests(AuthenticatedAPITestCase):
         self.assertEqual(stored_task.description, self.task_data["description"])
         self.assertEqual(stored_task.completed, False)
         self.assertEqual(stored_task.project.id, self.project.id)
+
+        # Test default fields
+        self.assertEqual(stored_task.assigned_to, None)
+        self.assertEqual(stored_task.priority, Task.Priority.NONE)
+        self.assertEqual(stored_task.status, Task.Status.READY_TO_BEGIN)

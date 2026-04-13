@@ -2,7 +2,6 @@ from django.db import models
 import uuid
 from django.utils.text import slugify
 from django.contrib.auth.models import User
-from django.db.models import Case, When, IntegerField
 
 class PersistedObject(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
@@ -67,8 +66,7 @@ class Task(PersistedObject):
     priority = models.IntegerField(choices=Priority.choices, default=Priority.NONE)
     status = models.CharField(max_length=14, choices=Status.choices, default=Status.READY_TO_BEGIN)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    assigned_to_id = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    assigned_to_username = models.CharField(max_length=150, blank=True) # store username for easy frontend access
+    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     sprint = models.ForeignKey("Sprint", on_delete=models.SET_NULL, null=True, blank=True) # on sprint delete, tasks go to product backlog
 
     class Meta:
