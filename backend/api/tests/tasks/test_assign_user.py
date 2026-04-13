@@ -12,6 +12,7 @@ class TaskUpdateTests(AuthenticatedAPITestCase):
         cls.project.users.add(cls.user)
 
         cls.another_user = User.objects.create_user(username="test2@test.com", password="password", email="test2@test.com")
+        cls.project.users.add(cls.another_user)
 
     def setUp(self):
         super().setUp()
@@ -38,9 +39,7 @@ class TaskUpdateTests(AuthenticatedAPITestCase):
     @tag("task")
     def test_reassign_task_to_user(self):
         task = self.client.get(f"/api/tasks/{self.assigned_task.id}/").data
-        print(task)
         task["assigned_to"] = self.another_user.id
-        print(task)
         self.client.put(f"/api/tasks/{self.assigned_task.id}/", task, format="json")
 
         # Test that user is set correctly
