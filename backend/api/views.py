@@ -71,6 +71,7 @@ class UserView(APIView):
         user = request.user
 
         response = {
+            "id": user.id,
             "email": user.email,
             "first_name": user.userprofile.first_name,
             "last_name": user.userprofile.last_name,
@@ -97,6 +98,7 @@ class UserView(APIView):
         user_profile.save()
 
         response = {
+            "id": user.id,
             "email": user.email,
             "first_name": user.userprofile.first_name,
             "last_name": user.userprofile.last_name,

@@ -1,29 +1,36 @@
 from django.test import tag
 from api.tests.base import AuthenticatedAPITestCase
+from api.models import Project
 
 
 class ProjectCreateTests(AuthenticatedAPITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.create_user()
+        cls.project_data = {
+            "name": "test project",
+            "description": "test project"
+        }
+        cls.expected_project_slug = "test-project"
+
     @tag("project")
     def test_create_project_returns_201(self):
-        project = {"name": "test project", "description": "test project"}
-        response = self.client.post("/api/projects/", project, format="json")
+        response = self.client.post("/api/projects/", self.project_data, format="json")
         self.assertEqual(response.status_code, 201)
 
     @tag("project")
     def test_created_project_is_retrievable(self):
-        project = {"name": "test project", "description": "test project"}
-        response = self.client.post("/api/projects/", project, format="json")
+        response = self.client.post("/api/projects/", self.project_data, format="json")
         id = response.data["id"]
 
-        response = self.client.get(f"/api/projects/{id}/")
-        self.assertEqual(response.data["name"], project["name"])
-        self.assertEqual(response.data["description"], project["description"])
+        updated_project = Project.objects.get(id=id)
+        self.assertEqual(updated_project.name, self.project_data["name"])
+        self.assertEqual(updated_project.description, self.project_data["description"])
 
     @tag("project")
     def test_created_project_has_slug(self):
-        project = {"name": "test project", "description": "test project"}
-        response = self.client.post("/api/projects/", project, format="json")
+        response = self.client.post("/api/projects/", self.project_data, format="json")
         id = response.data["id"]
 
-        response = self.client.get(f"/api/projects/{id}/")
-        self.assertEqual(response.data["slug"], "test-project")
+        updated_project = Project.objects.get(id=id)
+        self.assertEqual(updated_project.slug, self.expected_project_slug)

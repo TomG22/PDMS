@@ -141,6 +141,7 @@ class SprintSerializer(PersistedObjectSerializer):
             "start_date",
             "end_date",
             "project",
+            "completed"
         ]
 
         read_only_fields = [

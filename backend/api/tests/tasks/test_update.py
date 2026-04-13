@@ -27,5 +27,5 @@ class TaskUpdateTests(AuthenticatedAPITestCase):
         task["completed"] = True
         self.client.put(f"/api/tasks/{self.task.id}/", task, format="json")
 
-        updated = self.client.get(f"/api/tasks/{self.task.id}/").data
-        self.assertEqual(updated["completed"], True)
+        updated_task = Task.objects.get(id=id)
+        self.assertEqual(updated_task.completed, True)
