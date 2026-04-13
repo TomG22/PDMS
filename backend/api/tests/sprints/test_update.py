@@ -14,7 +14,7 @@ class SprintUpdateTests(AuthenticatedAPITestCase):
     def setUp(self):
         super().setUp()
         self.sprint = Sprint.objects.create(name="sprint a", project=self.project, start_date=str(date.today()),
-            end_date=str(date.today() + timedelta(days=21)), created_by=self.user, modified_by=self.user)
+            end_date=str(date.today() + timedelta(days=21)), completed=False, created_by=self.user, modified_by=self.user)
 
     @tag("sprint")
     def test_update_sprint_returns_200(self):

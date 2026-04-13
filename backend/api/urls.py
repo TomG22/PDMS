@@ -48,10 +48,10 @@ urlpatterns = [
     path("projects/<int:pk>/<slug:slug>/", ProjectView.as_view(), name="project-detail-slug"),
 
     # api/projects/<int:pk>/tasks - GET
-    path("projects/<int:pk>/tasks", ProjectTaskListView.as_view(), name="project-tasks"),
+    path("projects/<int:pk>/tasks/", ProjectTaskListView.as_view(), name="project-tasks"),
 
     # api/projects/<int:project_id>/sprints/<int:sprint_id>/tasks - GET
-    path("projects/<int:project_id>/sprints/<int:sprint_id>/tasks", SprintTaskListView.as_view(), name="sprint-tasks"),
+    path("projects/<int:project_id>/sprints/<int:sprint_id>/tasks/", SprintTaskListView.as_view(), name="sprint-tasks"),
 
     # api/tasks/my/ - GET
     path("tasks/my/", MyTaskListView.as_view(), name="my-tasks"),

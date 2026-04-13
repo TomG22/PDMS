@@ -13,13 +13,16 @@ class ProjectListTasksTests(AuthenticatedAPITestCase):
         self.project_three = Project.objects.create(name="project 3", description="this is the third project", created_by=self.user, modified_by=self.user)
         self.project_three.users.add(self.user)
 
-        self.task_one = Task.objects.create(name="task one", description="This is task one", completed=False, project=self.project_one, created_by=self.user, modified_by=self.user)
-        self.task_two = Task.objects.create(name="task two", description="This is task two", completed=False, project=self.project_one, created_by=self.user, modified_by=self.user)
-        self.task_three = Task.objects.create(name="task three", description="This is task three", completed=False, project=self.project_two, created_by=self.user, modified_by=self.user)
+        self.task_one = Task.objects.create(name="task one", description="This is task one", completed=False, project=self.project_one,
+                                            created_by=self.user, modified_by=self.user)
+        self.task_two = Task.objects.create(name="task two", description="This is task two", completed=False, project=self.project_one,
+                                            created_by=self.user, modified_by=self.user)
+        self.task_three = Task.objects.create(name="task three", description="This is task three", completed=False, project=self.project_two,
+                                              created_by=self.user, modified_by=self.user)
     
     @tag("project")
     def test_two_tasks(self):
-        response = self.client.get(f"/api/projects/{self.project_one.id}/tasks")
+        response = self.client.get(f"/api/projects/{self.project_one.id}/tasks/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
         ids = [task["id"] for task in response.data]
@@ -28,13 +31,13 @@ class ProjectListTasksTests(AuthenticatedAPITestCase):
     
     @tag("project")
     def test_one_task(self):
-        response = self.client.get(f"/api/projects/{self.project_two.id}/tasks")
+        response = self.client.get(f"/api/projects/{self.project_two.id}/tasks/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
         self.assertEqual([task["id"] for task in response.data], [self.task_three.id])
     
     @tag("project")
     def test_no_tasks(self):
-        response = self.client.get(f"/api/projects/{self.project_three.id}/tasks")
+        response = self.client.get(f"/api/projects/{self.project_three.id}/tasks/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, [])

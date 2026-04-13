@@ -21,7 +21,7 @@ class TaskUpdateTests(AuthenticatedAPITestCase):
                                                  assigned_to=self.user, created_by=self.user, modified_by=self.user)
     
     @tag("task")
-    def test_assign_task(self):
+    def test_assign_task_to_user(self):
         task = self.client.get(f"/api/tasks/{self.unassigned_task.id}/").data
         task["assigned_to"] = self.user.id
         self.client.put(f"/api/tasks/{self.unassigned_task.id}/", task, format="json")
@@ -35,24 +35,24 @@ class TaskUpdateTests(AuthenticatedAPITestCase):
         self.assertEqual(updated_task_result["assigned_to_username"], self.user.username)
 
     # TODO broken    
-    # @tag("task")
-    # def test_reassign_task(self):
-    #     task = self.client.get(f"/api/tasks/{self.assigned_task.id}/").data
-    #     print(task)
-    #     task["assigned_to"] = self.another_user.id
-    #     print(task)
-    #     self.client.put(f"/api/tasks/{self.assigned_task.id}/", task, format="json")
+    @tag("task")
+    def test_reassign_task_to_user(self):
+        task = self.client.get(f"/api/tasks/{self.assigned_task.id}/").data
+        print(task)
+        task["assigned_to"] = self.another_user.id
+        print(task)
+        self.client.put(f"/api/tasks/{self.assigned_task.id}/", task, format="json")
 
-    #     # Test that user is set correctly
-    #     updated_task = Task.objects.get(id=self.assigned_task.id)
-    #     self.assertEqual(updated_task.assigned_to.id, self.another_user.id)
+        # Test that user is set correctly
+        updated_task = Task.objects.get(id=self.assigned_task.id)
+        self.assertEqual(updated_task.assigned_to.id, self.another_user.id)
 
-    #     # Test that username serializer field populates
-    #     updated_task_result = self.client.get(f"/api/tasks/{self.assigned_task.id}/").data
-    #     self.assertEqual(updated_task_result["assigned_to_username"], self.another_user.username)
+        # Test that username serializer field populates
+        updated_task_result = self.client.get(f"/api/tasks/{self.assigned_task.id}/").data
+        self.assertEqual(updated_task_result["assigned_to_username"], self.another_user.username)
 
     @tag("task")
-    def test_unassign_task(self):
+    def test_unassign_task_from_user(self):
         task = self.client.get(f"/api/tasks/{self.assigned_task.id}/").data
         task["assigned_to"] = None
         self.client.put(f"/api/tasks/{self.assigned_task.id}/", task, format="json")
