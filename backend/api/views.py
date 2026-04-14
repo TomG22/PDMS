@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 import logging
 from rest_framework import generics, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -239,6 +240,25 @@ class SprintView(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_update(self, serializer):
         serializer.save(modified_by=self.request.user)
+    
+    def perform_destroy(self, serializer):
+        sprint_id=self.kwargs.get("pk")
+        request=self.get_serializer_context()["request"]
+        try:
+            task_incomplete_behavior_param = request.query_params["on_incomplete_tasks"]
+            task_incomplete_behavior = Sprint.IncompleteTaskBehavior(task_incomplete_behavior_param)
+        except Exception:
+            raise ValidationError("A valid behavior for incomplete tasks must be specified")
+
+        incomplete_tasks=Task.objects.filter(sprint__id=sprint_id,completed=False)
+        if task_incomplete_behavior == str(Sprint.IncompleteTaskBehavior.COMPLETE_TASKS):
+            # Mark all tasks as complete
+            incomplete_tasks.update(completed=True)
+        elif task_incomplete_behavior == str(Sprint.IncompleteTaskBehavior.MOVE_TO_BACKLOG):
+            # Move all incomplete tasks to backlog
+            incomplete_tasks.update(sprint=None)
+
+        serializer.delete()
 
 class SprintTaskListView(generics.ListAPIView):
     serializer_class = TaskSerializer
