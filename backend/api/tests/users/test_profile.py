@@ -21,10 +21,10 @@ class UserProfileGetTests(AuthenticatedAPITestCase):
     @tag("user")
     def test_get_user_profile_returns_correct_data(self):
         response = self.client.get("/api/user/")
-        self.assertEqual(response.data["email"], "test@test.com")
-        self.assertEqual(response.data["first_name"], "Test")
-        self.assertEqual(response.data["last_name"], "User")
-        self.assertEqual(response.data["bio"], "this is me")
+        self.assertEqual(response.data["email"], self.user.email)
+        self.assertEqual(response.data["first_name"], self.user_profile.first_name)
+        self.assertEqual(response.data["last_name"], self.user_profile.last_name)
+        self.assertEqual(response.data["bio"], self.user_profile.bio)
 
 
 class UserProfileUpdateTests(AuthenticatedAPITestCase):
@@ -35,6 +35,13 @@ class UserProfileUpdateTests(AuthenticatedAPITestCase):
             user=cls.user, first_name="Test", last_name="User", bio="this is me"
         )
 
+        cls.profile_data = {
+            "email": "test2@test.org",
+            "firstName": "NewTest",
+            "lastName": "NewUser",
+            "bio": "new bio"
+        }
+
     def setUp(self):
         self.client = APIClient()
         response = self.client.post("/api/token/", {"username": "test2@test.com", "password": "password"})
@@ -42,15 +49,17 @@ class UserProfileUpdateTests(AuthenticatedAPITestCase):
 
     @tag("user")
     def test_update_user_profile_returns_200(self):
-        update_data = {"email": "test2@test.org", "firstName": "NewTest", "lastName": "NewUser", "bio": "new bio"}
-        response = self.client.put("/api/user/", update_data, format="json")
+        response = self.client.put("/api/user/", self.profile_data, format="json")
         self.assertEqual(response.status_code, 200)
 
     @tag("user")
     def test_update_user_profile_persists(self):
-        update_data = {"email": "test2@test.org", "firstName": "NewTest", "lastName": "NewUser", "bio": "this is my new bio"}
-        response = self.client.put("/api/user/", update_data, format="json")
-        self.assertEqual(response.data["email"], "test2@test.org")
-        self.assertEqual(response.data["first_name"], "NewTest")
-        self.assertEqual(response.data["last_name"], "NewUser")
-        self.assertEqual(response.data["bio"], "this is my new bio")
+        response = self.client.put("/api/user/", self.profile_data, format="json")
+        id = response.data["id"]
+
+        updated_user = User.objects.get(id=id)
+        updated_profile = updated_user.userprofile
+        self.assertEqual(updated_user.email, self.profile_data["email"])
+        self.assertEqual(updated_profile.first_name, self.profile_data["firstName"])
+        self.assertEqual(updated_profile.last_name, self.profile_data["lastName"])
+        self.assertEqual(updated_profile.bio, self.profile_data["bio"])
