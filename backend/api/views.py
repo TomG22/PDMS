@@ -188,6 +188,22 @@ class ProjectTaskListView(generics.ListAPIView):
             is_deleted=False)
         return queryset.distinct()
 
+class ProjectTaskBacklogListView(generics.ListAPIView):
+    """Lists all tasks in the product backlog"""
+    serializer_class = TaskSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        project_id = self.kwargs["pk"]
+        
+        queryset = Task.objects.filter(
+            project__id=project_id,
+            project__users=self.request.user,
+            sprint=None,
+            completed=False,
+            is_deleted=False)
+        return queryset.distinct()
+
 class SprintListView(generics.ListCreateAPIView):
     serializer_class = SprintSerializer
     permission_classes = (IsAuthenticated,)
