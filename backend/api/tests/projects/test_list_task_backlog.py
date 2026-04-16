@@ -4,7 +4,7 @@ from api.tests.base import AuthenticatedAPITestCase
 from datetime import date, timedelta
 
 
-class ProductListTaskBacklog(AuthenticatedAPITestCase):
+class ProductListTaskBacklogTests(AuthenticatedAPITestCase):
     def setUp(self):
         super().setUp()
         self.project_one = Project.objects.create(name="project 1", description="this is the first project", created_by=self.user, modified_by=self.user)
