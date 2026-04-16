@@ -4,7 +4,7 @@ from api.models import Project, Sprint, Task
 from datetime import date, timedelta
 
 
-class SprintDeleteTests(AuthenticatedAPITestCase):
+class SprintCompleteTests(AuthenticatedAPITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.create_user()
@@ -30,46 +30,42 @@ class SprintDeleteTests(AuthenticatedAPITestCase):
                                                     modified_by=self.user)
 
     @tag("sprint")
-    def test_delete_sprint_returns_204(self):
-        response = self.client.delete(f"/api/projects/{self.project.id}/sprints/{self.sprint.id}/?on_incomplete_tasks=complete")
-        self.assertEqual(response.status_code, 204)
-
-    @tag("sprint")
-    def test_deleted_sprint_is_absent(self):
-        self.client.delete(f"/api/projects/{self.project.id}/sprints/{self.sprint.id}/?on_incomplete_tasks=complete")
-        self.assertEqual(Sprint.objects.filter(id=self.sprint.id).count(), 0)
-    
-    @tag("sprint")
-    def test_completing_tasks_in_deleted_sprint(self):
-        self.client.delete(f"/api/projects/{self.project.id}/sprints/{self.sprint.id}/?on_incomplete_tasks=complete")
+    def test_completing_tasks_in_completed_sprint(self):
+        sprint_data = self.client.get(f"/api/projects/{self.project.id}/sprints/{self.sprint.id}/").data
+        sprint_data["completed"] = True
+        sprint_data["on_incomplete_tasks"] = "complete"
+        self.client.put(f"/api/projects/{self.project.id}/sprints/{self.sprint.id}/", sprint_data, format="json")
         
         # Confirm that no tasks were deleted
         self.assertEqual(Task.objects.count(), 4)
 
-        # Confirm that the tasks were completed and removed from the sprint
-        self.assertEqual(len(Task.objects.filter(sprint__id=self.sprint.id)), 0)
+        # Confirm that the tasks were completed
+        self.assertEqual(len(Task.objects.filter(sprint__id=self.sprint.id)), 3)
         sprint_task_one = Task.objects.get(id=self.sprint_task_one.id)
         self.assertEqual(sprint_task_one.completed, True)
-        self.assertEqual(sprint_task_one.sprint, None)
+        self.assertEqual(sprint_task_one.sprint.id, self.sprint.id)
         self.assertEqual(sprint_task_one.status, Task.Status.DONE)
         sprint_task_two = Task.objects.get(id=self.sprint_task_two.id)
         self.assertEqual(sprint_task_two.completed, True)
-        self.assertEqual(sprint_task_two.sprint, None)
+        self.assertEqual(sprint_task_two.sprint.id, self.sprint.id)
         self.assertEqual(sprint_task_two.status, Task.Status.DONE)
 
-        # Confirm that the existing completed task is removed from the sprint
+        # Confirm that the existing completed task is not removed from the sprint
         completed_sprint_task = Task.objects.get(id=self.completed_sprint_task.id)
-        self.assertEqual(completed_sprint_task.sprint, None)
+        self.assertEqual(completed_sprint_task.sprint.id, self.sprint.id)
     
     @tag("sprint")
-    def test_backlogging_tasks_in_deleted_sprint(self):
-        self.client.delete(f"/api/projects/{self.project.id}/sprints/{self.sprint.id}/?on_incomplete_tasks=backlog")
+    def test_backlogging_tasks_in_completed_sprint(self):
+        sprint_data = self.client.get(f"/api/projects/{self.project.id}/sprints/{self.sprint.id}/").data
+        sprint_data["completed"] = True
+        sprint_data["on_incomplete_tasks"] = "backlog"
+        self.client.put(f"/api/projects/{self.project.id}/sprints/{self.sprint.id}/", sprint_data, format="json")
         
         # Confirm that no tasks were deleted
         self.assertEqual(Task.objects.count(), 4)
 
         # Confirm that the tasks were not completed but were removed from the sprint
-        self.assertEqual(len(Task.objects.filter(sprint__id=self.sprint.id)), 0)
+        self.assertEqual(len(Task.objects.filter(sprint__id=self.sprint.id)), 1)
         sprint_task_one = Task.objects.get(id=self.sprint_task_one.id)
         self.assertEqual(sprint_task_one.completed, False)
         self.assertEqual(sprint_task_one.sprint, None)
@@ -79,6 +75,6 @@ class SprintDeleteTests(AuthenticatedAPITestCase):
         self.assertEqual(sprint_task_two.sprint, None)
         self.assertEqual(sprint_task_two.status, Task.Status.IN_PROGRESS)
 
-        # Confirm that the existing completed task is removed from the sprint
+        # Confirm that the existing completed task is not removed from the sprint
         completed_sprint_task = Task.objects.get(id=self.completed_sprint_task.id)
-        self.assertEqual(completed_sprint_task.sprint, None)
+        self.assertEqual(completed_sprint_task.sprint.id, self.sprint.id)
