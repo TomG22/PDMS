@@ -80,12 +80,39 @@ const TaskList = ({ project = null, refreshKey = 0 }) => {
 
     const handleUpdateTask = async (taskId, fields) => {
         try {
+            let token = localStorage.getItem("access_token");
+
             const res = await axios.patch(
                 `http://localhost:8000/api/tasks/${taskId}/`,
                 fields,
-                { headers: { Authorization: `Bearer ${getToken()}` } }
-            );
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                }
+            ).catch(async (err) => {
+                if (err.response?.status === 401) {
+                    const refresh = localStorage.getItem("refresh_token");
+
+                    const refreshRes = await axios.post(
+                        "http://localhost:8000/api/token/refresh/",
+                        { refresh }
+                    );
+
+                    token = refreshRes.data.access;
+                    localStorage.setItem("access_token", token);
+
+                    return axios.patch(
+                        `http://localhost:8000/api/tasks/${taskId}/`,
+                        fields,
+                        {
+                            headers: { Authorization: `Bearer ${token}` }
+                        }
+                    );
+                }
+                throw err;
+            });
+
             setTasks(prev => prev.map(t => t.id === taskId ? res.data : t));
+
         } catch (err) {
             console.error("Failed to update task:", err.response?.status, err.response?.data);
         }

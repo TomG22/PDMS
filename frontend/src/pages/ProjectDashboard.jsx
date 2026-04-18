@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { authLogout } from "../auth/auth";
 
-import ProjectTasks from "../components/ProjectTasks";
+import ProjectTasksView from "../components/ProjectTasksView";
 // import ProductBacklog from "./ProductBacklog";
 // import SprintBacklog from "./SprintBacklog";
 
@@ -50,7 +50,7 @@ function ProjectDashboard() {
                 </nav>
 
                 <div style={{ marginTop: "20px" }}>
-                    {view === "tasks" && <ProjectTasks key={projectId} projectId={projectId} />}
+                    {view === "tasks" && <ProjectTasksView key={projectId} projectId={projectId} />}
                     {/* {view === "product" && <ProductBacklog projectId={projectId} />} */}
                     {/* {view === "sprint" && <SprintBacklog projectId={projectId} />} */}
                 </div>
