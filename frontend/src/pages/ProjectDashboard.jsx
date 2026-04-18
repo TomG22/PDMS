@@ -111,11 +111,34 @@ function ProjectDashboard() {
             <div style={mainStyle}>
                 <h1>{project ? `${project.name}'s Dashboard` : "Loading Project..."}</h1>
 
-                <nav style={{ marginTop: "20px" }}>
-                    <button onClick={() => setView("tasks")}>Tasks</button>
-                    <button onClick={() => setView("settings")}>Settings</button>
-                    {/* <button onClick={() => setView("product")}>Product Backlog</button>
-                    <button onClick={() => setView("sprint")}>Sprint Backlog</button> */}
+                <nav style={{ marginTop: "20px", display: "flex", gap: "20px" }}>
+                    <button
+                        style={view === "tasks" ? activeTabStyle : tabStyle}
+                        onClick={() => setView("tasks")}
+                    >
+                        Tasks
+                    </button>
+
+                    <button
+                        style={view === "settings" ? activeTabStyle : tabStyle}
+                        onClick={() => setView("settings")}
+                    >
+                        Settings
+                    </button>
+
+                    {/* <button
+                        style={view === "product-backlog" ? activeTabStyle : tabStyle}
+                        onClick={() => setView("product-backlog")}
+                    >
+                        Settings
+                    </button>
+
+                    <button
+                        style={view === "sprint-backlog" ? activeTabStyle : tabStyle}
+                        onClick={() => setView("sprint-backlog")}
+                    >
+                        Settings
+                    </button> */}
                 </nav>
 
                 <div style={{ marginTop: "20px" }}>
@@ -238,5 +261,41 @@ const dangerBtn = {
     background: "#c0392b",
     cursor: "pointer",
     fontSize: "14px",
+};
+
+const navStyle = {
+    marginTop: "20px",
+    display: "flex",
+    gap: "20px",
+    borderBottom: "2px solid #ddd",
+};
+
+const linkButtonStyle = {
+    background: "none",
+    border: "none",
+    padding: 0,
+    marginRight: "20px",
+    color: "#862424",
+    cursor: "pointer",
+    fontSize: "16px",
+    textDecoration: "underline",
+};
+
+const tabStyle = {
+    background: "none",
+    border: "none",
+    padding: "10px 0",
+    marginRight: "20px",
+    fontSize: "16px",
+    color: "#555",
+    cursor: "pointer",
+    borderBottom: "2px solid transparent",
+};
+
+const activeTabStyle = {
+    ...tabStyle,
+    color: "#862424",
+    borderBottom: "2px solid #862424",
+    fontWeight: "600",
 };
 export default ProjectDashboard;

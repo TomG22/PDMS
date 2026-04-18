@@ -105,7 +105,6 @@ function UserDashboard() {
     }
 
       const handleLogout = async () => {
-        // Remove tokens locally
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
 
@@ -116,7 +115,6 @@ function UserDashboard() {
         console.error("Logout failed:", error.response?.data || error.message);
         }
 
-        // Something went wrong with authentication. Log out on the client anyways
         navigate("/login");
     };
 
@@ -127,7 +125,7 @@ function UserDashboard() {
                 ctaPath="/login" 
                 ctaAction={handleLogout} 
                 links={[
-                    {label: "My Tasks", to: "/user-tasks-view"},
+                    {label: "My Tasks", to: "/tasks"},
                     {label: "My Projects", to:"/projects-view"}, 
                     {label:"My Profile", to:"/profile"}
                 ]}

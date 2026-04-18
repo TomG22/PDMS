@@ -20,19 +20,18 @@ const UserTasksView = () => {
     };
 
     return (
-        <div style={{ display: "flex", minHeight: "100vh" }}>
+        <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+            <Navbar 
+                ctaText="Logout" 
+                ctaPath="/login" 
+                ctaAction={handleLogout} 
+                links={[
+                    {label: "My Tasks", to: "/user-tasks-view"},
+                    {label: "My Projects", to:"/projects-view"}, 
+                    {label:"My Profile", to:"/profile"}
+                ]}
+            />
             <div style={{ flex: 1, display: "flex", flexDirection: "column", backgroundColor: "#fff" }}>
-                <Navbar 
-                    ctaText="Logout" 
-                    ctaPath="/login" 
-                    ctaAction={handleLogout} 
-                    links={[
-                        {label: "My Tasks", to: "/user-tasks-view"},
-                        {label: "My Projects", to:"/projects-view"}, 
-                        {label:"My Profile", to:"/profile"}
-                    ]}
-                />
-
                 <div style={{ padding: "60px 5%", maxWidth: "900px", margin: "0 auto", width: "100%" }}>
                     <div style={{ marginBottom: "10px" }}>
                         <h1 style={{ fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 700, margin: 0 }}>
@@ -46,8 +45,8 @@ const UserTasksView = () => {
 
                     <TaskList />
                 </div>
-                <Footer />
             </div>
+            <Footer />
         </div>
     );
 };
