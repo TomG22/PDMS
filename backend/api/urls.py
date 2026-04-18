@@ -4,9 +4,10 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView
 )
 from .views import (
-    MyTaskListView, ProjectListView, ProjectView, ProjectTaskListView, SprintTaskListView,
+    MyTaskListView,
+    ProjectListView, ProjectView, ProjectTaskListView, ProjectTaskBacklogListView,
+    SprintListView, SprintTaskListView, SprintView,
     TaskListView, TaskView,
-    SprintListView, SprintView,
     UserLogoutAPIView, UserRegisterAPIView,
     UserView
 )
@@ -39,6 +40,9 @@ urlpatterns = [
 
     # api/projects/<int:pk>/tasks - GET
     path("projects/<int:pk>/tasks/", ProjectTaskListView.as_view(), name="project-tasks"),
+
+    # api/projects/<int:pk>/tasks - GET
+    path("projects/<int:pk>/tasks/backlog/", ProjectTaskBacklogListView.as_view(), name="project-task-backlog"),
 
     # api/projects/<int:project_id>/sprints/ - GET, POST
     path("projects/<int:project_id>/sprints/", SprintListView.as_view(), name="project-sprints"),
