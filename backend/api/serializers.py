@@ -134,6 +134,11 @@ class ProjectSerializer(PersistedObjectSerializer):
     
 class SprintSerializer(PersistedObjectSerializer):
     project = serializers.PrimaryKeyRelatedField(read_only=True)
+    on_incomplete_tasks = serializers.ChoiceField(
+        choices=Sprint.IncompleteTaskBehavior.choices,
+        required=False,
+        allow_null=True
+    )
     
     class Meta:
         model = Sprint
@@ -143,7 +148,8 @@ class SprintSerializer(PersistedObjectSerializer):
             "start_date",
             "end_date",
             "project",
-            "completed"
+            "completed",
+            "on_incomplete_tasks"
         ]
 
         read_only_fields = [

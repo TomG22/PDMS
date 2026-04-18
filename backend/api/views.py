@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 import logging
 from rest_framework import generics, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -252,9 +253,48 @@ class SprintView(generics.RetrieveUpdateDestroyAPIView):
             project__users=self.request.user,
             is_deleted=False
         ).distinct()
+    
+    def handle_incomplete_tasks(self, sprint_id: str, task_incomplete_behavior: Sprint.IncompleteTaskBehavior):
+        """Handles incomplete tasks when a sprint is closed or completed"""
+        incomplete_tasks=Task.objects.filter(sprint__id=sprint_id,completed=False)
+        if task_incomplete_behavior == str(Sprint.IncompleteTaskBehavior.COMPLETE_TASKS):
+            # Mark all tasks as complete
+            incomplete_tasks.update(completed=True,status=Task.Status.DONE)
+        elif task_incomplete_behavior == str(Sprint.IncompleteTaskBehavior.MOVE_TO_BACKLOG):
+            # Move all incomplete tasks to backlog
+            incomplete_tasks.update(sprint=None)
 
     def perform_update(self, serializer):
+        sprint_id=self.kwargs.get("pk")
+        sprint = Sprint.objects.get(id=sprint_id)
+
+        # If we're setting the sprint to completed, we need the completion behavior
+        if sprint.completed == False and serializer.validated_data["completed"] == True:
+            try:
+                # Get the incomplete task behavior parameter
+                task_incomplete_behavior_param = serializer.validated_data["on_incomplete_tasks"]
+                task_incomplete_behavior = Sprint.IncompleteTaskBehavior(task_incomplete_behavior_param)
+            except Exception:
+                raise ValidationError("A valid behavior for incomplete tasks must be specified")
+            
+            self.handle_incomplete_tasks(sprint_id=sprint_id, task_incomplete_behavior=task_incomplete_behavior)
+        
+        # Set modified by
         serializer.save(modified_by=self.request.user)
+    
+    def perform_destroy(self, serializer):
+        sprint_id=self.kwargs.get("pk")
+
+        try:
+            # Get the incomplete task behavior parameter
+            request=self.get_serializer_context()["request"]
+            task_incomplete_behavior_param = request.query_params["on_incomplete_tasks"]
+            task_incomplete_behavior = Sprint.IncompleteTaskBehavior(task_incomplete_behavior_param)
+        except Exception:
+            raise ValidationError("A valid behavior for incomplete tasks must be specified")
+
+        self.handle_incomplete_tasks(sprint_id=sprint_id, task_incomplete_behavior=task_incomplete_behavior)
+        serializer.delete()
 
 class SprintTaskListView(generics.ListAPIView):
     serializer_class = TaskSerializer

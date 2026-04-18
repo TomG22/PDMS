@@ -80,6 +80,10 @@ class UserProfile(models.Model):
     bio = models.TextField(default="")
 
 class Sprint(PersistedObject):
+    class IncompleteTaskBehavior(models.TextChoices):
+        COMPLETE_TASKS = "complete", "Complete Tasks"
+        MOVE_TO_BACKLOG = "backlog", "Move to Backlog"
+
     name = models.CharField(max_length=200)
     start_date = models.DateField()
     end_date = models.DateField()

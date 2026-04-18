@@ -19,15 +19,16 @@ class SprintUpdateTests(AuthenticatedAPITestCase):
     @tag("sprint")
     def test_update_sprint_returns_200(self):
         sprint = self.client.get(f"/api/projects/{self.project.id}/sprints/{self.sprint.id}/").data
-        sprint["completed"] = True
+        sprint["start_date"] = str(date.today() + timedelta(days=1))
         response = self.client.put(f"/api/projects/{self.project.id}/sprints/{self.sprint.id}/", sprint, format="json")
         self.assertEqual(response.status_code, 200)
 
     @tag("sprint")
     def test_update_sprint_persists(self):
         sprint = self.client.get(f"/api/projects/{self.project.id}/sprints/{self.sprint.id}/").data
-        sprint["completed"] = True
+        updated_date = date.today() + timedelta(days=1)
+        sprint["start_date"] = str(updated_date)
         self.client.put(f"/api/projects/{self.project.id}/sprints/{self.sprint.id}/", sprint, format="json")
 
         updated_sprint = Sprint.objects.get(id=self.sprint.id)
-        self.assertEqual(updated_sprint.completed, True)
+        self.assertEqual(updated_sprint.start_date, updated_date)
