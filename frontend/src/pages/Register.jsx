@@ -24,7 +24,15 @@ const Register = () => {
 
   return (
     <>
-      <Navbar ctaText="Login" ctaPath="/login" />
+      <Navbar 
+                ctaText="Login" 
+                ctaPath="/login" 
+                links={[
+                    {label: "Homepage", to: "/"},
+                    {label: "About", to:"/"}, 
+                    {label:"Gallery", to:"/"}
+                ]}
+            />
 
       <form onSubmit={handleSubmit}>
         <div style={{ padding: "120px 5%", display: "flex", justifyContent: "center" }}>

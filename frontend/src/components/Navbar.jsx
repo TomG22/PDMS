@@ -48,6 +48,8 @@ const Navbar = ({ ctaText, ctaPath, links=[] }) => {
             color: "white",
             borderRadius: "8px",
             textDecoration: "none",
+            width: "55px",
+            textAlign: "center"
           }}
         >
           {ctaText}

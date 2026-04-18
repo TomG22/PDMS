@@ -144,7 +144,7 @@ function ProjectDashboard() {
                 <div style={{ marginTop: "20px" }}>
                     {view === "tasks" && <ProjectTasksView key={projectId} projectId={projectId} />}
                     {view === "settings" && project && (
-                        <div style={{ marginTop: "30px" }}>
+                        <div style={{ maxWidth: "1325px", marginTop: "30px" }}>
                             {/* Header Row (matches dashboard style) */}
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                                 <h2 style={{ margin: 0 }}>Project Settings</h2>
