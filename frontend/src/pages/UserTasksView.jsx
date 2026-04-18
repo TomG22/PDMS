@@ -36,7 +36,7 @@ const UserTasksView = () => {
                 <div style={{ padding: "60px 5%", maxWidth: "900px", margin: "0 auto", width: "100%" }}>
                     <div style={{ marginBottom: "10px" }}>
                         <h1 style={{ fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 700, margin: 0 }}>
-                            My UserTasksView
+                            My Tasks
                         </h1>
                     </div>
 

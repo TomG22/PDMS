@@ -110,15 +110,6 @@ const projectBadgeStyle = {
     fontWeight: "600",
 };
 
-const statusBadge = (isDone) => ({
-    fontSize: "12px",
-    padding: "4px 8px",
-    borderRadius: "12px",
-    backgroundColor: isDone ? "#E8F5E9" : "#FFF8E1",
-    color: isDone ? "#2E7D32" : "#F57F17",
-    fontWeight: "600",
-});
-
 const inlineLabelStyle = {
     display: "flex",
     alignItems: "center",

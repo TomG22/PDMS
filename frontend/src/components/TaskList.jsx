@@ -112,7 +112,7 @@ const TaskList = ({ project = null, refreshKey = 0 }) => {
     };
 
     const handleReset = () => {
-        setSort({ key: "priority", dir: "asc" });
+        setSort({ key: "priority", dir: "desc" });
         setFilters({});
         setOpenFilter(null);
         setPage(1);
