@@ -132,7 +132,7 @@ function UserDashboard() {
             />
 
             <div style={mainStyle}>
-                <div style={{paddingBottom: "15px", display: "flex", alignItems:"center", justifyContent:"space-between"}}>
+                <div style={{paddingBottom: "15px", display: "flex", alignItems:"center", justifyContent:"space-between", maxWidth: "1375px"}}>
                     <h1 style={{margin: 0 }}>My Dashboard</h1>
                     <button style={addProjectStyle} onClick={() => setShowCreate(true)}>
                         + Add Project

@@ -157,10 +157,11 @@ class ProjectListView(generics.ListCreateAPIView):
         ).order_by("-id").distinct()
 
     def perform_create(self, serializer):
-        serializer.save(
+        project = serializer.save(
             created_by=self.request.user,
             modified_by=self.request.user,
         )
+        project.users.add(self.request.user)
 
 class ProjectView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProjectSerializer
