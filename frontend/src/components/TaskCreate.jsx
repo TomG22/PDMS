@@ -15,7 +15,7 @@ const TaskCreate = ({ onCreate, onClose, projectUsers = [] }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!name) return alert("Task name is required");
+        if (!name || !description) return alert("Task name and description is required");
         onCreate(
             name,
             description,

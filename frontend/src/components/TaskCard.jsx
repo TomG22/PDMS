@@ -15,11 +15,18 @@ const STATUS_OPTIONS = [
     { value: "done", label: "Done" },
 ];
 
-const TaskCard = ({ task, projectUsers = [], onRemove, onUpdate }) => {
+const TaskCard = ({ task, projectUsers = [], projectName = null, onRemove, onUpdate }) => {
+    const isDone = task.status === "done";
+
     return (
-        <div style={cardStyle(task.completed)}>
+        <div style={cardStyle(isDone)}>
             <div style={{ flex: 1 }}>
-                <h4 style={{ margin: "0 0 5px 0", color: "#333" }}>{task.name}</h4>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "5px" }}>
+                    <h4 style={{ margin: 0, color: "#333" }}>{task.name}</h4>
+                    {projectName && (
+                        <span style={projectBadgeStyle}>{projectName}</span>
+                    )}
+                </div>
                 <p style={{ margin: 0, fontSize: "14px", color: "#666" }}>{task.description}</p>
 
                 <div style={{ display: "flex", gap: "16px", marginTop: "12px", flexWrap: "wrap" }}>
@@ -36,22 +43,28 @@ const TaskCard = ({ task, projectUsers = [], onRemove, onUpdate }) => {
                         </select>
                     </label>
 
-                    <label style={inlineLabelStyle}>
-                        Assignee:
-                        <select
-                            value={task.assigned_to ?? ""}
-                            onChange={(e) => {
-                                const val = e.target.value;
-                                onUpdate(task.id, { assigned_to: val === "" ? null : parseInt(val) });
-                            }}
-                            style={inlineSelectStyle}
-                        >
-                            <option value="">Unassigned</option>
-                            {projectUsers.map((user) => (
-                                <option key={user.id} value={user.id}>{user.username}</option>
-                            ))}
-                        </select>
-                    </label>
+                    {projectUsers.length > 0 ? (
+                        <label style={inlineLabelStyle}>
+                            Assignee:
+                            <select
+                                value={task.assigned_to != null ? String(task.assigned_to) : ""}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    onUpdate(task.id, { assigned_to: val === "" ? null : parseInt(val) });
+                                }}
+                                style={inlineSelectStyle}
+                            >
+                                <option value="">Unassigned</option>
+                                {projectUsers.map((user) => (
+                                    <option key={user.id} value={user.id}>{user.username}</option>
+                                ))}
+                            </select>
+                        </label>
+                    ) : (
+                        <span style={inlineLabelStyle}>
+                            Assignee: {task.assigned_to_username || "Unassigned"}
+                        </span>
+                    )}
 
                     <label style={inlineLabelStyle}>
                         Status:
@@ -69,9 +82,6 @@ const TaskCard = ({ task, projectUsers = [], onRemove, onUpdate }) => {
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: "15px", marginLeft: "16px", flexShrink: 0 }}>
-                <span style={statusBadge(task.completed)}>
-                    {task.completed ? "Done" : "Pending"}
-                </span>
                 <button onClick={() => onRemove(task.id)} style={deleteButtonStyle}>
                     Delete
                 </button>
@@ -80,7 +90,7 @@ const TaskCard = ({ task, projectUsers = [], onRemove, onUpdate }) => {
     );
 };
 
-const cardStyle = (completed) => ({
+const cardStyle = (isDone) => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -88,16 +98,25 @@ const cardStyle = (completed) => ({
     backgroundColor: "white",
     borderRadius: "8px",
     boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-    borderLeft: completed ? "5px solid #4CAF50" : "5px solid #FFC107",
+    borderLeft: isDone ? "5px solid #4CAF50" : "5px solid #FFC107",
     marginBottom: "10px",
 });
 
-const statusBadge = (completed) => ({
+const projectBadgeStyle = {
+    fontSize: "11px",
+    padding: "2px 8px",
+    borderRadius: "12px",
+    backgroundColor: "#E8EAF6",
+    color: "#3949AB",
+    fontWeight: "600",
+};
+
+const statusBadge = (isDone) => ({
     fontSize: "12px",
     padding: "4px 8px",
     borderRadius: "12px",
-    backgroundColor: completed ? "#E8F5E9" : "#FFF8E1",
-    color: completed ? "#2E7D32" : "#F57F17",
+    backgroundColor: isDone ? "#E8F5E9" : "#FFF8E1",
+    color: isDone ? "#2E7D32" : "#F57F17",
     fontWeight: "600",
 });
 

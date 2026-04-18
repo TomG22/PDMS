@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+import axios from "axios";
 import TaskCard from "./TaskCard";
 
 const PRIORITY_OPTIONS = [
@@ -16,25 +17,90 @@ const STATUS_OPTIONS = [
     { value: "done", label: "Done" },
 ];
 
+const STATUS_INDEX = Object.fromEntries(
+    STATUS_OPTIONS.map((opt, i) => [opt.value, i])
+);
+
 const PAGE_SIZE = 5;
 
 const COLUMNS = [
-    { key: "name",                 label: "Name" },
-    { key: "priority",             label: "Priority" },
-    { key: "status",               label: "Status" },
+    { key: "name", label: "Name" },
+    { key: "priority", label: "Priority" },
+    { key: "status", label: "Status" },
     { key: "assigned_to_username", label: "Assignee" },
 ];
 
 const FILTER_OPTIONS = {
     priority: PRIORITY_OPTIONS.map(o => ({ value: o.value, label: o.label })),
-    status:   STATUS_OPTIONS.map(o => ({ value: o.value, label: o.label })),
+    status: STATUS_OPTIONS.map(o => ({ value: o.value, label: o.label })),
 };
 
-const TaskList = ({ tasks, projectUsers, onRemove, onUpdate }) => {
-    const [sort, setSort] = useState({ key: "priority", dir: "asc" });
+const TaskList = ({ project = null, refreshKey = 0 }) => {
+    const [tasks, setTasks] = useState([]);
+    const [projectUsers, setProjectUsers] = useState([]);
+    // ID -> name map, only used in my tasks view
+    const [projectNameMap, setProjectNameMap] = useState({});
+    const [sort, setSort] = useState({ key: "priority", dir: "desc" });
     const [filters, setFilters] = useState({});
     const [openFilter, setOpenFilter] = useState(null);
     const [page, setPage] = useState(1);
+
+    const getToken = () => localStorage.getItem("access_token");
+
+    useEffect(() => {
+        const fetchTasks = async () => {
+            const headers = { Authorization: `Bearer ${getToken()}` };
+            try {
+                // Project view: fetch all tasks for this project
+                if (project) {
+                    const res = await axios.get(
+                        `http://localhost:8000/api/projects/${project.id}/tasks/`,
+                        { headers }
+                    );
+                    setTasks(res.data);
+                    setProjectUsers(project.users ?? []);
+                } else {
+                    // My tasks view: fetch user's tasks and all projects for name lookup
+                    const [tasksRes, projectsRes] = await Promise.all([
+                        axios.get(`http://localhost:8000/api/tasks/my/`, { headers }),
+                        axios.get(`http://localhost:8000/api/projects/`, { headers }),
+                    ]);
+                    setTasks(tasksRes.data);
+                    const nameMap = {};
+                    projectsRes.data.forEach(p => { nameMap[p.id] = p.name; });
+                    setProjectNameMap(nameMap);
+                }
+            } catch (err) {
+                console.error("Failed to fetch tasks:", err.response?.status, err.response?.data);
+            }
+        };
+
+        fetchTasks();
+    }, [project, refreshKey]);
+
+    const handleUpdateTask = async (taskId, fields) => {
+        try {
+            const res = await axios.patch(
+                `http://localhost:8000/api/tasks/${taskId}/`,
+                fields,
+                { headers: { Authorization: `Bearer ${getToken()}` } }
+            );
+            setTasks(prev => prev.map(t => t.id === taskId ? res.data : t));
+        } catch (err) {
+            console.error("Failed to update task:", err.response?.status, err.response?.data);
+        }
+    };
+
+    const handleRemoveTask = async (taskId) => {
+        try {
+            await axios.delete(`http://localhost:8000/api/tasks/${taskId}/`, {
+                headers: { Authorization: `Bearer ${getToken()}` },
+            });
+            setTasks(prev => prev.filter(t => t.id !== taskId));
+        } catch (err) {
+            console.error("Failed to delete task:", err.response?.status, err.response?.data);
+        }
+    };
 
     const handleSortClick = (key) => {
         setSort(prev =>
@@ -88,8 +154,14 @@ const TaskList = ({ tasks, projectUsers, onRemove, onUpdate }) => {
         });
 
         result.sort((a, b) => {
-            const av = a[sort.key] ?? "";
-            const bv = b[sort.key] ?? "";
+            let av = a[sort.key] ?? "";
+            let bv = b[sort.key] ?? "";
+
+            if (sort.key === "status") {
+                av = STATUS_INDEX[av] ?? 0;
+                bv = STATUS_INDEX[bv] ?? 0;
+            }
+
             if (av < bv) return sort.dir === "asc" ? -1 : 1;
             if (av > bv) return sort.dir === "asc" ? 1 : -1;
             return 0;
@@ -169,8 +241,9 @@ const TaskList = ({ tasks, projectUsers, onRemove, onUpdate }) => {
                             <TaskCard
                                 task={task}
                                 projectUsers={projectUsers}
-                                onRemove={onRemove}
-                                onUpdate={onUpdate}
+                                projectName={project ? null : projectNameMap[task.project]}
+                                onRemove={handleRemoveTask}
+                                onUpdate={handleUpdateTask}
                             />
                         </li>
                     ))
@@ -178,7 +251,7 @@ const TaskList = ({ tasks, projectUsers, onRemove, onUpdate }) => {
                     <div style={{ textAlign: "center", padding: "40px", color: "#888", border: "2px dashed #ccc", borderRadius: "8px" }}>
                         {Object.values(filters).some(s => s.size > 0)
                             ? "No tasks match the current filters."
-                            : "No tasks found. Click \"+ New Task\" to get started."}
+                            : "No tasks found."}
                     </div>
                 )}
             </ul>
