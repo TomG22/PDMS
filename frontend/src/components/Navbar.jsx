@@ -6,8 +6,8 @@ const Navbar = ({ ctaText, ctaPath, links=[] }) => {
     <div style={{ width: "100%", background: "#B65353", borderBottom: "1px solid #D9D9D9" }}>
       <div
         style={{
-          maxWidth: "1200px",
-          margin: "auto",
+          maxWidth: "1400px",
+          margin: "0auto",
           padding: "16px 12px",
           display: "flex",
           alignItems: "center",
@@ -17,7 +17,7 @@ const Navbar = ({ ctaText, ctaPath, links=[] }) => {
       >
         {/* Logo */}
         <Link to="/" style={{ textDecoration: "none", color: "black" }}>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", marginLeft:"18px"}}>
             <div style={{ fontSize: "24px", fontWeight: 700 }}>DLTA</div>
             <div style={{ fontSize: "12px" }}>Innovation</div>
           </div>
@@ -26,11 +26,10 @@ const Navbar = ({ ctaText, ctaPath, links=[] }) => {
         {/* Links */}
         <div
           style={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "flex-end",
+            marginLeft: "860px",
+            display: "flex", 
+            alignItems: "center", 
             gap: "8px",
-            flexWrap: "wrap",
           }}
         >
           {links.map((link, index) => (
@@ -38,7 +37,7 @@ const Navbar = ({ ctaText, ctaPath, links=[] }) => {
               {link.label}
             </Link>
           ))}
-        </div>
+        
 
         {/* CTA */}
         <Link
@@ -49,10 +48,13 @@ const Navbar = ({ ctaText, ctaPath, links=[] }) => {
             color: "white",
             borderRadius: "8px",
             textDecoration: "none",
+            width: "55px",
+            textAlign: "center"
           }}
         >
           {ctaText}
         </Link>
+        </div>
       </div>
     </div>
   );

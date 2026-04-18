@@ -8,7 +8,7 @@ import ProjectCreate from "../components/ProjectCreate";
 import ProjectEdit from "../components/ProjectEdit";
 import { authLogout } from "../auth/auth";
 import Footer from "../components/Footer";
-function ProjectDashboard() {
+function UserDashboard() {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -105,7 +105,6 @@ function ProjectDashboard() {
     }
 
       const handleLogout = async () => {
-        // Remove tokens locally
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
 
@@ -116,7 +115,6 @@ function ProjectDashboard() {
         console.error("Logout failed:", error.response?.data || error.message);
         }
 
-        // Something went wrong with authentication. Log out on the client anyways
         navigate("/login");
     };
 
@@ -134,8 +132,8 @@ function ProjectDashboard() {
             />
 
             <div style={mainStyle}>
-                <div style={{display: "flex", alignItems:"center", justifyContent:"space-between"}}>
-                    <h1 style={{margin: 0,}}>Project Dashboard</h1>
+                <div style={{paddingBottom: "15px", display: "flex", alignItems:"center", justifyContent:"space-between"}}>
+                    <h1 style={{margin: 0 }}>My Dashboard</h1>
                     <button style={addProjectStyle} onClick={() => setShowCreate(true)}>
                         + Add Project
                     </button>
@@ -193,10 +191,10 @@ const addProjectStyle = {
     border : "0px",
     color: "white", 
     background : "#862424",
-     
+    margin: "0 20px",
     width:"auto",
     cursor: "pointer",
     fontSize: "16px"
 }
 
-export default ProjectDashboard; 
+export default UserDashboard; 

@@ -157,11 +157,10 @@ class ProjectListView(generics.ListCreateAPIView):
         ).order_by("-id").distinct()
 
     def perform_create(self, serializer):
-        project = serializer.save(
+        serializer.save(
             created_by=self.request.user,
             modified_by=self.request.user,
         )
-        project.users.add(self.request.user)
 
 class ProjectView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProjectSerializer
@@ -176,7 +175,7 @@ class ProjectView(generics.RetrieveUpdateDestroyAPIView):
     def perform_update(self, serializer):
         serializer.save(modified_by=self.request.user)
 
-class ProjectTaskListView(generics.ListAPIView):
+class ProjectTaskListView(generics.ListCreateAPIView):
     serializer_class = TaskSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -188,6 +187,16 @@ class ProjectTaskListView(generics.ListAPIView):
             project__users=self.request.user,
             is_deleted=False)
         return queryset.distinct()
+
+    def perform_create(self, serializer):
+        project_id = self.kwargs["pk"]
+        project = Project.objects.get(id=project_id)
+
+        serializer.save(
+            project=project,
+            created_by=self.request.user,
+            modified_by=self.request.user,
+        )
 
 class ProjectTaskBacklogListView(generics.ListAPIView):
     """Lists all tasks in the product backlog"""

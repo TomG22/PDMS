@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import axios from "axios";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import TaskCreate from "../components/TaskCreate";
-import TaskList from "../components/TaskList";
-import { authLogout } from "../auth/auth";
+import TaskCreate from "./TaskCreate";
+import TaskList from "./TaskList";
 
 const ProjectTasksView = () => {
     const [project, setProject] = useState(null);
@@ -83,32 +80,12 @@ const ProjectTasksView = () => {
         }
     };
 
-    const handleLogout = async () => {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        try {
-            await authLogout();
-        } catch (error) {
-            console.error("Logout failed:", error.message);
-        }
-        navigate("/login");
-    };
-
     const projectUsers = project?.users ?? [];
 
     return (
-        <div style={{ display: "flex", minHeight: "100vh" }}>
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", backgroundColor: "#fff" }}>
-                <Navbar 
-                    ctaText="Logout" 
-                    ctaPath="/login" 
-                    ctaAction={handleLogout} 
-                    links={[
-                        {label: "My Tasks", to: "/user-tasks-view"},
-                        {label: "My Projects", to:"/projects-view"}, 
-                        {label:"My Profile", to:"/profile"}
-                    ]}
-                />
+        <div style={{ display: "flex", minHeight: "100vh"}}>
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", backgroundColor: "#fff", borderRadius:"7px"  }}>
+                
 
                 <div style={{ padding: "60px 5%", maxWidth: "900px", margin: "0 auto", width: "100%" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
@@ -129,7 +106,6 @@ const ProjectTasksView = () => {
 
                     <TaskList project={project} refreshKey={refreshKey} />
                 </div>
-                <Footer />
             </div>
 
             {showCreate && (

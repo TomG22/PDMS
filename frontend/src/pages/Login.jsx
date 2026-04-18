@@ -23,7 +23,15 @@ const Login = () => {
 
   return (
     <>
-      <Navbar ctaText="Register" ctaPath="/register" />
+      <Navbar 
+                ctaText="Register" 
+                ctaPath="/register" 
+                links={[
+                    {label: "Homepage", to: "/"},
+                    {label: "About", to:"/"}, 
+                    {label:"Gallery", to:"/"}
+                ]}
+            />
       <div style={{ padding: "120px 5%", display: "flex", justifyContent: "center" }}>
         <div style={{ width: "100%", maxWidth: "600px" }}>
           <div
