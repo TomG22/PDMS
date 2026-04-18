@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import axios from "axios";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
 import TaskCreate from "./TaskCreate";
 import TaskList from "./TaskList";
-import { authLogout } from "../auth/auth";
 
 const ProjectTasksView = () => {
     const [project, setProject] = useState(null);
@@ -81,17 +78,6 @@ const ProjectTasksView = () => {
                 navigate("/login");
             }
         }
-    };
-
-    const handleLogout = async () => {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        try {
-            await authLogout();
-        } catch (error) {
-            console.error("Logout failed:", error.message);
-        }
-        navigate("/login");
     };
 
     const projectUsers = project?.users ?? [];

@@ -156,13 +156,6 @@ class ProjectListView(generics.ListCreateAPIView):
             is_deleted=False
         ).order_by("-id").distinct()
 
-    def perform_create(self, serializer):
-        project = serializer.save(
-            created_by=self.request.user,
-            modified_by=self.request.user,
-        )
-        project.users.add(self.request.user)
-
 class ProjectView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProjectSerializer
     permission_classes = (IsAuthenticated,)

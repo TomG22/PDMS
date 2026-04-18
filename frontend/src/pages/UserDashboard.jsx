@@ -125,15 +125,15 @@ function UserDashboard() {
                 ctaPath="/login" 
                 ctaAction={handleLogout} 
                 links={[
-                    {label: "My Tasks", to: "/tasks"},
+                    {label: "My Tasks", to: "/user-tasks-view"},
                     {label: "My Projects", to:"/projects-view"}, 
                     {label:"My Profile", to:"/profile"}
                 ]}
             />
 
             <div style={mainStyle}>
-                <div style={{display: "flex", alignItems:"center", justifyContent:"space-between"}}>
-                    <h1 style={{margin: 0, padding: "5px"}}>My Dashboard</h1>
+                <div style={{paddingBottom: "15px", display: "flex", alignItems:"center", justifyContent:"space-between"}}>
+                    <h1 style={{margin: 0 }}>My Dashboard</h1>
                     <button style={addProjectStyle} onClick={() => setShowCreate(true)}>
                         + Add Project
                     </button>
@@ -191,7 +191,7 @@ const addProjectStyle = {
     border : "0px",
     color: "white", 
     background : "#862424",
-     
+    margin: "0 20px",
     width:"auto",
     cursor: "pointer",
     fontSize: "16px"

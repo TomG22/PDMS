@@ -193,30 +193,11 @@ function ProjectDashboard() {
     );
 }
 
-const gridStyle = {
-    display: "flex", 
-    flexWrap: "wrap", 
-    gap: "20px"
-}
-
-
 const mainStyle = {
     flex: 1, 
     padding: "30px", 
     backgroundColor: "#f5f5f5", 
 }; 
-
-const addProjectStyle = {
-    borderRadius: "8px", 
-    padding: "8px 16px",
-    border : "0px",
-    color: "white", 
-    background : "#862424",
-     
-    width:"auto",
-    cursor: "pointer",
-    fontSize: "16px"
-}
 
 const cardStyle = {
     marginTop: "20px",
@@ -261,24 +242,6 @@ const dangerBtn = {
     background: "#c0392b",
     cursor: "pointer",
     fontSize: "14px",
-};
-
-const navStyle = {
-    marginTop: "20px",
-    display: "flex",
-    gap: "20px",
-    borderBottom: "2px solid #ddd",
-};
-
-const linkButtonStyle = {
-    background: "none",
-    border: "none",
-    padding: 0,
-    marginRight: "20px",
-    color: "#862424",
-    cursor: "pointer",
-    fontSize: "16px",
-    textDecoration: "underline",
 };
 
 const tabStyle = {

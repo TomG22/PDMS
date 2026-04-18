@@ -10,14 +10,6 @@ function ProjectCard({project, onRemove, onEditClick}) {
         <div onClick={handleClick} style={cardStyle}>
             <h3 style={{textAlign:"center"}}>{project.name}</h3>
             <p style={descStyle}>{project.description}</p>
-
-            {/* <button style={removeStyle} onClick = {(e) => {e.stopPropagation(); onRemove(project.id)}}>
-                Remove Project
-            </button>
-
-            <button style={editStyle} onClick = {(e) => { e.stopPropagation(); onEditClick(project)}}>
-                Edit Project
-            </button> */}
         </div>
     );
 }
@@ -27,27 +19,6 @@ const descStyle = {
     minHeight: "4.5rem",
     overflowWrap: "break-word",
 };
-
-const removeStyle = {
-    margin: "5px",
-    background:"#862424",
-    borderRadius: "3px", 
-    color: "white",
-    padding: "5px", 
-    border : "0px",
-    cursor: "pointer"
-}
-
-const editStyle = {
-    margin: "5px",
-    borderRadius: "3px", 
-    padding: "5px",
-    border : "0px",
-    color: "white", 
-    background : "black",
-    cursor: "pointer"
-}
-
 
 const cardStyle = {
     border : "1px solid #ccc", 
