@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { authLogout } from "../auth/auth";
+import ProjectEdit from "../components/ProjectEdit";
 
 import ProjectTasksView from "../components/ProjectTasksView";
 // import ProductBacklog from "./ProductBacklog";
@@ -15,7 +16,74 @@ function ProjectDashboard() {
     const { projectId } = useParams();
 
     const [view, setView] = useState("tasks");
+    const [project, setProject] = useState(null);
+    const [editingProject, setEditingProject] = useState(null)
 
+    useEffect(() => {
+        const fetchProject = async () => {
+            try {
+                const token = localStorage.getItem("access_token");
+
+                if (!token) {
+                    navigate("/login");
+                    return;
+                }
+
+                const res = await axios.get(
+                    `http://localhost:8000/api/projects/${projectId}/`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }
+                );
+
+                setProject(res.data);
+            } catch (err) {
+                console.error("Failed to fetch project:", err);
+            }
+        };
+
+        fetchProject();
+    }, [projectId, navigate]);
+
+    const handleEdit = async (id, updatedFields) => {
+        try {
+            const token = localStorage.getItem("access_token");
+
+            const res = await axios.put(
+                `http://localhost:8000/api/projects/${id}/`,
+                {
+                    name: updatedFields.title,
+                    description: updatedFields.description,
+                },
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+
+            setProject(res.data);
+            setEditingProject(null);
+        } catch (err) {
+            console.error("Failed to update project:", err);
+        }
+    };
+
+    const handleRemove = async () => {
+        try {
+            const token = localStorage.getItem("access_token");
+
+            await axios.delete(
+                `http://localhost:8000/api/projects/${projectId}/`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+
+            // redirect after delete
+            navigate("/projects-view");
+        } catch (err) {
+            console.error("Failed to delete project:", err);
+        }
+    };
     const handleLogout = async () => {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
@@ -33,28 +101,70 @@ function ProjectDashboard() {
         <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
             <Navbar 
                 ctaText="Logout" 
+                ctaPath="/login" 
                 ctaAction={handleLogout} 
                 links={[
-                    { label: "My Tasks", to: "/user-tasks-view" },
-                    { label: "My Projects", to: "/projects-view" }, 
-                    { label: "My Profile", to: "/profile" }
-                ]}
-            />
+                    {label: "My Tasks", to: "/user-tasks-view"},
+                    {label: "My Projects", to:"/projects-view"}, 
+                    {label:"My Profile", to:"/profile"}
+                ]}/>
             <div style={mainStyle}>
-                <h1>Project Dashboard</h1>
+                <h1>{project ? `${project.name}'s Dashboard` : "Loading Project..."}</h1>
 
                 <nav style={{ marginTop: "20px" }}>
                     <button onClick={() => setView("tasks")}>Tasks</button>
+                    <button onClick={() => setView("settings")}>Settings</button>
                     {/* <button onClick={() => setView("product")}>Product Backlog</button>
                     <button onClick={() => setView("sprint")}>Sprint Backlog</button> */}
                 </nav>
 
                 <div style={{ marginTop: "20px" }}>
                     {view === "tasks" && <ProjectTasksView key={projectId} projectId={projectId} />}
+                    {view === "settings" && project && (
+                        <div style={{ marginTop: "30px" }}>
+                            {/* Header Row (matches dashboard style) */}
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                <h2 style={{ margin: 0 }}>Project Settings</h2>
+
+                                <div style={{ display: "flex", gap: "10px" }}>
+                                    <button style={primaryBtn} onClick={() => setEditingProject(project)}>
+                                        Edit Project
+                                    </button>
+
+                                    <button style={dangerBtn} onClick={handleRemove}>
+                                        Delete Project
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Card-style container */}
+                            <div style={cardStyle}>
+                                <div style={fieldStyle}>
+                                    <span style={labelStyle}>Name</span>
+                                    <p style={valueStyle}>{project.name}</p>
+                                </div>
+
+                                <div style={fieldStyle}>
+                                    <span style={labelStyle}>Description</span>
+                                    <p style={valueStyle}>
+                                        {project.description || "No description provided."}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                     {/* {view === "product" && <ProductBacklog projectId={projectId} />} */}
                     {/* {view === "sprint" && <SprintBacklog projectId={projectId} />} */}
                 </div>
             </div>
+
+            {editingProject && (
+                <ProjectEdit
+                    project={editingProject}
+                    onEdit={handleEdit}
+                    onClose={() => setEditingProject(null)}
+                />
+            )}
             <Footer/>
         </div>
     );
@@ -85,4 +195,48 @@ const addProjectStyle = {
     fontSize: "16px"
 }
 
+const cardStyle = {
+    marginTop: "20px",
+    background: "white",
+    borderRadius: "12px",
+    padding: "20px",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
+};
+
+const fieldStyle = {
+    marginBottom: "15px",
+};
+
+const labelStyle = {
+    fontSize: "12px",
+    fontWeight: "600",
+    color: "#888",
+    textTransform: "uppercase",
+};
+
+const valueStyle = {
+    margin: "5px 0 0 0",
+    fontSize: "16px",
+    color: "#333",
+};
+
+const primaryBtn = {
+    borderRadius: "8px",
+    padding: "8px 16px",
+    border: "none",
+    color: "white",
+    background: "#862424",
+    cursor: "pointer",
+    fontSize: "14px",
+};
+
+const dangerBtn = {
+    borderRadius: "8px",
+    padding: "8px 16px",
+    border: "none",
+    color: "white",
+    background: "#c0392b",
+    cursor: "pointer",
+    fontSize: "14px",
+};
 export default ProjectDashboard;
