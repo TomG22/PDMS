@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 import TaskList from "../components/TaskList";
 import { authLogout } from "../auth/auth";
 
-const Tasks = () => {
+const UserTasksView = () => {
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -27,7 +27,7 @@ const Tasks = () => {
                     ctaPath="/login" 
                     ctaAction={handleLogout} 
                     links={[
-                        {label: "My Tasks", to: "/tasks"},
+                        {label: "My Tasks", to: "/user-tasks-view"},
                         {label: "My Projects", to:"/projects-view"}, 
                         {label:"My Profile", to:"/profile"}
                     ]}
@@ -36,7 +36,7 @@ const Tasks = () => {
                 <div style={{ padding: "60px 5%", maxWidth: "900px", margin: "0 auto", width: "100%" }}>
                     <div style={{ marginBottom: "10px" }}>
                         <h1 style={{ fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 700, margin: 0 }}>
-                            My Tasks
+                            My UserTasksView
                         </h1>
                     </div>
 
@@ -52,4 +52,4 @@ const Tasks = () => {
     );
 };
 
-export default Tasks;
+export default UserTasksView;

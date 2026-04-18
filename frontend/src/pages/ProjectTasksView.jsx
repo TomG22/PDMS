@@ -7,7 +7,7 @@ import TaskCreate from "../components/TaskCreate";
 import TaskList from "../components/TaskList";
 import { authLogout } from "../auth/auth";
 
-const ProjectTasks = () => {
+const ProjectTasksView = () => {
     const [project, setProject] = useState(null);
     const [showCreate, setShowCreate] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
@@ -104,7 +104,7 @@ const ProjectTasks = () => {
                     ctaPath="/login" 
                     ctaAction={handleLogout} 
                     links={[
-                        {label: "My Tasks", to: "/tasks"},
+                        {label: "My Tasks", to: "/user-tasks-view"},
                         {label: "My Projects", to:"/projects-view"}, 
                         {label:"My Profile", to:"/profile"}
                     ]}
@@ -155,4 +155,4 @@ const addTaskButtonStyle = {
     transition: "opacity 0.2s"
 };
 
-export default ProjectTasks;
+export default ProjectTasksView;

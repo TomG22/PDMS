@@ -1,4 +1,5 @@
 import React from "react";
+import DeleteTask from "./DeleteTask";
 
 const PRIORITY_OPTIONS = [
     { value: 0, label: "None" },
@@ -82,9 +83,7 @@ const TaskCard = ({ task, projectUsers = [], projectName = null, onRemove, onUpd
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: "15px", marginLeft: "16px", flexShrink: 0 }}>
-                <button onClick={() => onRemove(task.id)} style={deleteButtonStyle}>
-                    Delete
-                </button>
+                <DeleteTask taskId={task.id} taskName={task.name} onRemove={onRemove} />
             </div>
         </div>
     );
@@ -136,19 +135,6 @@ const inlineSelectStyle = {
     fontSize: "13px",
     background: "#fff",
     cursor: "pointer",
-};
-
-const deleteButtonStyle = {
-    background: "#2C2C2C",
-    color: "white",
-    border: "none",
-    padding: "6px 12px",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontSize: "12px",
-    fontWeight: "600",
-    flexShrink: 0,
-    boxShadow: "0 0 20px rgba(255, 0, 0, 0.5)",
 };
 
 export default TaskCard;
