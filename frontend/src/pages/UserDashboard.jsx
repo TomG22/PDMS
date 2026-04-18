@@ -8,7 +8,7 @@ import ProjectCreate from "../components/ProjectCreate";
 import ProjectEdit from "../components/ProjectEdit";
 import { authLogout } from "../auth/auth";
 import Footer from "../components/Footer";
-function ProjectDashboard() {
+function UserDashboard() {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -127,7 +127,7 @@ function ProjectDashboard() {
                 ctaPath="/login" 
                 ctaAction={handleLogout} 
                 links={[
-                    {label: "My Tasks", to: "/user-tasks-view"},
+                    {label: "My Tasks", to: "/tasks"},
                     {label: "My Projects", to:"/projects-view"}, 
                     {label:"My Profile", to:"/profile"}
                 ]}
@@ -135,7 +135,7 @@ function ProjectDashboard() {
 
             <div style={mainStyle}>
                 <div style={{display: "flex", alignItems:"center", justifyContent:"space-between"}}>
-                    <h1 style={{margin: 0,}}>Project Dashboard</h1>
+                    <h1 style={{margin: 0, padding: "5px"}}>My Dashboard</h1>
                     <button style={addProjectStyle} onClick={() => setShowCreate(true)}>
                         + Add Project
                     </button>
@@ -199,4 +199,4 @@ const addProjectStyle = {
     fontSize: "16px"
 }
 
-export default ProjectDashboard; 
+export default UserDashboard; 

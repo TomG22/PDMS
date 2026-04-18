@@ -11,13 +11,13 @@ function ProjectCard({project, onRemove, onEditClick}) {
             <h3 style={{textAlign:"center"}}>{project.name}</h3>
             <p style={descStyle}>{project.description}</p>
 
-            <button style={removeStyle} onClick = {(e) => {e.stopPropagation(); onRemove(project.id)}}>
+            {/* <button style={removeStyle} onClick = {(e) => {e.stopPropagation(); onRemove(project.id)}}>
                 Remove Project
             </button>
 
             <button style={editStyle} onClick = {(e) => { e.stopPropagation(); onEditClick(project)}}>
                 Edit Project
-            </button>
+            </button> */}
         </div>
     );
 }
