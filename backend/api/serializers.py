@@ -85,13 +85,15 @@ class TaskSerializer(PersistedObjectSerializer):
             if sprint is None:
                 sprint = self.instance.sprint
 
-        # ensure user is part of the project
         if assigned_to and not project.users.filter(id=assigned_to.id).exists():
-            raise serializers.ValidationError("User assigned to task must be part of the project")
+            raise serializers.ValidationError({
+                "assigned_to": f"User {assigned_to.id} must be part of the project {project.id}"
+            })
         
-        # ensure sprint is part of the project
         if sprint and sprint.project_id != project.id:
-            raise serializers.ValidationError("Sprint must belong to the same project as the task")
+            raise serializers.ValidationError({
+                "sprint": f"Sprint {sprint.id} belongs to project {sprint.project_id}, but task belongs to project {project.id}"
+            })
         
         return attrs
         
