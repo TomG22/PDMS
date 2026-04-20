@@ -8,6 +8,7 @@ import { authLogout } from "../auth/auth";
 import ProjectEdit from "../components/ProjectEdit";
 
 import ProjectTasksView from "../components/ProjectTasksView";
+import ProjectBacklog from "./ProjectBacklog";
 // import ProductBacklog from "./ProductBacklog";
 // import SprintBacklog from "./SprintBacklog";
 
@@ -126,6 +127,13 @@ function ProjectDashboard() {
                         Settings
                     </button>
 
+                    <button
+                        style={view === "backlog" ? activeTabStyle : tabStyle}
+                        onClick={() => setView("backlog")}
+                    >
+                        Backlog
+                    </button>
+
                     {/* <button
                         style={view === "product-backlog" ? activeTabStyle : tabStyle}
                         onClick={() => setView("product-backlog")}
@@ -175,6 +183,14 @@ function ProjectDashboard() {
                                 </div>
                             </div>
                         </div>
+                    )}
+                    {view === "backlog" && (
+                        <ProjectBacklog 
+                            project={project} 
+                            onTaskCreated={() => {
+                                setProject({...project}); 
+                            }} 
+                        />
                     )}
                     {/* {view === "product" && <ProductBacklog projectId={projectId} />} */}
                     {/* {view === "sprint" && <SprintBacklog projectId={projectId} />} */}

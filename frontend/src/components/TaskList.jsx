@@ -35,9 +35,8 @@ const FILTER_OPTIONS = {
     status: STATUS_OPTIONS.map(o => ({ value: o.value, label: o.label })),
 };
 
-const TaskList = ({ project = null, refreshKey = 0 }) => {
+const TaskList = ({ project = null, refreshKey = 0, type = "all", sprintId = null, sprints = [], projectUsers = [] }) => {
     const [tasks, setTasks] = useState([]);
-    const [projectUsers, setProjectUsers] = useState([]);
     // ID -> name map, only used in my tasks view
     const [projectNameMap, setProjectNameMap] = useState({});
     const [sort, setSort] = useState({ key: "priority", dir: "desc" });
@@ -47,20 +46,17 @@ const TaskList = ({ project = null, refreshKey = 0 }) => {
 
     const getToken = () => localStorage.getItem("access_token");
 
-    useEffect(() => {
+useEffect(() => {
         const fetchTasks = async () => {
             const headers = { Authorization: `Bearer ${getToken()}` };
             try {
-                // Project view: fetch all tasks for this project
                 if (project) {
                     const res = await axios.get(
                         `http://localhost:8000/api/projects/${project.id}/tasks/`,
                         { headers }
                     );
                     setTasks(res.data);
-                    setProjectUsers(project.users ?? []);
                 } else {
-                    // My tasks view: fetch user's tasks and all projects for name lookup
                     const [tasksRes, projectsRes] = await Promise.all([
                         axios.get(`http://localhost:8000/api/tasks/my/`, { headers }),
                         axios.get(`http://localhost:8000/api/projects/`, { headers }),
@@ -165,12 +161,33 @@ const TaskList = ({ project = null, refreshKey = 0 }) => {
 
     const getFilterOptions = (colKey) => {
         if (FILTER_OPTIONS[colKey]) return FILTER_OPTIONS[colKey];
+
+        if (colKey === 'sprint') {
+            return [
+                { value: "", label: "Backlog" },
+                ...sprints.map(s => ({ value: s.id, label: s.name }))
+            ];
+        }
+
+        if (colKey === 'assigned_to' || colKey === 'assignee') {
+            return [
+                { value: "", label: "Unassigned" },
+                ...projectUsers.map(u => ({ value: u.id, label: u.username }))
+            ];
+        }
+
         const unique = [...new Set(tasks.map(t => t[colKey]).filter(Boolean))];
         return unique.map(v => ({ value: v, label: v }));
     };
 
     const processed = useMemo(() => {
         let result = [...tasks];
+        if (type === "backlog") {
+            result = result.filter(task => !task.sprint);
+        }
+        else if (type === "sprint") {
+            result = result.filter(task => task.sprint === sprintId);
+        }
 
         Object.entries(filters).forEach(([colKey, selected]) => {
             if (!selected || selected.size === 0) return;
@@ -195,7 +212,7 @@ const TaskList = ({ project = null, refreshKey = 0 }) => {
         });
 
         return result;
-    }, [tasks, filters, sort]);
+   }, [tasks, filters, sort, type, sprintId]);
 
     const totalPages = Math.max(1, Math.ceil(processed.length / PAGE_SIZE));
     const paginated = processed.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -267,6 +284,7 @@ const TaskList = ({ project = null, refreshKey = 0 }) => {
                         <li key={task.id}>
                             <TaskCard
                                 task={task}
+                                sprints={sprints}
                                 projectUsers={projectUsers}
                                 projectName={project ? null : projectNameMap[task.project]}
                                 onRemove={handleRemoveTask}

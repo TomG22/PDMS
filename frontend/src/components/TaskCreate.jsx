@@ -7,11 +7,12 @@ const PRIORITY_OPTIONS = [
     { value: 3, label: "High" },
 ];
 
-const TaskCreate = ({ onCreate, onClose, projectUsers = [] }) => {
+const TaskCreate = ({ onCreate, onClose, projectUsers = [], sprints = [] }) => {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [priority, setPriority] = useState(0);
     const [assignedTo, setAssignedTo] = useState("");
+    const [sprint, setSprint] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -20,7 +21,8 @@ const TaskCreate = ({ onCreate, onClose, projectUsers = [] }) => {
             name,
             description,
             parseInt(priority),
-            assignedTo === "" ? null : parseInt(assignedTo)
+            assignedTo === "" ? null : parseInt(assignedTo),
+            sprint === "" ? null : parseInt(sprint)
         );
     };
 
@@ -77,6 +79,23 @@ const TaskCreate = ({ onCreate, onClose, projectUsers = [] }) => {
                             ))}
                         </select>
                     </div>
+                    
+                    <div style={inputGroup}>
+                        <label>Assign to Sprint</label>
+                        <select 
+                            value={sprint}
+                            onChange={(e) => setSprint(e.target.value)}
+                            style={inputStyle}
+                        >
+                            <option value="">Product Backlog (No Sprint)</option>
+                            {sprints && sprints.map(s => (
+                                <option key={s.id} value={s.id}>
+                                    {s.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
                     <div style={buttonGroup}>
                         <button type="button" onClick={onClose} style={cancelBtn}>Cancel</button>
                         <button type="submit" style={submitBtn}>Create Task</button>

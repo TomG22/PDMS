@@ -16,7 +16,7 @@ const STATUS_OPTIONS = [
     { value: "done", label: "Done" },
 ];
 
-const TaskCard = ({ task, projectUsers = [], projectName = null, onRemove, onUpdate }) => {
+const TaskCard = ({ task, projectUsers = [], sprints = [], projectName = null, onRemove, onUpdate }) => {
     const isDone = task.status === "done";
 
     return (
@@ -31,6 +31,24 @@ const TaskCard = ({ task, projectUsers = [], projectName = null, onRemove, onUpd
                 <p style={{ margin: 0, fontSize: "14px", color: "#666" }}>{task.description}</p>
 
                 <div style={{ display: "flex", gap: "16px", marginTop: "12px", flexWrap: "wrap" }}>
+                    
+                    <label style={inlineLabelStyle}>
+                        Sprint:
+                        <select
+                            value={task.sprint || ""}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                onUpdate(task.id, { sprint: val === "" ? null : parseInt(val) });
+                            }}
+                            style={{...inlineSelectStyle, fontWeight: "bold", color: task.sprint ? "#1976d2" : "#666"}}
+                        >
+                            <option value="">Backlog</option>
+                            {sprints.map((s) => (
+                                <option key={s.id} value={s.id}>{s.name}</option>
+                            ))}
+                        </select>
+                    </label>
+
                     <label style={inlineLabelStyle}>
                         Priority:
                         <select
