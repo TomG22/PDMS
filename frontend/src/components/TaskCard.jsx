@@ -16,21 +16,66 @@ const STATUS_OPTIONS = [
     { value: "done", label: "Done" },
 ];
 
-const TaskCard = ({ task, projectUsers = [], projectName = null, onRemove, onUpdate }) => {
+const TaskCard = ({ task, projectUsers = [], sprints = [], projectName = null, onRemove, onUpdate }) => {
     const isDone = task.status === "done";
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.target.blur();
+        }
+    };
 
     return (
         <div style={cardStyle(isDone)}>
             <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "5px" }}>
-                    <h4 style={{ margin: 0, color: "#333" }}>{task.name}</h4>
+                    {/* Editable Task Name */}
+                    <input
+                        style={editableNameStyle}
+                        defaultValue={task.name}
+                        onKeyDown={handleKeyDown}
+                        onBlur={(e) => {
+                            if (e.target.value !== task.name) {
+                                onUpdate(task.id, { name: e.target.value });
+                            }
+                        }}
+                    />
                     {projectName && (
                         <span style={projectBadgeStyle}>{projectName}</span>
                     )}
                 </div>
-                <p style={{ margin: 0, fontSize: "14px", color: "#666" }}>{task.description}</p>
+
+                {/* Editable Description */}
+                <textarea
+                    style={editableDescStyle}
+                    defaultValue={task.description}
+                    placeholder="Add a description..."
+                    onBlur={(e) => {
+                        if (e.target.value !== task.description) {
+                            onUpdate(task.id, { description: e.target.value });
+                        }
+                    }}
+                />
 
                 <div style={{ display: "flex", gap: "16px", marginTop: "12px", flexWrap: "wrap" }}>
+                    
+                    <label style={inlineLabelStyle}>
+                        Sprint:
+                        <select
+                            value={task.sprint || ""}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                onUpdate(task.id, { sprint: val === "" ? null : parseInt(val) });
+                            }}
+                            style={{...inlineSelectStyle, fontWeight: "bold", color: task.sprint ? "#1976d2" : "#666"}}
+                        >
+                            <option value="">Backlog</option>
+                            {sprints.map((s) => (
+                                <option key={s.id} value={s.id}>{s.name}</option>
+                            ))}
+                        </select>
+                    </label>
+
                     <label style={inlineLabelStyle}>
                         Priority:
                         <select
@@ -100,6 +145,35 @@ const cardStyle = (isDone) => ({
     borderLeft: isDone ? "5px solid #4CAF50" : "5px solid #FFC107",
     marginBottom: "10px",
 });
+
+const editableNameStyle = {
+    margin: 0,
+    fontSize: "16px",
+    fontWeight: "bold",
+    color: "#333",
+    border: "1px solid transparent",
+    background: "none",
+    width: "100%",
+    padding: "2px 4px",
+    borderRadius: "4px",
+    outline: "none",
+    cursor: "text",
+};
+
+const editableDescStyle = {
+    margin: 0,
+    fontSize: "14px",
+    color: "#666",
+    border: "1px solid transparent",
+    background: "none",
+    width: "100%",
+    padding: "2px 4px",
+    borderRadius: "4px",
+    outline: "none",
+    resize: "none",
+    fontFamily: "inherit",
+    cursor: "text",
+};
 
 const projectBadgeStyle = {
     fontSize: "11px",
