@@ -35,7 +35,7 @@ const FILTER_OPTIONS = {
     status: STATUS_OPTIONS.map(o => ({ value: o.value, label: o.label })),
 };
 
-const TaskList = ({ project = null, refreshKey = 0, type = "all", sprintId = null, sprints = [], projectUsers = [] }) => {
+const TaskList = ({ project = null, refreshKey = 0, type = "all", sprintId = null, sprints = [], projectUsers = [], onTaskAction }) => {
     const [tasks, setTasks] = useState([]);
     // ID -> name map, only used in my tasks view
     const [projectNameMap, setProjectNameMap] = useState({});
@@ -47,32 +47,37 @@ const TaskList = ({ project = null, refreshKey = 0, type = "all", sprintId = nul
     const getToken = () => localStorage.getItem("access_token");
 
 useEffect(() => {
-        const fetchTasks = async () => {
-            const headers = { Authorization: `Bearer ${getToken()}` };
-            try {
-                if (project) {
-                    const res = await axios.get(
-                        `http://localhost:8000/api/projects/${project.id}/tasks/`,
-                        { headers }
-                    );
-                    setTasks(res.data);
-                } else {
-                    const [tasksRes, projectsRes] = await Promise.all([
-                        axios.get(`http://localhost:8000/api/tasks/my/`, { headers }),
-                        axios.get(`http://localhost:8000/api/projects/`, { headers }),
-                    ]);
-                    setTasks(tasksRes.data);
-                    const nameMap = {};
-                    projectsRes.data.forEach(p => { nameMap[p.id] = p.name; });
-                    setProjectNameMap(nameMap);
+    const fetchTasks = async () => {
+        const headers = { Authorization: `Bearer ${getToken()}` };
+        try {
+            if (project) {
+                let url = `http://localhost:8000/api/projects/${project.id}/tasks/`;
+                
+                if (type === "backlog") {
+                    url += "?backlog=true";
+                } else if (type === "sprint" && sprintId) {
+                    url = `http://localhost:8000/api/projects/${project.id}/sprints/${sprintId}/tasks/`;
                 }
-            } catch (err) {
-                console.error("Failed to fetch tasks:", err.response?.status, err.response?.data);
-            }
-        };
 
-        fetchTasks();
-    }, [project, refreshKey]);
+                const res = await axios.get(url, { headers });
+                setTasks(res.data);
+            } else {
+                const [tasksRes, projectsRes] = await Promise.all([
+                    axios.get(`http://localhost:8000/api/tasks/my/`, { headers }),
+                    axios.get(`http://localhost:8000/api/projects/`, { headers }),
+                ]);
+                setTasks(tasksRes.data);
+                const nameMap = {};
+                projectsRes.data.forEach(p => { nameMap[p.id] = p.name; });
+                setProjectNameMap(nameMap);
+            }
+        } catch (err) {
+            console.error("Failed to fetch tasks:", err.response?.status, err.response?.data);
+        }
+    };
+
+    fetchTasks();
+}, [project, refreshKey, sprints, type, sprintId]);
 
     const handleUpdateTask = async (taskId, fields) => {
         try {
@@ -108,6 +113,7 @@ useEffect(() => {
             });
 
             setTasks(prev => prev.map(t => t.id === taskId ? res.data : t));
+            if (onTaskAction) onTaskAction();
 
         } catch (err) {
             console.error("Failed to update task:", err.response?.status, err.response?.data);
@@ -120,6 +126,7 @@ useEffect(() => {
                 headers: { Authorization: `Bearer ${getToken()}` },
             });
             setTasks(prev => prev.filter(t => t.id !== taskId));
+            if (onTaskAction) onTaskAction();
         } catch (err) {
             console.error("Failed to delete task:", err.response?.status, err.response?.data);
         }

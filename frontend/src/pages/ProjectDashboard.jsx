@@ -1,24 +1,23 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router";
-
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { authLogout } from "../auth/auth";
 import ProjectEdit from "../components/ProjectEdit";
-
-import ProjectTasksView from "../components/ProjectTasksView";
 import ProjectBacklog from "./ProjectBacklog";
-// import ProductBacklog from "./ProductBacklog";
-// import SprintBacklog from "./SprintBacklog";
+
 
 function ProjectDashboard() {
     const navigate = useNavigate();
     const { projectId } = useParams();
 
-    const [view, setView] = useState("tasks");
+    const [view, setView] = useState("backlog");
     const [project, setProject] = useState(null);
     const [editingProject, setEditingProject] = useState(null)
+
+    const [refreshKey, setRefreshKey] = useState(0);
+    const triggerRefresh = () => setRefreshKey(prev => prev + 1);
 
     useEffect(() => {
         const fetchProject = async () => {
@@ -112,12 +111,14 @@ function ProjectDashboard() {
             <div style={mainStyle}>
                 <h1>{project ? `${project.name}'s Dashboard` : "Loading Project..."}</h1>
 
-                <nav style={{ marginTop: "20px", display: "flex", gap: "20px" }}>
+                <nav style={{ marginTop: "20px", display: "flex", gap: "20px" }}> 
                     <button
-                        style={view === "tasks" ? activeTabStyle : tabStyle}
-                        onClick={() => setView("tasks")}
+                        style={view === "backlog" ? activeTabStyle : tabStyle}
+                        onClick={() => setView("backlog")}
+                        refreshKey={refreshKey}
+                        onTaskCreated={triggerRefresh}
                     >
-                        Tasks
+                        Backlog
                     </button>
 
                     <button
@@ -127,33 +128,19 @@ function ProjectDashboard() {
                         Settings
                     </button>
 
-                    <button
-                        style={view === "backlog" ? activeTabStyle : tabStyle}
-                        onClick={() => setView("backlog")}
-                    >
-                        Backlog
-                    </button>
-
-                    {/* <button
-                        style={view === "product-backlog" ? activeTabStyle : tabStyle}
-                        onClick={() => setView("product-backlog")}
-                    >
-                        Settings
-                    </button>
-
-                    <button
-                        style={view === "sprint-backlog" ? activeTabStyle : tabStyle}
-                        onClick={() => setView("sprint-backlog")}
-                    >
-                        Settings
-                    </button> */}
                 </nav>
 
                 <div style={{ marginTop: "20px" }}>
-                    {view === "tasks" && <ProjectTasksView key={projectId} projectId={projectId} />}
+                    {view === "backlog" && (
+                        <ProjectBacklog 
+                            project={project} 
+                            onTaskCreated={() => {
+                                setRefreshKey(prev => prev + 1); 
+                            }}
+                        />
+                    )}
                     {view === "settings" && project && (
                         <div style={{ maxWidth: "1325px", marginTop: "30px" }}>
-                            {/* Header Row (matches dashboard style) */}
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                                 <h2 style={{ margin: 0 }}>Project Settings</h2>
 
@@ -184,16 +171,6 @@ function ProjectDashboard() {
                             </div>
                         </div>
                     )}
-                    {view === "backlog" && (
-                        <ProjectBacklog 
-                            project={project} 
-                            onTaskCreated={() => {
-                                setProject({...project}); 
-                            }} 
-                        />
-                    )}
-                    {/* {view === "product" && <ProductBacklog projectId={projectId} />} */}
-                    {/* {view === "sprint" && <SprintBacklog projectId={projectId} />} */}
                 </div>
             </div>
 
