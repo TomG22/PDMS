@@ -85,9 +85,13 @@ const handleUpdateTask = async (taskId, fields) => {
             prev.map(t => (t.id === taskId ? res.data : t))
         );
 
+<<<<<<< HEAD
         if (onTaskAction) {
             await onTaskAction(); 
         }
+=======
+        if (onTaskAction) onTaskAction();
+>>>>>>> d499d12 (refresh token implementation)
     } catch (err) {
         console.error("Failed to update task:", err.response?.status, err.response?.data);
     }
