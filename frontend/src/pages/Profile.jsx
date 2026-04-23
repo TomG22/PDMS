@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { useAuth } from "../hooks/useAuth";
 import axios from "axios";
 import DeleteUser from "../components/DeleteUser";
 import Navbar from "../components/Navbar";
 
 const Profile = () => {
+  useAuth();
   const [profile, setProfile] = useState({ firstName: "", lastName: "", email: "", bio: "" });
   const [status, setStatus] = useState({ type: "", message: "" });
   const [loading, setLoading] = useState(true);
@@ -15,10 +17,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const accessToken = localStorage.getItem("access_token");
-        if (!accessToken) {
-          navigate("/login");
-          return;
-        }
+
         const response = await axios.get("http://localhost:8000/api/user/", {
           headers: { Authorization: `Bearer ${accessToken}` },
         });

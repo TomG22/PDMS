@@ -1,9 +1,11 @@
 import React from "react";
 import { useLogout } from "../hooks/useLogout";
+import { useAuth } from "../hooks/useAuth";
 import Navbar from "../components/Navbar";
 import TaskList from "../components/TaskList";
 
 const UserTasksView = () => {
+  useAuth();
 
   const logout = useLogout();
 

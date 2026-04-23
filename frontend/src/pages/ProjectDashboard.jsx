@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router";
 import { useLogout } from "../hooks/useLogout";
+import { useAuth } from "../hooks/useAuth";
 import Navbar from "../components/Navbar";
 import ProjectEdit from "../components/ProjectEdit";
 import ProjectBacklog from "./ProjectBacklog";
 
 
 function ProjectDashboard() {
+  useAuth();
   const navigate = useNavigate();
   const { projectId } = useParams();
 
@@ -22,11 +24,6 @@ function ProjectDashboard() {
     const fetchProject = async () => {
       try {
         const token = localStorage.getItem("access_token");
-
-        if (!token) {
-          navigate("/login");
-          return;
-        }
 
         const res = await axios.get(
           `http://localhost:8000/api/projects/${projectId}/`,
