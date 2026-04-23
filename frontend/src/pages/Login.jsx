@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { authLogin } from "../auth/auth";
-
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -14,24 +12,22 @@ const Login = () => {
     e.preventDefault();
     try {
       await authLogin(username, password);
-      console.log("Form clicked");
+      console.log("Authorized login from the frontend");
       navigate("/projects-view");
     } catch (error) {
       console.error("Login failed:", error.response?.data || error.message);
+      alert("Login failed. Please check your credentials.");
     }
   };
 
   return (
     <>
-      <Navbar 
-                ctaText="Register" 
-                ctaPath="/register" 
-                links={[
-                    {label: "Homepage", to: "/"},
-                    {label: "About", to:"/"}, 
-                    {label:"Gallery", to:"/"}
-                ]}
-            />
+      <Navbar
+        links={[
+          { label: "Homepage", to: "/" },
+          { label: "Register", to: "/register" },
+        ]}
+      />
       <div style={{ padding: "120px 5%", display: "flex", justifyContent: "center" }}>
         <div style={{ width: "100%", maxWidth: "600px" }}>
           <div
@@ -76,8 +72,6 @@ const Login = () => {
           </form>
         </div>
       </div>
-
-      <Footer />
     </>
   );
 };
@@ -91,12 +85,12 @@ const inputStyle = {
   border: "none",
   borderBottom: "1px solid #C1C7CD",
   fontSize: "16px",
-  borderRadius : "7px", 
+  borderRadius: "7px",
 };
 
 const buttonStyle = {
   padding: "12px 32px",
-  background: "#121619",
+  background: "#2C2C2C",
   color: "white",
   borderRadius: "8px",
   border: "none",

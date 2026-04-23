@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 import { authRegister } from "../auth/auth";
 
 const Register = () => {
@@ -24,20 +23,19 @@ const Register = () => {
 
   return (
     <>
-      <Navbar 
-                ctaText="Login" 
-                ctaPath="/login" 
-                links={[
-                    {label: "Homepage", to: "/"},
-                    {label: "About", to:"/"}, 
-                    {label:"Gallery", to:"/"}
-                ]}
-            />
+      <Navbar
+        links={[
+          { label: "My Tasks", to: "/user-tasks-view" },
+          { label: "My Projects", to: "/projects-view" },
+          { label: "My Profile", to: "/profile" },
+          { label: "Login", to: "/login" }
+        ]}
+      />
 
       <form onSubmit={handleSubmit}>
         <div style={{ padding: "120px 5%", display: "flex", justifyContent: "center" }}>
           <div style={{ width: "100%", maxWidth: "600px" }}>
-            
+
             <div
               style={{
                 textAlign: "center",
@@ -73,7 +71,7 @@ const Register = () => {
                 onChange={(e) => setLastName(e.target.value)}
               />
             </div>
-            
+
 
             {/* Email */}
             <div style={{ marginBottom: "24px" }}>
@@ -107,8 +105,6 @@ const Register = () => {
           </div>
         </div>
       </form>
-
-      <Footer />
     </>
   );
 };
