@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import { authRegister } from "../auth/auth";
-import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
