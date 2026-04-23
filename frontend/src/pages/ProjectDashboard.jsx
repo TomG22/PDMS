@@ -103,8 +103,6 @@ function ProjectDashboard() {
           <button
             style={view === "backlog" ? activeTabStyle : tabStyle}
             onClick={() => setView("backlog")}
-            refreshKey={refreshKey}
-            onTaskCreated={triggerRefresh}
           >
             Backlog
           </button>
@@ -122,9 +120,8 @@ function ProjectDashboard() {
           {view === "backlog" && (
             <ProjectBacklog
               project={project}
-              onTaskCreated={() => {
-                setRefreshKey(prev => prev + 1);
-              }}
+              onTaskCreated={() => setRefreshKey(prev => prev + 1)}
+              refreshKey={refreshKey}
             />
           )}
           {view === "settings" && project && (
