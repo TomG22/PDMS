@@ -2,7 +2,10 @@ import { useState, useEffect } from "react";
 import api from "../api/client";
 import { useNavigate, useParams } from "react-router";
 import { useLogout } from "../hooks/useLogout";
+<<<<<<< HEAD
 import { useAuth } from "../hooks/useAuth";
+=======
+>>>>>>> 6e9ad95 (Fixed some auth routing relating to the navbar and login/logout frontend handlers)
 import Navbar from "../components/Navbar";
 import ProjectEdit from "../components/ProjectEdit";
 import ProjectBacklog from "./ProjectBacklog";
@@ -10,20 +13,41 @@ import AddUser from "../components/AddUser";
 
 
 function ProjectDashboard() {
+<<<<<<< HEAD
   useAuth();
+=======
+>>>>>>> 6e9ad95 (Fixed some auth routing relating to the navbar and login/logout frontend handlers)
   const navigate = useNavigate();
   const { projectId } = useParams();
   const [view, setView] = useState("backlog");
   const [project, setProject] = useState(null);
   const [editingProject, setEditingProject] = useState(null)
+<<<<<<< HEAD
   const [showAddUser, setShowAddUser] = useState(false); 
 
   const [refreshKey, setRefreshKey] = useState(0);
+=======
+
+  const [refreshKey, setRefreshKey] = useState(0);
+  const triggerRefresh = () => setRefreshKey(prev => prev + 1);
+>>>>>>> 6e9ad95 (Fixed some auth routing relating to the navbar and login/logout frontend handlers)
 
   useEffect(() => {
     const fetchProject = async () => {
       try {
+<<<<<<< HEAD
         const res = await api.get(`/projects/${projectId}/`);
+=======
+        const token = localStorage.getItem("access_token");
+
+<<<<<<< HEAD
+        const res = await axios.get(
+          `http://localhost:8000/api/projects/${projectId}/`,
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        );
+
         setProject(res.data);
       } catch (err) {
         console.error("Failed to fetch project:", err);
@@ -35,11 +59,16 @@ function ProjectDashboard() {
 
   const handleEdit = async (id, updatedFields) => {
     try {
-      const res = await api.put(
-        `/projects/${id}/`,
+      const token = localStorage.getItem("access_token");
+
+      const res = await axios.put(
+        `http://localhost:8000/api/projects/${id}/`,
         {
           name: updatedFields.title,
           description: updatedFields.description,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
@@ -52,8 +81,21 @@ function ProjectDashboard() {
 
   const handleRemove = async () => {
     try {
-      await api.delete(`/projects/${projectId}/`);
+      const token = localStorage.getItem("access_token");
 
+      await axios.delete(
+        `http://localhost:8000/api/projects/${projectId}/`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+=======
+        if (!token) {
+          navigate("/login");
+          return;
+>>>>>>> 6e9ad95 (Fixed some auth routing relating to the navbar and login/logout frontend handlers)
+        }
+      );
+
+<<<<<<< HEAD
       // redirect after delete
       navigate("/projects-view");
     } catch (err) {
@@ -128,6 +170,112 @@ function ProjectDashboard() {
                       onClose={() => setShowAddUser(false)}
                     />
                   )}
+=======
+        const res = await axios.get(
+          `http://localhost:8000/api/projects/${projectId}/`,
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        );
+
+>>>>>>> 0679831 (Fixed some auth routing relating to the navbar and login/logout frontend handlers)
+        setProject(res.data);
+      } catch (err) {
+        console.error("Failed to fetch project:", err);
+      }
+    };
+
+    fetchProject();
+  }, [projectId, navigate]);
+
+  const handleEdit = async (id, updatedFields) => {
+    try {
+      const res = await api.put(
+        `/projects/${id}/`,
+        {
+          name: updatedFields.title,
+          description: updatedFields.description,
+        }
+      );
+
+      setProject(res.data);
+      setEditingProject(null);
+    } catch (err) {
+      console.error("Failed to update project:", err);
+    }
+  };
+
+  const handleRemove = async () => {
+    try {
+      await api.delete(`/projects/${projectId}/`);
+
+      // redirect after delete
+      navigate("/projects-view");
+    } catch (err) {
+      console.error("Failed to delete project:", err);
+    }
+  };
+
+  const logout = useLogout();
+
+  return (
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <Navbar
+        links={[
+          { label: "My Tasks", to: "/user-tasks-view" },
+          { label: "My Projects", to: "/projects-view" },
+          { label: "My Profile", to: "/profile" },
+          {
+            label: "Logout",
+            onClick: logout
+          }
+        ]}
+      />
+      <div style={mainStyle}>
+        <h1>{project ? `${project.name}'s Dashboard` : "Loading Project..."}</h1>
+
+        <nav style={{ marginTop: "20px", display: "flex", gap: "20px" }}>
+          <button
+            style={view === "backlog" ? activeTabStyle : tabStyle}
+            onClick={() => setView("backlog")}
+            refreshKey={refreshKey}
+            onTaskCreated={triggerRefresh}
+          >
+            Backlog
+          </button>
+
+          <button
+            style={view === "settings" ? activeTabStyle : tabStyle}
+            onClick={() => setView("settings")}
+          >
+            Settings
+          </button>
+
+        </nav>
+
+        <div style={{ marginTop: "20px" }}>
+          {view === "backlog" && (
+            <ProjectBacklog
+              project={project}
+              onTaskCreated={() => {
+                setRefreshKey(prev => prev + 1);
+              }}
+            />
+          )}
+          {view === "settings" && project && (
+            <div style={{ maxWidth: "1325px", marginTop: "30px" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <h2 style={{ margin: 0 }}>Project Settings</h2>
+
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button style={primaryBtn} onClick={() => setEditingProject(project)}>
+                    Edit Project
+                  </button>
+
+                  <button style={dangerBtn} onClick={handleRemove}>
+                    Delete Project
+                  </button>
+>>>>>>> 6e9ad95 (Fixed some auth routing relating to the navbar and login/logout frontend handlers)
                 </div>
               </div>
 
