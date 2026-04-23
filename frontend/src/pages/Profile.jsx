@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../hooks/useAuth";
+import { useLogout } from "../hooks/useLogout";
 import axios from "axios";
 import DeleteUser from "../components/DeleteUser";
 import Navbar from "../components/Navbar";
 
 const Profile = () => {
   useAuth();
+
+  const logout = useLogout();
+
   const [profile, setProfile] = useState({ firstName: "", lastName: "", email: "", bio: "" });
   const [status, setStatus] = useState({ type: "", message: "" });
   const [loading, setLoading] = useState(true);
@@ -83,6 +87,10 @@ const Profile = () => {
           { label: "My Tasks", to: "/user-tasks-view" },
           { label: "My Projects", to: "/user-tasks-view" },
           { label: "My Profile", to: "/profile" },
+          {
+            label: "Logout",
+            onClick: logout
+          }
         ]}
       />
 
