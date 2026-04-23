@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import axios from "axios";
+import api from "../api/client";
 import TaskCreate from "../components/TaskCreate";
 
 function ProjectTasks({ projectId }) {
@@ -19,50 +19,24 @@ function ProjectTasks({ projectId }) {
                 return;
             }
 
-            let res = await axios.get(
-                `http://localhost:8000/api/projects/${projectId}/tasks/`,
-                {
-                    headers: { Authorization: `Bearer ${token}` }
-                }
-            ).catch(async (err) => {
-                if (err.response?.status === 401) {
-                    const refresh = localStorage.getItem("refresh_token");
-
-                    const refreshRes = await axios.post(
-                        "http://localhost:8000/api/token/refresh/",
-                        { refresh }
-                    );
-
-                    token = refreshRes.data.access;
-                    localStorage.setItem("access_token", token);
-
-                    return axios.get(
-                        `http://localhost:8000/api/projects/${projectId}/tasks/`,
-                        {
-                            headers: { Authorization: `Bearer ${token}` }
-                        }
-                    );
-                }
-                throw err;
-            });
-
+            let res = await api.get(`/projects/${projectId}/tasks/`);
             setTasks(res.data);
-            console.log("Fetched tasks:", res.data);
+                
         } catch (err) {
-            console.error("Failed to fetch tasks", err);
-            navigate("/login");
+            console.error("Failed to fetch tasks:", err);
+            if (err.response?.status === 401) {
+                navigate("/login", {replace: true});
+            }
         }
     };
 
     useEffect(() => {
         const fetchMetadata = async () => {
             try {
-                const token = localStorage.getItem("access_token");
-                const headers = { Authorization: `Bearer ${token}` };
             
                 const [projRes, sprintRes] = await Promise.all([
-                    axios.get(`http://localhost:8000/api/projects/${projectId}/`, { headers }),
-                    axios.get(`http://localhost:8000/api/projects/${projectId}/sprints/`, { headers })
+                    api.get(`/projects/${projectId}/`),
+                    api.get(`/projects/${projectId}/sprints/`)
                 ]);
                 
                 setProjectUsers(projRes.data.users || []);
@@ -89,51 +63,20 @@ function ProjectTasks({ projectId }) {
                 completed: false,
                 project: Number(projectId)
             };
+        await api.post(`/projects/${projectId}/tasks/`, payload);
 
-            const postTask = async (authToken) => {
-                return await axios.post(
-                    `http://localhost:8000/api/projects/${projectId}/tasks/`,
-                    payload,
-                    { headers: { Authorization: `Bearer ${authToken}` } }
-                );
-            };
-
-            let res;
-            try {
-                res = await postTask(token);
-            } catch (err) {
-                if (err.response?.status === 401) {
-                    const refresh = localStorage.getItem("refresh_token");
-                    const refreshRes = await axios.post(
-                        "http://localhost:8000/api/token/refresh/",
-                        { refresh }
-                    );
-
-                    token = refreshRes.data.access;
-                    localStorage.setItem("access_token", token);
-                    
-                    res = await postTask(token);
-                } else {
-                    throw err;
-                }
-            }
-            await fetchTasks();
-            setShowCreate(false);
-
+        await fetchTasks();
+        setShowCreate(false);
         } catch (err) {
             console.error("Failed to create task:", err);
             console.log("ERROR DATA:", err.response?.data);
         }
     };
+            
 
     const handleUpdateTask = async (taskId, fields) => {
         try {
-            const token = localStorage.getItem("access_token");
-            const res = await axios.patch(
-                `http://localhost:8000/api/tasks/${taskId}/`,
-                fields,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            const res = await api.patch(`/tasks/${taskId}/`, fields);
             
             // This is the line causing the error if 'setTasks' isn't defined
             setTasks(prev => prev.map(t => t.id === taskId ? res.data : t));
@@ -144,12 +87,7 @@ function ProjectTasks({ projectId }) {
 
     const handleRemoveTask = async (taskId) => {
         try {
-            const token = localStorage.getItem("access_token");
-
-            await axios.delete(
-                `http://localhost:8000/api/tasks/${taskId}/`,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            await api.delete(`/tasks/${taskId}/`);
 
             setTasks(prev => prev.filter(t => t.id !== taskId));
 

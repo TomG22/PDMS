@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/client";
 import { useNavigate } from "react-router";
 import { useLogout } from "../hooks/useLogout";
 import Navbar from "../components/Navbar";
@@ -13,22 +13,13 @@ function UserDashboard() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const accessToken = localStorage.getItem("access_token");
-        if (!accessToken) {
-          navigate("/login");
-          console.error("Access token is missing or expired");
-          return;
-        }
-
-        const res = await axios.get("http://localhost:8000/api/projects/", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
+        const res = await api.get("/projects/");
         setProjects(res.data);
       } catch (err) {
         console.error("Failed to fetch projects:", err);
+        if (err.response?.status === 401) {
+          navigate("/login", { replace: true });
+        }
       }
     };
 
@@ -41,19 +32,10 @@ function UserDashboard() {
 
   const handleAdd = async (title, description) => {
     try {
-      const token = localStorage.getItem("access_token");
-
-      const res = await axios.post("http://localhost:8000/api/projects/",
-        {
-          name: title,
-          description: description,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await api.post("/projects/", {
+        name: title,
+        description: description,
+      });
 
       setProjects(prev => [...prev, res.data]);
       setShowCreate(false);
@@ -61,20 +43,13 @@ function UserDashboard() {
       console.error("Failed to create project:", err);
     }
   }
+  
+    
 
 
   const handleRemove = async (id) => {
     try {
-      const token = localStorage.getItem("access_token");
-
-      await axios.delete(`http://localhost:8000/api/projects/${id}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+      await api.delete(`/projects/${id}/`);
       setProjects(prev => prev.filter(p => p.id !== id));
     } catch (err) {
       console.error("Failed to remove project:", err);
@@ -83,23 +58,14 @@ function UserDashboard() {
 
   const handleEdit = async (id, updatedFields) => {
     try {
-      const token = localStorage.getItem("access_token");
-
-      const res = await axios.put(`http://localhost:8000/api/projects/${id}/`,
+      const res = await api.put(`/projects/${id}/`,
         {
           name: updatedFields.title,
           description: updatedFields.description,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+        });
       setProjects(prev => prev.map(p => p.id === id ? res.data : p));
     } catch (err) {
-      console.error("Failed to update/edit project:", err);
+      console.error("Failed to edit project:", err);
     }
   }
 

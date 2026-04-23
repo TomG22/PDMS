@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../hooks/useAuth";
-import axios from "axios";
+import api from "../api/client";
 import TaskList from "../components/TaskList";
 import TaskCreate from "../components/TaskCreate";
 import SprintCreate from "../components/SprintCreate";
@@ -146,10 +146,8 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
 
   const fetchSprints = useCallback(async () => {
     if (!project?.id) return;
-    const token = localStorage.getItem("access_token");
-    const headers = { Authorization: `Bearer ${token}` };
     try {
-      const res = await axios.get(`http://localhost:8000/api/projects/${project.id}/sprints/`, { headers });
+      const res = await api.get(`/projects/${project.id}/sprints/`);
       setSprints(res.data);
     } catch (err) {
       console.error("Failed to fetch sprints", err);
@@ -173,19 +171,15 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
   };
 
   const handleUpdateSprint = async (sprintId) => {
-    const token = localStorage.getItem("access_token");
-    const headers = { Authorization: `Bearer ${token}` };
+  
     const currentSprint = sprints.find(s => s.id === sprintId);
 
     try {
-      await axios.patch(
-        `http://localhost:8000/api/projects/${project.id}/sprints/${sprintId}/`,
-        {
-          ...editData,
-          completed: currentSprint?.completed,
-          on_incomplete_tasks: "backlog"
+      await api.patch(`/projects/${project.id}/sprints/${sprintId}/`, {
+        ...editData,
+        completed: currentSprint?.completed,
+        on_incomplete_tasks: "backlog"
         },
-        { headers }
       );
       setEditingSprintId(null);
       fetchSprints();
@@ -195,13 +189,8 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
   };
 
   const handleDeleteSprint = async (sprintId) => {
-    const token = localStorage.getItem("access_token");
-    const headers = { Authorization: `Bearer ${token}` };
     try {
-      await axios.delete(
-        `http://localhost:8000/api/projects/${project.id}/sprints/${sprintId}/?on_incomplete_tasks=backlog`,
-        { headers }
-      );
+      await api.delete(`/projects/${project.id}/sprints/${sprintId}/?on_incomplete_tasks=backlog`);
       fetchSprints();
       onTaskCreated();
     } catch (err) {
@@ -210,12 +199,10 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
   };
 
   const handleCreateTask = async (name, description, priority, assignedTo, sprintId) => {
-    const token = localStorage.getItem("access_token");
-    const headers = { Authorization: `Bearer ${token}` };
     try {
-      await axios.post(`http://localhost:8000/api/projects/${project.id}/tasks/`, {
+      await api.post(`/projects/${project.id}/tasks/`, {
         name, description, priority, assigned_to: assignedTo, sprint: sprintId, project: project.id
-      }, { headers });
+      });
       onTaskCreated();
       setShowTaskModal(false);
     } catch (err) {

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import axios from "axios";
+import api from "../api/client";
 import TaskCard from "./TaskCard";
 
 const PRIORITY_OPTIONS = [
@@ -44,27 +44,25 @@ const TaskList = ({ project = null, refreshKey = 0, type = "all", sprintId = nul
     const [openFilter, setOpenFilter] = useState(null);
     const [page, setPage] = useState(1);
 
-    const getToken = () => localStorage.getItem("access_token");
 
 useEffect(() => {
     const fetchTasks = async () => {
-        const headers = { Authorization: `Bearer ${getToken()}` };
         try {
             if (project) {
-                let url = `http://localhost:8000/api/projects/${project.id}/tasks/`;
+                let url = `/projects/${project.id}/tasks/`;
                 
                 if (type === "backlog") {
                     url += "?backlog=true";
                 } else if (type === "sprint" && sprintId) {
-                    url = `http://localhost:8000/api/projects/${project.id}/sprints/${sprintId}/tasks/`;
+                    url = `/projects/${project.id}/sprints/${sprintId}/tasks/`;
                 }
 
-                const res = await axios.get(url, { headers });
+                const res = await api.get(url);
                 setTasks(res.data);
             } else {
                 const [tasksRes, projectsRes] = await Promise.all([
-                    axios.get(`http://localhost:8000/api/tasks/my/`, { headers }),
-                    axios.get(`http://localhost:8000/api/projects/`, { headers }),
+                    api.get(`/tasks/my/`),
+                    api.get(`/projects/`),
                 ]);
                 setTasks(tasksRes.data);
                 const nameMap = {};
@@ -77,54 +75,25 @@ useEffect(() => {
     };
 
     fetchTasks();
-}, [project, refreshKey, sprints, type, sprintId]);
+}, [project, refreshKey, type, sprintId]);
 
-    const handleUpdateTask = async (taskId, fields) => {
-        try {
-            let token = localStorage.getItem("access_token");
+const handleUpdateTask = async (taskId, fields) => {
+    try {
+        const res = await api.patch(`/tasks/${taskId}/`, fields);
 
-            const res = await axios.patch(
-                `http://localhost:8000/api/tasks/${taskId}/`,
-                fields,
-                {
-                    headers: { Authorization: `Bearer ${token}` }
-                }
-            ).catch(async (err) => {
-                if (err.response?.status === 401) {
-                    const refresh = localStorage.getItem("refresh_token");
+        setTasks(prev =>
+            prev.map(t => (t.id === taskId ? res.data : t))
+        );
 
-                    const refreshRes = await axios.post(
-                        "http://localhost:8000/api/token/refresh/",
-                        { refresh }
-                    );
-
-                    token = refreshRes.data.access;
-                    localStorage.setItem("access_token", token);
-
-                    return axios.patch(
-                        `http://localhost:8000/api/tasks/${taskId}/`,
-                        fields,
-                        {
-                            headers: { Authorization: `Bearer ${token}` }
-                        }
-                    );
-                }
-                throw err;
-            });
-
-            setTasks(prev => prev.map(t => t.id === taskId ? res.data : t));
-            if (onTaskAction) onTaskAction();
-
-        } catch (err) {
-            console.error("Failed to update task:", err.response?.status, err.response?.data);
-        }
-    };
+        if (onTaskAction) onTaskAction();
+    } catch (err) {
+        console.error("Failed to update task:", err.response?.status, err.response?.data);
+    }
+};
 
     const handleRemoveTask = async (taskId) => {
         try {
-            await axios.delete(`http://localhost:8000/api/tasks/${taskId}/`, {
-                headers: { Authorization: `Bearer ${getToken()}` },
-            });
+            await api.delete(`/tasks/${taskId}/`);
             setTasks(prev => prev.filter(t => t.id !== taskId));
             if (onTaskAction) onTaskAction();
         } catch (err) {
