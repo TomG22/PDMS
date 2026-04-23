@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { useAuth } from "../hooks/useAuth";
+import { useLogout } from "../hooks/useLogout";
 import axios from "axios";
 import DeleteUser from "../components/DeleteUser";
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import { authLogout } from "../auth/auth";
 
 const Profile = () => {
+  useAuth();
+
+  const logout = useLogout();
+
   const [profile, setProfile] = useState({ firstName: "", lastName: "", email: "", bio: "" });
   const [status, setStatus] = useState({ type: "", message: "" });
   const [loading, setLoading] = useState(true);
@@ -17,10 +21,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const accessToken = localStorage.getItem("access_token");
-        if (!accessToken) {
-          navigate("/login");
-          return;
-        }
+
         const response = await axios.get("http://localhost:8000/api/user/", {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
@@ -60,17 +61,6 @@ const Profile = () => {
     }
   };
 
-  const handleLogout = async () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    try {
-      await authLogout();
-    } catch (error) {
-      console.error("Logout failed:", error.response?.data || error.message);
-    }
-    navigate("/login");
-  };
-
   const fieldStyle = {
     width: "100%",
     padding: "10px 14px",
@@ -92,15 +82,17 @@ const Profile = () => {
 
   return (
     <>
-      <Navbar 
-        ctaText="Logout" 
-        ctaPath="/login" 
-        ctaAction={handleLogout} 
+      <Navbar
         links={[
-            {label: "My Tasks", to: "/user-tasks-view"},
-            {label: "My Projects", to:"/projects-view"}, 
-            {label:"My Profile", to:"/profile"}
-        ]}/>
+          { label: "My Tasks", to: "/user-tasks-view" },
+          { label: "My Projects", to: "/user-tasks-view" },
+          { label: "My Profile", to: "/profile" },
+          {
+            label: "Logout",
+            onClick: logout
+          }
+        ]}
+      />
 
       <div style={{ padding: "120px 5%", maxWidth: "560px", margin: "0 auto" }}>
         <h1 style={{ fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, marginBottom: "8px", textAlign: "center" }}>
@@ -179,8 +171,6 @@ const Profile = () => {
           <DeleteUser />
         </div>
       </div>
-
-      <Footer />
     </>
   );
 };
