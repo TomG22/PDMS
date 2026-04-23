@@ -64,7 +64,6 @@ function ProjectDashboard() {
     }
   };
 
-
   const logout = useLogout();
 
   return (
