@@ -18,7 +18,6 @@ function ProjectDashboard() {
   const [editingProject, setEditingProject] = useState(null)
 
   const [refreshKey, setRefreshKey] = useState(0);
-  const triggerRefresh = () => setRefreshKey(prev => prev + 1);
 
   useEffect(() => {
     const fetchProject = async () => {
