@@ -54,6 +54,7 @@ function ProjectDashboard() {
 
     const handleRemove = async () => {
     try {
+
       await api.delete(`/projects/${projectId}/`);
 
       // redirect after delete
@@ -62,6 +63,7 @@ function ProjectDashboard() {
       console.error("Failed to delete project:", err);
     }
   };
+
 
   const logout = useLogout();
 
