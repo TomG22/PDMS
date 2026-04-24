@@ -6,6 +6,7 @@ import { useAuth } from "../hooks/useAuth";
 import Navbar from "../components/Navbar";
 import ProjectEdit from "../components/ProjectEdit";
 import ProjectBacklog from "./ProjectBacklog";
+import AddUser from "../components/AddUser";
 
 
 function ProjectDashboard() {
@@ -15,6 +16,7 @@ function ProjectDashboard() {
   const [view, setView] = useState("backlog");
   const [project, setProject] = useState(null);
   const [editingProject, setEditingProject] = useState(null)
+  const [showAddUser, setShowAddUser] = useState(false); 
 
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -108,7 +110,7 @@ function ProjectDashboard() {
                 <h2 style={{ margin: 0 }}>Project Settings</h2>
 
                 <div style={{ display: "flex", gap: "10px" }}>
-                  <button style={primaryBtn} onClick={() => {}}>
+                  <button style={primaryBtn} onClick={() => {setShowAddUser(true)}}>
                     Add User
                   </button>
 
@@ -119,6 +121,13 @@ function ProjectDashboard() {
                   <button style={dangerBtn} onClick={handleRemove}>
                     Delete Project
                   </button>
+
+                  {showAddUser && (
+                    <AddUser
+                      projectId={projectId}
+                      onClose={() => setShowAddUser(false)}
+                    />
+                  )}
                 </div>
               </div>
 
