@@ -33,6 +33,7 @@ const SprintSection = ({
   onSave,
   onCancel,
   isCompleted
+  onTaskCreated
 }) => {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -130,7 +131,7 @@ const SprintSection = ({
               sprints={sprints}
               refreshKey={refreshKey}
               projectUsers={projectUsers}
-              onTaskAction={fetchSprints}
+              onTaskAction={onTaskCreated}
             />
           </div>
         )
@@ -260,9 +261,26 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
       {activeSprints.map((sprint) => (
         <SprintSection
           key={sprint.id}
+<<<<<<< HEAD
           {...sharedSprintProps(sprint)}
           onComplete={handleCompleteSprint}
           isCompleted={false}
+=======
+          sprint={sprint}
+          project={project}
+          refreshKey={refreshKey}
+          fetchSprints={fetchSprints}
+          projectUsers={project.users || []}
+          sprints={sprints}
+          onEdit={handleEditClick}
+          onDelete={handleDeleteSprint}
+          isEditing={editingSprintId === sprint.id}
+          editData={editData}
+          setEditData={setEditData}
+          onSave={handleUpdateSprint}
+          onCancel={() => setEditingSprintId(null)}
+          onTaskCreated={onTaskCreated}
+>>>>>>> f46a547 (move tasks between sprints)
         />
       ))}
 
@@ -292,7 +310,7 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
               sprints={sprints}
               refreshKey={refreshKey}
               projectUsers={project.users || []}
-              onTaskAction={fetchSprints}
+              onTaskAction={onTaskCreated}
             />
           </div>
         )}
