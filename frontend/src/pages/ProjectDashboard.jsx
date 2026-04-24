@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api/client";
 import { useNavigate, useParams } from "react-router";
 import { useLogout } from "../hooks/useLogout";
 import { useAuth } from "../hooks/useAuth";
@@ -13,7 +13,6 @@ function ProjectDashboard() {
   useAuth();
   const navigate = useNavigate();
   const { projectId } = useParams();
-
   const [view, setView] = useState("backlog");
   const [project, setProject] = useState(null);
   const [editingProject, setEditingProject] = useState(null)
@@ -24,15 +23,7 @@ function ProjectDashboard() {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const token = localStorage.getItem("access_token");
-
-        const res = await axios.get(
-          `http://localhost:8000/api/projects/${projectId}/`,
-          {
-            headers: { Authorization: `Bearer ${token}` }
-          }
-        );
-
+        const res = await api.get(`/projects/${projectId}/`);
         setProject(res.data);
       } catch (err) {
         console.error("Failed to fetch project:", err);
@@ -44,16 +35,11 @@ function ProjectDashboard() {
 
   const handleEdit = async (id, updatedFields) => {
     try {
-      const token = localStorage.getItem("access_token");
-
-      const res = await axios.put(
-        `http://localhost:8000/api/projects/${id}/`,
+      const res = await api.put(
+        `/projects/${id}/`,
         {
           name: updatedFields.title,
           description: updatedFields.description,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
@@ -66,14 +52,7 @@ function ProjectDashboard() {
 
   const handleRemove = async () => {
     try {
-      const token = localStorage.getItem("access_token");
-
-      await axios.delete(
-        `http://localhost:8000/api/projects/${projectId}/`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await api.delete(`/projects/${projectId}/`);
 
       // redirect after delete
       navigate("/projects-view");

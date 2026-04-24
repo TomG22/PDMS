@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import axios from "axios";
+import api from "../api/client";
 import TaskCreate from "./TaskCreate";
 import TaskList from "./TaskList";
 
@@ -15,19 +15,15 @@ const ProjectTasksView = () => {
     useEffect(() => {
         const fetchProject = async () => {
             try {
-                const accessToken = localStorage.getItem("access_token");
 
-                if (!accessToken) {
-                    navigate("/login");
-                    return;
-                }
-
-                const headers = { Authorization: `Bearer ${accessToken}` };
-                const res = await axios.get(`http://localhost:8000/api/projects/${projectId}/`, { headers });
+                const res = await api.get(`/projects/${projectId}/`);
                 setProject(res.data);
 
             } catch (error) {
                 console.error("Error fetching project:", error);
+                if (error.response?.status === 401) {
+                    navigate("/login", { replace: true });
+                }
             }
         };
 
@@ -36,7 +32,6 @@ const ProjectTasksView = () => {
 
     const handleAddTask = async (name, description, priority = 0, assignedTo = null) => {
         try {
-            let token = localStorage.getItem("access_token");
 
             const taskPayload = {
                 name,
@@ -47,37 +42,17 @@ const ProjectTasksView = () => {
                 assigned_to: assignedTo,
             };
 
-            await axios.post(`http://localhost:8000/api/tasks/`,
-                taskPayload,
-                { headers: { Authorization: `Bearer ${token}` } }
-            ).catch(async (err) => {
-                if (err.response?.status === 401) {
-                    const refresh = localStorage.getItem("refresh_token");
-                    const refreshRes = await axios.post(`http://localhost:8000/api/token/refresh/`, {
-                        refresh: refresh
-                    });
-
-                    token = refreshRes.data.access;
-                    localStorage.setItem("access_token", token);
-
-                    return axios.post(`http://localhost:8000/api/tasks/`,
-                        taskPayload,
-                        { headers: { Authorization: `Bearer ${token}` } }
-                    );
-                }
-                throw err;
-            });
-
+            await api.post(`/tasks/`, taskPayload);
             setShowCreate(false);
-            setRefreshKey(prev => prev + 1);
-
+            setRefreshKey((prev) => prev + 1);
         } catch (err) {
             console.error("Failed to create task:", err.response?.status, err.response?.data);
+
             if (err.response?.status === 401) {
                 alert("Session expired. Please log in again.");
-                navigate("/login");
+                navigate("/login", { replace: true });
             }
-        }
+        }  
     };
 
     const projectUsers = project?.users ?? [];

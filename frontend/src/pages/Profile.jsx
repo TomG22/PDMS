@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../hooks/useAuth";
-import { useLogout } from "../hooks/useLogout";
-import axios from "axios";
+import api from "../api/client";
 import DeleteUser from "../components/DeleteUser";
 import Navbar from "../components/Navbar";
 
 const Profile = () => {
   useAuth();
-
-  const logout = useLogout();
-
   const [profile, setProfile] = useState({ firstName: "", lastName: "", email: "", bio: "" });
   const [status, setStatus] = useState({ type: "", message: "" });
   const [loading, setLoading] = useState(true);
@@ -20,11 +16,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const accessToken = localStorage.getItem("access_token");
-
-        const response = await axios.get("http://localhost:8000/api/user/", {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
+        const response = await api.get("/user/");
         const { email, first_name, last_name, bio } = response.data;
         setProfile({ email, firstName: first_name, lastName: last_name, bio: bio ?? "" });
       } catch (error) {
@@ -46,12 +38,12 @@ const Profile = () => {
     setSaving(true);
     setStatus({ type: "", message: "" });
     try {
-      const accessToken = localStorage.getItem("access_token");
-      await axios.put(
-        "http://localhost:8000/api/user/",
-        { email: profile.email, firstName: profile.firstName, lastName: profile.lastName, bio: profile.bio },
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
+      await api.put("/user/", {
+        email: profile.email,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        bio: profile.bio
+      });
       setStatus({ type: "success", message: "Profile updated successfully." });
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -87,10 +79,6 @@ const Profile = () => {
           { label: "My Tasks", to: "/user-tasks-view" },
           { label: "My Projects", to: "/user-tasks-view" },
           { label: "My Profile", to: "/profile" },
-          {
-            label: "Logout",
-            onClick: logout
-          }
         ]}
       />
 

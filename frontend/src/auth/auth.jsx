@@ -1,4 +1,6 @@
 import axios from "axios";
+import api from "../api/client";
+import { getRefreshToken, setTokens, clearTokens } from "./tokens";
 
 const authLogin = async (username, password) => {
   const { data } = await axios.post(
@@ -8,9 +10,8 @@ const authLogin = async (username, password) => {
       headers: { "Content-Type": "application/json" },
     }
   );
-  localStorage.clear();
-  localStorage.setItem("access_token", data.access);
-  localStorage.setItem("refresh_token", data.refresh);
+  clearTokens();
+  setTokens({ access: data.access, refresh: data.refresh });
   return data;
 };
 
@@ -27,37 +28,15 @@ const authRegister = async (firstName, lastName, email, password) => {
 };
 
 const authLogout = async () => {
-  const accessToken = localStorage.getItem('access_token');
-  const { data } = await axios.post(
-    "http://127.0.0.1:8000/api/logout/",
-    { refresh_token: localStorage.getItem("refresh_token") },
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("refresh_token");
-
+  const refresh = getRefreshToken();
+  const {data } = await api.post("/logout/", { refresh_token: refresh });
+  clearTokens();
   return data;
 };
 
 const authDeleteUser = async (password) => {
-  const accessToken = localStorage.getItem('access_token');
   try {
-    const { data } = await axios.delete(
-      "http://127.0.0.1:8000/api/user/",
-      {
-        data: { password },
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const { data } = await api.delete("/user/", { data: { password } });
     return data;
   } catch (error) {
     throw error.response?.data || error;
