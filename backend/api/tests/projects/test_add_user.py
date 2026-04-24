@@ -50,7 +50,7 @@ class ProjectAddUsersTests(AuthenticatedAPITestCase):
         project_id = response.data["id"]
 
         url = f"/api/projects/{project_id}/users/"
-        response = self.client.post(url, {"user_id":self.new_user.id}, format="json")
+        response = self.client.post(url, {"user_email":self.new_user.email}, format="json")
 
         self.assertEqual(response.status_code, 200)
 
