@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../api/client";
 
 const SprintCreate = ({ projectId, onClose, onSave }) => {
     const [formData, setFormData] = useState({
@@ -28,12 +28,7 @@ const SprintCreate = ({ projectId, onClose, onSave }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem("access_token");
-            await axios.post(
-                `http://localhost:8000/api/projects/${projectId}/sprints/`, 
-                formData, 
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            await api.post(`/projects/${projectId}/sprints/`, formData);
             onSave();
         } catch (err) {
             console.error("Failed to create sprint:", err);

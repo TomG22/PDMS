@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from "react";
-import homefetch from "../components/fetchings";
-import {Link} from "react-router"
+import { getAccessToken, getRefreshToken } from "../auth/tokens";
+import {Link} from "react-router";
 
 const Home = () => {
-    const [message, setMessage] = useState("Fetching...");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    useEffect(() => {
-      const fetchData = async () => {
-        const fetchedMessage = await homefetch();
-        setMessage(fetchedMessage || "Failed to fetch message");
-        console.log(message);
-      };
-
-      fetchData();
-    }, [message]);
-
+  useEffect(() => {
+    const accessToken = getAccessToken();
+    const refreshToken = getRefreshToken();
+    setIsLoggedIn(!!(accessToken || refreshToken));
+  }, []);
 
   return (
     <div style={{ width: "100%", background: "white", fontFamily: "Inter, sans-serif" }}>
@@ -44,6 +39,19 @@ const Home = () => {
           </div>
 
           <div style={{ display: "flex", gap: "16px" }}>
+            { isLoggedIn ? (
+              <Link to={"/projects-view"}
+                style={{
+                  padding: "10px 20px",
+                  background: "white",
+                  color: "black",
+                  borderRadius: "4px",
+                }}
+              >
+                Dashboard
+              </Link>
+            ) : (
+            <>
             <Link to={"/login"}
               style={{
                 padding: "10px 20px",
@@ -64,6 +72,8 @@ const Home = () => {
             >
               Register
             </Link>
+            </>
+            )}
           </div>
         </div>
       </div>

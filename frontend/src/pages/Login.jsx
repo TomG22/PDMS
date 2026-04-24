@@ -24,6 +24,7 @@ const Login = () => {
     <>
       <Navbar
         links={[
+          { label: "Homepage", to: "/" },
           { label: "Register", to: "/register" },
         ]}
       />
