@@ -32,7 +32,7 @@ function AddUser({ projectId, onClose }) {
 
         <input
           type="text"
-          placeholder="Enter user ID"
+          placeholder="Enter user email"
           value={userEmail}
           onChange={(e) => setUserEmail(e.target.value)}
           style={inputStyle}
