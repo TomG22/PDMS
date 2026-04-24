@@ -25,9 +25,6 @@ const Register = () => {
     <>
       <Navbar
         links={[
-          { label: "My Tasks", to: "/user-tasks-view" },
-          { label: "My Projects", to: "/projects-view" },
-          { label: "My Profile", to: "/profile" },
           { label: "Login", to: "/login" }
         ]}
       />
