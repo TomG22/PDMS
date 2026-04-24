@@ -1,23 +1,24 @@
 import React, { useState } from "react";
-import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router";
 import { authRegister } from "../auth/auth";
+import Navbar from "../components/Navbar";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       await authRegister(firstName, lastName, email, password);
+      console.log("Authorized register from the frontend");
+      navigate("/login");
     } catch (error) {
-      console.error(
-        "Registration failed:",
-        error.response?.data || error.message
-      );
+      console.error("Registration failed:", error.response?.data || error.message);
+      alert("Registration failed. Please fill out all of the fields with a unique username.");
     }
   };
 
