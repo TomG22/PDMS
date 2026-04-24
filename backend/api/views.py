@@ -273,6 +273,9 @@ class SprintView(generics.RetrieveUpdateDestroyAPIView):
         elif task_incomplete_behavior == str(Sprint.IncompleteTaskBehavior.MOVE_TO_BACKLOG):
             # Move all incomplete tasks to backlog
             incomplete_tasks.update(sprint=None)
+            # Delete all incomplete tasks
+        elif task_incomplete_behavior == "delete":
+            incomplete_tasks.delete()
 
     def perform_update(self, serializer):
         sprint_id=self.kwargs.get("pk")

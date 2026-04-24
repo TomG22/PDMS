@@ -20,7 +20,7 @@ const formatDate = (dateString) => {
 const SprintSection = ({
   sprint,
   project,
-  refreshKey,
+  globalRefreshKey,
   fetchSprints,
   projectUsers,
   sprints,
@@ -119,7 +119,7 @@ const SprintSection = ({
               type="sprint"
               sprintId={sprint.id}
               sprints={sprints}
-              refreshKey={refreshKey}
+              refreshKey={globalRefreshKey}
               projectUsers={projectUsers}
               onTaskAction={fetchSprints}
             />
@@ -143,16 +143,17 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
     end_date: "",
     goal: ""
   });
-
+  const [globalRefreshKey, setGlobalRefreshKey] = useState(0);
   const fetchSprints = useCallback(async () => {
-    if (!project?.id) return;
-    try {
-      const res = await api.get(`/projects/${project.id}/sprints/`);
-      setSprints(res.data);
-    } catch (err) {
-      console.error("Failed to fetch sprints", err);
-    }
-  }, [project?.id]);
+      if (!project?.id) return;
+      try {
+          const res = await api.get(`/projects/${project.id}/sprints/`);
+          setSprints(res.data);
+          setGlobalRefreshKey(prev => prev + 1); 
+      } catch (err) {
+          console.error("Failed to fetch sprints", err);
+      }
+}, [project?.id]);
 
   useEffect(() => {
     if (project?.id) fetchSprints();
@@ -188,13 +189,20 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
     }
   };
 
-  const handleDeleteSprint = async (sprintId) => {
+  const handleDeleteSprint = async (sprintId, taskAction) => {
     try {
-      await api.delete(`/projects/${project.id}/sprints/${sprintId}/?on_incomplete_tasks=backlog`);
+      await api.delete(`/projects/${project.id}/sprints/${sprintId}/`, {
+        params: { 
+          on_incomplete_tasks: taskAction 
+        }
+      });
+      
       fetchSprints();
       onTaskCreated();
     } catch (err) {
-      console.error("Delete failed", err);
+      const errorMsg = err.response?.data ? JSON.stringify(err.response.data) : err.message;
+      console.error("Delete failed:", errorMsg);
+      alert("Backend says: " + errorMsg);
     }
   };
 
@@ -225,7 +233,7 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
           key={sprint.id}
           sprint={sprint}
           project={project}
-          refreshKey={refreshKey}
+          globalRefreshKey={globalRefreshKey}
           fetchSprints={fetchSprints}
           projectUsers={project.users || []}
           sprints={sprints}
@@ -263,9 +271,9 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
               project={project}
               type="backlog"
               sprints={sprints}
-              refreshKey={refreshKey}
               projectUsers={project.users || []}
               onTaskAction={fetchSprints}
+              refreshKey={globalRefreshKey}
             />
           </div>
         )}
