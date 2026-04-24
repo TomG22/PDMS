@@ -16,7 +16,9 @@ function AddUser({ projectId, onClose }) {
         }
       );
 
-      onClose(); // close modal after success
+      alert(`Successfully added ${userEmail} to project!`);
+
+      onClose();
     } catch (err) {
       console.error("Failed to add user:", err);
       alert("Failed to add user");
