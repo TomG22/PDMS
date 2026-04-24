@@ -30,7 +30,8 @@ const SprintSection = ({
   editData,
   setEditData,
   onSave,
-  onCancel
+  onCancel,
+  onTaskCreated
 }) => {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -121,7 +122,7 @@ const SprintSection = ({
               sprints={sprints}
               refreshKey={refreshKey}
               projectUsers={projectUsers}
-              onTaskAction={fetchSprints}
+              onTaskAction={onTaskCreated}
             />
           </div>
         )
@@ -236,6 +237,7 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
           setEditData={setEditData}
           onSave={handleUpdateSprint}
           onCancel={() => setEditingSprintId(null)}
+          onTaskCreated={onTaskCreated}
         />
       ))}
 
@@ -265,7 +267,7 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
               sprints={sprints}
               refreshKey={refreshKey}
               projectUsers={project.users || []}
-              onTaskAction={fetchSprints}
+              onTaskAction={onTaskCreated}
             />
           </div>
         )}
