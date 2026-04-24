@@ -332,3 +332,21 @@ class MyTaskListView(generics.ListAPIView):
             is_deleted=False,
         ).distinct()
     
+class ProjectUserManageView(APIView): 
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, pk): 
+        try:
+            project = Project.objects.get(id=pk, users=request.user)
+            user_id = request.data.get("user_id")
+            user = User.objects.get(id=user_id)
+
+            project.users.add(user)
+
+            return Response({"detail":"User added to project"}, status=200)
+        except Project.DoesNotExist:
+            return Response({"detail":"Project not found or access denied"}, status=404)
+        except User.DoesNotExist:
+            return Response({"detail":"User not found"}, status=404)
+
+    
