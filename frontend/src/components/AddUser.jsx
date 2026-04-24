@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 
 function AddUser({ projectId, onClose }) {
-  const [userId, setUserId] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
   const handleAddUser = async () => {
     try {
@@ -10,7 +10,7 @@ function AddUser({ projectId, onClose }) {
 
       await axios.post(
         `http://localhost:8000/api/projects/${projectId}/users/`,
-        { user_id: Number(userId) },
+        { user_email: userEmail },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -31,8 +31,8 @@ function AddUser({ projectId, onClose }) {
         <input
           type="text"
           placeholder="Enter user ID"
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
+          value={userEmail}
+          onChange={(e) => setUserEmail(e.target.value)}
           style={inputStyle}
         />
 

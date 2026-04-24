@@ -335,8 +335,8 @@ class ProjectUserManageView(APIView):
     def post(self, request, pk): 
         try:
             project = Project.objects.get(id=pk, users=request.user)
-            user_id = request.data.get("user_id")
-            user = User.objects.get(id=user_id)
+            user_email = request.data.get("user_email")
+            user = User.objects.get(email=user_email)
 
             project.users.add(user)
 
