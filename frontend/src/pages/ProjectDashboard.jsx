@@ -123,6 +123,14 @@ function ProjectDashboard() {
                   <button style={dangerBtn} onClick={handleRemove}>
                     Delete Project
                   </button>
+
+                  {showAddUser && (
+                    <AddUser
+                      projectId={projectId}
+                      onClose={() => setShowAddUser(false)}
+                      project={project}
+                    />
+                  )}
                 </div>
               </div>
 
@@ -140,10 +148,24 @@ function ProjectDashboard() {
                   </p>
                 </div>
               </div>
+              
+              <h2 style={{ margin: 0 }}>Project Users</h2>
+
+              <div style={cardStyle}>
+                {
+                  project?.users.map((user) => (
+                    <div key={user.id} style={userRowStyle}>
+                      {user.first_name} {user.last_name} ({user.email})
+                    </div>
+                  ))
+                }
+              </div>
             </div>
           )}
         </div>
       </div>
+
+      
 
       {editingProject && (
         <ProjectEdit
@@ -152,7 +174,11 @@ function ProjectDashboard() {
           onClose={() => setEditingProject(null)}
         />
       )}
+
+      
     </div>
+
+    
   );
 }
 
@@ -223,5 +249,11 @@ const activeTabStyle = {
   color: "#862424",
   borderBottom: "2px solid #862424",
   fontWeight: "600",
+};
+
+const userRowStyle = {
+  padding: "10px",
+  borderBottom: "1px solid #eee",
+  fontSize: "14px",
 };
 export default ProjectDashboard;
