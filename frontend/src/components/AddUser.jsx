@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-// import axios from "axios";
 import api from "../api/client";
 
 function AddUser({ projectId, onClose, project }) {
@@ -9,8 +8,6 @@ function AddUser({ projectId, onClose, project }) {
   useEffect(() => {
     const fetchAvailableUsers = async () => {
       try {
-        //const token = localStorage.getItem("access_token");
-
         const res = await api.get(`/projects/${projectId}/users/`);
 
         setAvailableUsers(res.data);
@@ -24,8 +21,6 @@ function AddUser({ projectId, onClose, project }) {
 
   const handleAddUser = async () => {
     try {
-      //const token = localStorage.getItem("access_token");
-
       await api.post(`/projects/${projectId}/users/`, {
         user_email: userEmail,
       });
