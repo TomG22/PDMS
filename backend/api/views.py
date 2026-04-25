@@ -348,5 +348,31 @@ class ProjectUserManageView(APIView):
             return Response({"detail":"Project not found or access denied"}, status=404)
         except User.DoesNotExist:
             return Response({"detail":"User not found"}, status=404)
+        
+    def get(self, request, pk):
+        try:
+            project = Project.objects.get(id=pk, users=request.user)
 
-    
+            available_users = User.objects.exclude(
+                id__in=project.users.all()
+            )
+
+            data = [
+                {
+                    "id": user.id,
+                    "email": user.email,
+                    "first_name": user.userprofile.first_name,
+                    "last_name": user.userprofile.last_name,
+                }
+                for user in available_users
+            ]
+
+            return Response(data, status=200)
+
+        except Project.DoesNotExist:
+            return Response(
+                {"detail": "Project not found or access denied"},
+                status=404
+            )
+
+        

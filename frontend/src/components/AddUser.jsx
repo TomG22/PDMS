@@ -1,21 +1,38 @@
-import { useState } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
+// import axios from "axios";
+import api from "../api/client";
 
-function AddUser({ projectId, onClose }) {
+function AddUser({ projectId, onClose, project }) {
   const [userEmail, setUserEmail] = useState("");
+  const [availableUsers, setAvailableUsers] = useState([])
+
+  useEffect(() => {
+    const fetchAvailableUsers = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+
+        const res = await api.get(`/projects/${projectId}/users/`);
+
+        setAvailableUsers(res.data);
+      } catch (err) {
+        console.error("Failed to fetch available users", err);
+      }
+      };
+      fetchAvailableUsers();
+    }, [projectId]);
+
 
   const handleAddUser = async () => {
     try {
       const token = localStorage.getItem("access_token");
 
-      await axios.post(
-        `http://localhost:8000/api/projects/${projectId}/users/`,
-        { user_email: userEmail },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+      await api.post(`/projects/${projectId}/users/`, {
+        user_email: userEmail,
+      });
+      
+      setAvailableUsers(prev =>
+        prev.filter(user => user.email !== userEmail)
       );
-
       alert(`Successfully added ${userEmail} to project!`);
 
       onClose();
@@ -30,13 +47,19 @@ function AddUser({ projectId, onClose }) {
       <div style={modalStyle}>
         <h2>Add User to Project</h2>
 
-        <input
-          type="text"
-          placeholder="Enter user email"
-          value={userEmail}
-          onChange={(e) => setUserEmail(e.target.value)}
-          style={inputStyle}
-        />
+        <select
+        value={userEmail}
+        onChange={(event) => setUserEmail(event.target.value)}
+        style={inputStyle}
+        >
+          <option value="">Select a user</option>
+
+          {availableUsers.map((user) => (
+            <option key={user.email} value={user.email}>
+              {user.last_name}, {user.first_name} ({user.email})
+            </option>
+          ))}
+        </select>
 
         <div style={{ display: "flex", gap: "10px", marginTop: "15px" }}>
           <button style={primaryBtn} onClick={handleAddUser}>

@@ -130,7 +130,10 @@ class ProjectSerializer(PersistedObjectSerializer):
     
     def get_users(self, obj):
         return [
-        {"id": user.id, "username": user.username}
+        {"id": user.id,
+            "email": user.email,
+            "first_name": user.userprofile.first_name,
+            "last_name": user.userprofile.last_name,}
         for user in obj.users.all()
         ]
     
