@@ -20,7 +20,7 @@ const formatDate = (dateString) => {
 const SprintSection = ({
   sprint,
   project,
-  globalRefreshKey,
+  refreshKey,
   fetchSprints,
   projectUsers,
   sprints,
@@ -110,7 +110,6 @@ const SprintSection = ({
           </div>
         </div>
       ) : (
-
         isOpen && (
           <div style={{ marginTop: "15px" }}>
             {sprint.goal && <p style={goalTextStyle}>Goal: {sprint.goal}</p>}
@@ -119,7 +118,7 @@ const SprintSection = ({
               type="sprint"
               sprintId={sprint.id}
               sprints={sprints}
-              refreshKey={globalRefreshKey}
+              refreshKey={refreshKey}
               projectUsers={projectUsers}
               onTaskAction={fetchSprints}
             />
@@ -143,17 +142,16 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
     end_date: "",
     goal: ""
   });
-  const [globalRefreshKey, setGlobalRefreshKey] = useState(0);
+
   const fetchSprints = useCallback(async () => {
-      if (!project?.id) return;
-      try {
-          const res = await api.get(`/projects/${project.id}/sprints/`);
-          setSprints(res.data);
-          setGlobalRefreshKey(prev => prev + 1); 
-      } catch (err) {
-          console.error("Failed to fetch sprints", err);
-      }
-}, [project?.id]);
+    if (!project?.id) return;
+    try {
+      const res = await api.get(`/projects/${project.id}/sprints/`);
+      setSprints(res.data);
+    } catch (err) {
+      console.error("Failed to fetch sprints", err);
+    }
+  }, [project?.id]);
 
   useEffect(() => {
     if (project?.id) fetchSprints();
@@ -172,16 +170,13 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
   };
 
   const handleUpdateSprint = async (sprintId) => {
-  
     const currentSprint = sprints.find(s => s.id === sprintId);
-
     try {
       await api.patch(`/projects/${project.id}/sprints/${sprintId}/`, {
         ...editData,
         completed: currentSprint?.completed,
         on_incomplete_tasks: "backlog"
-        },
-      );
+      });
       setEditingSprintId(null);
       fetchSprints();
     } catch (err) {
@@ -192,11 +187,8 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
   const handleDeleteSprint = async (sprintId, taskAction) => {
     try {
       await api.delete(`/projects/${project.id}/sprints/${sprintId}/`, {
-        params: { 
-          on_incomplete_tasks: taskAction 
-        }
+        params: { on_incomplete_tasks: taskAction }
       });
-      
       fetchSprints();
       onTaskCreated();
     } catch (err) {
@@ -233,7 +225,7 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
           key={sprint.id}
           sprint={sprint}
           project={project}
-          globalRefreshKey={globalRefreshKey}
+          refreshKey={refreshKey}
           fetchSprints={fetchSprints}
           projectUsers={project.users || []}
           sprints={sprints}
@@ -248,7 +240,6 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
       ))}
 
       <div style={backlogSectionStyle}>
-        {/* Clickable Header */}
         <div
           style={sprintHeaderStyle}
           onClick={() => setIsBacklogOpen(!isBacklogOpen)}
@@ -273,7 +264,7 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
               sprints={sprints}
               projectUsers={project.users || []}
               onTaskAction={fetchSprints}
-              refreshKey={globalRefreshKey}
+              refreshKey={refreshKey}
             />
           </div>
         )}
