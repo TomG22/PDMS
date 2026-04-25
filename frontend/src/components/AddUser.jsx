@@ -28,7 +28,6 @@ function AddUser({ projectId, onClose, project }) {
       setAvailableUsers(prev =>
         prev.filter(user => user.email !== userEmail)
       );
-      alert(`Successfully added ${userEmail} to project!`);
 
       onClose();
     } catch (err) {

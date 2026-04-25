@@ -155,7 +155,7 @@ function ProjectDashboard() {
                 {
                   project?.users.map((user) => (
                     <div key={user.id} style={userRowStyle}>
-                      {user.email}
+                      {user.username}
                     </div>
                   ))
                 }
