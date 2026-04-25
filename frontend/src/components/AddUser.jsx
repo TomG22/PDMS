@@ -9,7 +9,7 @@ function AddUser({ projectId, onClose, project }) {
   useEffect(() => {
     const fetchAvailableUsers = async () => {
       try {
-        const token = localStorage.getItem("access_token");
+        //const token = localStorage.getItem("access_token");
 
         const res = await api.get(`/projects/${projectId}/users/`);
 
@@ -24,7 +24,7 @@ function AddUser({ projectId, onClose, project }) {
 
   const handleAddUser = async () => {
     try {
-      const token = localStorage.getItem("access_token");
+      //const token = localStorage.getItem("access_token");
 
       await api.post(`/projects/${projectId}/users/`, {
         user_email: userEmail,
