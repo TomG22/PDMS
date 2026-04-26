@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../api/client";
 import { useNavigate, useParams } from "react-router";
 import { useLogout } from "../hooks/useLogout";
 import { useAuth } from "../hooks/useAuth";
 import Navbar from "../components/Navbar";
-import ProjectEdit from "../components/ProjectEdit";
 import ProjectBacklog from "./ProjectBacklog";
-import AddUser from "../components/AddUser";
-
+import SprintHistory from "./SprintHistory";
+import ProjectSettings from "./ProjectSettings";
 
 function ProjectDashboard() {
   useAuth();
@@ -16,11 +15,15 @@ function ProjectDashboard() {
   const { projectId } = useParams();
   const [view, setView] = useState("backlog");
   const [project, setProject] = useState(null);
+<<<<<<< HEAD
   const [editingProject, setEditingProject] = useState(null)
   const [showAddUser, setShowAddUser] = useState(false); 
+=======
+>>>>>>> 699a8a1 (Added sprint completion on frontend and fixed autorefresh for add user)
   const [refreshKey, setRefreshKey] = useState(0);
   const triggerRefresh = () => setRefreshKey(prev => prev + 1);
 
+<<<<<<< HEAD
   useEffect(() => {
     const fetchProject = async () => {
       try {
@@ -64,7 +67,22 @@ function ProjectDashboard() {
     }
   };
 
+=======
+>>>>>>> 699a8a1 (Added sprint completion on frontend and fixed autorefresh for add user)
   const logout = useLogout();
+
+  const fetchProject = useCallback(async () => {
+    try {
+      const res = await api.get(`/projects/${projectId}/`);
+      setProject(res.data);
+    } catch (err) {
+      console.error("Failed to fetch project:", err);
+    }
+  }, [projectId]);
+
+  useEffect(() => {
+    fetchProject();
+  }, [fetchProject]);
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -73,10 +91,7 @@ function ProjectDashboard() {
           { label: "My Tasks", to: "/user-tasks-view" },
           { label: "My Projects", to: "/projects-view" },
           { label: "My Profile", to: "/profile" },
-          {
-            label: "Logout",
-            onClick: logout
-          }
+          { label: "Logout", onClick: logout }
         ]}
       />
       <div style={mainStyle}>
@@ -93,12 +108,18 @@ function ProjectDashboard() {
           </button>
 
           <button
+            style={view === "sprint-history" ? activeTabStyle : tabStyle}
+            onClick={() => setView("sprint-history")}
+          >
+            Sprint History
+          </button>
+
+          <button
             style={view === "settings" ? activeTabStyle : tabStyle}
             onClick={() => setView("settings")}
           >
             Settings
           </button>
-
         </nav>
 
         <div style={{ marginTop: "20px" }}>
@@ -110,11 +131,8 @@ function ProjectDashboard() {
               }}
             />
           )}
-          {view === "settings" && project && (
-            <div style={{ maxWidth: "1325px", marginTop: "30px" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <h2 style={{ margin: 0 }}>Project Settings</h2>
 
+<<<<<<< HEAD
                 <div style={{ display: "flex", gap: "10px" }}>
                   <button style={primaryBtn} onClick={() => setEditingProject(project)}>
                     Edit Project
@@ -161,24 +179,25 @@ function ProjectDashboard() {
                 }
               </div>
             </div>
+=======
+          {view === "sprint-history" && (
+            <SprintHistory
+              project={project}
+              refreshKey={refreshKey}
+            />
+          )}
+
+          {view === "settings" && (
+            <ProjectSettings
+              project={project}
+              projectId={projectId}
+              onProjectUpdated={fetchProject}
+            />
+>>>>>>> 699a8a1 (Added sprint completion on frontend and fixed autorefresh for add user)
           )}
         </div>
       </div>
-
-      
-
-      {editingProject && (
-        <ProjectEdit
-          project={editingProject}
-          onEdit={handleEdit}
-          onClose={() => setEditingProject(null)}
-        />
-      )}
-
-      
     </div>
-
-    
   );
 }
 
@@ -186,51 +205,6 @@ const mainStyle = {
   flex: 1,
   padding: "30px",
   backgroundColor: "#f5f5f5",
-};
-
-const cardStyle = {
-  marginTop: "20px",
-  background: "white",
-  borderRadius: "12px",
-  padding: "20px",
-  boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
-};
-
-const fieldStyle = {
-  marginBottom: "15px",
-};
-
-const labelStyle = {
-  fontSize: "12px",
-  fontWeight: "600",
-  color: "#888",
-  textTransform: "uppercase",
-};
-
-const valueStyle = {
-  margin: "5px 0 0 0",
-  fontSize: "16px",
-  color: "#333",
-};
-
-const primaryBtn = {
-  borderRadius: "8px",
-  padding: "8px 16px",
-  border: "none",
-  color: "white",
-  background: "#862424",
-  cursor: "pointer",
-  fontSize: "14px",
-};
-
-const dangerBtn = {
-  borderRadius: "8px",
-  padding: "8px 16px",
-  border: "none",
-  color: "white",
-  background: "#c0392b",
-  cursor: "pointer",
-  fontSize: "14px",
 };
 
 const tabStyle = {
@@ -251,9 +225,4 @@ const activeTabStyle = {
   fontWeight: "600",
 };
 
-const userRowStyle = {
-  padding: "10px",
-  borderBottom: "1px solid #eee",
-  fontSize: "14px",
-};
 export default ProjectDashboard;

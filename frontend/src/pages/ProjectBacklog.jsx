@@ -26,12 +26,17 @@ const SprintSection = ({
   sprints,
   onEdit,
   onDelete,
+  onComplete,
   isEditing,
   editData,
   setEditData,
   onSave,
   onCancel,
+<<<<<<< HEAD
   onTaskCreated
+=======
+  isCompleted
+>>>>>>> 699a8a1 (Added sprint completion on frontend and fixed autorefresh for add user)
 }) => {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -56,12 +61,19 @@ const SprintSection = ({
           </span>
         </div>
 
-        <DeleteSprint
-          sprintId={sprint.id}
-          sprintName={sprint.name}
-          onRemove={onDelete}
-          deleteBtnStyle={deleteBtnStyle}
-        />
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          {!isCompleted && (
+            <button style={completeBtnStyle} onClick={() => onComplete(sprint.id)}>
+              Mark as Complete
+            </button>
+          )}
+          <DeleteSprint
+            sprintId={sprint.id}
+            sprintName={sprint.name}
+            onRemove={onDelete}
+            deleteBtnStyle={deleteBtnStyle}
+          />
+        </div>
       </div>
 
       {isEditing ? (
@@ -134,6 +146,7 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
   useAuth();
   const [sprints, setSprints] = useState([]);
   const [isBacklogOpen, setIsBacklogOpen] = useState(true);
+  const [isCompletedOpen, setIsCompletedOpen] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [showSprintModal, setShowSprintModal] = useState(false);
   const [editingSprintId, setEditingSprintId] = useState(null);
@@ -160,6 +173,8 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
 
   if (!project || !project.id) return <div style={{ padding: "40px", textAlign: "center" }}>Loading...</div>;
 
+  const activeSprints = sprints.filter(s => !s.completed);
+
   const handleEditClick = (sprint) => {
     setEditingSprintId(sprint.id);
     setEditData({
@@ -185,7 +200,24 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
     }
   };
 
+<<<<<<< HEAD
   const handleDeleteSprint = async (sprintId, taskAction) => {
+=======
+  const handleCompleteSprint = async (sprintId) => {
+    try {
+      await api.patch(`/projects/${project.id}/sprints/${sprintId}/`, {
+        completed: true,
+        on_incomplete_tasks: "backlog"
+      });
+      fetchSprints();
+      onTaskCreated();
+    } catch (err) {
+      console.error("Complete failed", err.response?.data);
+    }
+  };
+
+  const handleDeleteSprint = async (sprintId) => {
+>>>>>>> 699a8a1 (Added sprint completion on frontend and fixed autorefresh for add user)
     try {
       await api.delete(`/projects/${project.id}/sprints/${sprintId}/`, {
         params: { on_incomplete_tasks: taskAction }
@@ -211,6 +243,22 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
     }
   };
 
+  const sharedSprintProps = (sprint) => ({
+    sprint,
+    project,
+    refreshKey,
+    fetchSprints,
+    projectUsers: project.users || [],
+    sprints,
+    onEdit: handleEditClick,
+    onDelete: handleDeleteSprint,
+    isEditing: editingSprintId === sprint.id,
+    editData,
+    setEditData,
+    onSave: handleUpdateSprint,
+    onCancel: () => setEditingSprintId(null),
+  });
+
   return (
     <div style={containerStyle}>
       <div style={headerStyle}>
@@ -221,9 +269,10 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
         </div>
       </div>
 
-      {sprints.map((sprint) => (
+      {activeSprints.map((sprint) => (
         <SprintSection
           key={sprint.id}
+<<<<<<< HEAD
           sprint={sprint}
           project={project}
           refreshKey={refreshKey}
@@ -238,9 +287,15 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
           onSave={handleUpdateSprint}
           onCancel={() => setEditingSprintId(null)}
           onTaskCreated={onTaskCreated}
+=======
+          {...sharedSprintProps(sprint)}
+          onComplete={handleCompleteSprint}
+          isCompleted={false}
+>>>>>>> 699a8a1 (Added sprint completion on frontend and fixed autorefresh for add user)
         />
       ))}
 
+      {/* Product Backlog */}
       <div style={backlogSectionStyle}>
         <div
           style={sprintHeaderStyle}
@@ -310,6 +365,7 @@ const backlogSectionStyle = { marginTop: "40px", padding: "20px", borderTop: "2p
 const createBtnStyle = { backgroundColor: "#862424", color: "white", border: "none", padding: "10px 20px", borderRadius: "6px", cursor: "pointer", fontWeight: "600" };
 const actionBtnStyle = { background: "none", border: "none", color: "#666", cursor: "pointer", fontSize: "13px", textDecoration: "underline" };
 const deleteBtnStyle = { ...actionBtnStyle, color: "#862424" };
+const completeBtnStyle = { background: "none", border: "none", color: "#24864e", cursor: "pointer", fontSize: "13px", textDecoration: "underline" };
 const saveBtnStyle = { background: "#24864e", color: "white", border: "none", padding: "8px 16px", borderRadius: "4px", cursor: "pointer", fontWeight: "bold" };
 const cancelBtnStyle = { background: "#eee", border: "none", padding: "8px 16px", borderRadius: "4px", cursor: "pointer" };
 
