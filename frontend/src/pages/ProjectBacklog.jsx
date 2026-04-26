@@ -146,7 +146,6 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
   useAuth();
   const [sprints, setSprints] = useState([]);
   const [isBacklogOpen, setIsBacklogOpen] = useState(true);
-  const [isCompletedOpen, setIsCompletedOpen] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [showSprintModal, setShowSprintModal] = useState(false);
   const [editingSprintId, setEditingSprintId] = useState(null);
