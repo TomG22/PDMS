@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import api from "../api/client";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import { useLogout } from "../hooks/useLogout";
 import { useAuth } from "../hooks/useAuth";
 import Navbar from "../components/Navbar";
@@ -10,7 +10,6 @@ import ProjectSettings from "./ProjectSettings";
 
 function ProjectDashboard() {
   useAuth();
-  const navigate = useNavigate();
   const { projectId } = useParams();
   const [view, setView] = useState("backlog");
   const [project, setProject] = useState(null);
