@@ -123,7 +123,6 @@ function ProjectTasks({ projectId }) {
                                 {task.description}
                             </div>
 
-                            {/* Metadata Row: This solves the "Backlog" display issue */}
                             <div style={{ display: "flex", gap: "15px", marginTop: "12px", flexWrap: "wrap" }}>
                                 
                                 <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
