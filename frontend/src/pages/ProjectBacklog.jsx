@@ -171,22 +171,13 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
   };
 
   const handleUpdateSprint = async (sprintId) => {
-<<<<<<< HEAD
-=======
-  
->>>>>>> d499d12 (refresh token implementation)
     const currentSprint = sprints.find(s => s.id === sprintId);
     try {
       await api.patch(`/projects/${project.id}/sprints/${sprintId}/`, {
         ...editData,
         completed: currentSprint?.completed,
         on_incomplete_tasks: "backlog"
-<<<<<<< HEAD
       });
-=======
-        },
-      );
->>>>>>> d499d12 (refresh token implementation)
       setEditingSprintId(null);
       fetchSprints();
     } catch (err) {
@@ -194,17 +185,11 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
     }
   };
 
-<<<<<<< HEAD
   const handleDeleteSprint = async (sprintId, taskAction) => {
     try {
       await api.delete(`/projects/${project.id}/sprints/${sprintId}/`, {
         params: { on_incomplete_tasks: taskAction }
       });
-=======
-  const handleDeleteSprint = async (sprintId) => {
-    try {
-      await api.delete(`/projects/${project.id}/sprints/${sprintId}/?on_incomplete_tasks=backlog`);
->>>>>>> d499d12 (refresh token implementation)
       fetchSprints();
       onTaskCreated();
     } catch (err) {

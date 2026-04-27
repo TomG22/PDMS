@@ -16,11 +16,6 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-<<<<<<< HEAD
-=======
-        const accessToken = localStorage.getItem("access_token");
-
->>>>>>> d499d12 (refresh token implementation)
         const response = await api.get("/user/");
         const { email, first_name, last_name, bio } = response.data;
         setProfile({ email, firstName: first_name, lastName: last_name, bio: bio ?? "" });
@@ -43,10 +38,6 @@ const Profile = () => {
     setSaving(true);
     setStatus({ type: "", message: "" });
     try {
-<<<<<<< HEAD
-=======
-      const accessToken = localStorage.getItem("access_token");
->>>>>>> d499d12 (refresh token implementation)
       await api.put("/user/", {
         email: profile.email,
         firstName: profile.firstName,
