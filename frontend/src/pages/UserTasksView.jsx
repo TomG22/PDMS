@@ -5,8 +5,7 @@ import Navbar from "../components/Navbar";
 import TaskList from "../components/TaskList";
 
 const UserTasksView = () => {
-  useAuth();
-
+  useAuth();  
   const logout = useLogout();
 
   return (

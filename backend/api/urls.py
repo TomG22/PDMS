@@ -9,7 +9,7 @@ from .views import (
     SprintListView, SprintTaskListView, SprintView,
     TaskListView, TaskView,
     UserLogoutAPIView, UserRegisterAPIView,
-    UserView
+    UserView, ProjectUserManageView
 )
 
 urlpatterns = [
@@ -43,6 +43,9 @@ urlpatterns = [
 
     # api/projects/<int:pk>/tasks - GET
     path("projects/<int:pk>/tasks/backlog/", ProjectTaskBacklogListView.as_view(), name="project-task-backlog"),
+
+    # api/projects/<int:pk>/users/ - POST
+    path("projects/<int:pk>/users/", ProjectUserManageView.as_view(), name="project-users"),
 
     # api/projects/<int:project_id>/sprints/ - GET, POST
     path("projects/<int:project_id>/sprints/", SprintListView.as_view(), name="project-sprints"),
