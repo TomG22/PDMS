@@ -83,6 +83,7 @@ class Sprint(PersistedObject):
     class IncompleteTaskBehavior(models.TextChoices):
         COMPLETE_TASKS = "complete", "Complete Tasks"
         MOVE_TO_BACKLOG = "backlog", "Move to Backlog"
+        DELETE_TASKS = "delete", "Delete Tasks"
 
     name = models.CharField(max_length=200)
     start_date = models.DateField()

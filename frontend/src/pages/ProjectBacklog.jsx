@@ -111,7 +111,6 @@ const SprintSection = ({
           </div>
         </div>
       ) : (
-
         isOpen && (
           <div style={{ marginTop: "15px" }}>
             {sprint.goal && <p style={goalTextStyle}>Goal: {sprint.goal}</p>}
@@ -172,16 +171,13 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
   };
 
   const handleUpdateSprint = async (sprintId) => {
-  
     const currentSprint = sprints.find(s => s.id === sprintId);
-
     try {
       await api.patch(`/projects/${project.id}/sprints/${sprintId}/`, {
         ...editData,
         completed: currentSprint?.completed,
         on_incomplete_tasks: "backlog"
-        },
-      );
+      });
       setEditingSprintId(null);
       fetchSprints();
     } catch (err) {
@@ -189,13 +185,17 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
     }
   };
 
-  const handleDeleteSprint = async (sprintId) => {
+  const handleDeleteSprint = async (sprintId, taskAction) => {
     try {
-      await api.delete(`/projects/${project.id}/sprints/${sprintId}/?on_incomplete_tasks=backlog`);
+      await api.delete(`/projects/${project.id}/sprints/${sprintId}/`, {
+        params: { on_incomplete_tasks: taskAction }
+      });
       fetchSprints();
       onTaskCreated();
     } catch (err) {
-      console.error("Delete failed", err);
+      const errorMsg = err.response?.data ? JSON.stringify(err.response.data) : err.message;
+      console.error("Delete failed:", errorMsg);
+      alert("Backend says: " + errorMsg);
     }
   };
 
@@ -242,7 +242,6 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
       ))}
 
       <div style={backlogSectionStyle}>
-        {/* Clickable Header */}
         <div
           style={sprintHeaderStyle}
           onClick={() => setIsBacklogOpen(!isBacklogOpen)}
@@ -265,8 +264,8 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
               project={project}
               type="backlog"
               sprints={sprints}
-              refreshKey={refreshKey}
               projectUsers={project.users || []}
+              refreshKey={refreshKey}
               onTaskAction={onTaskCreated}
             />
           </div>
