@@ -32,11 +32,8 @@ const SprintSection = ({
   setEditData,
   onSave,
   onCancel,
-<<<<<<< HEAD
-  onTaskCreated
-=======
+  onTaskCreated,
   isCompleted
->>>>>>> 699a8a1 (Added sprint completion on frontend and fixed autorefresh for add user)
 }) => {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -199,9 +196,6 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
     }
   };
 
-<<<<<<< HEAD
-  const handleDeleteSprint = async (sprintId, taskAction) => {
-=======
   const handleCompleteSprint = async (sprintId) => {
     try {
       await api.patch(`/projects/${project.id}/sprints/${sprintId}/`, {
@@ -215,8 +209,7 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
     }
   };
 
-  const handleDeleteSprint = async (sprintId) => {
->>>>>>> 699a8a1 (Added sprint completion on frontend and fixed autorefresh for add user)
+  const handleDeleteSprint = async (sprintId, taskAction) => {
     try {
       await api.delete(`/projects/${project.id}/sprints/${sprintId}/`, {
         params: { on_incomplete_tasks: taskAction }
@@ -271,7 +264,6 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
       {activeSprints.map((sprint) => (
         <SprintSection
           key={sprint.id}
-<<<<<<< HEAD
           sprint={sprint}
           project={project}
           refreshKey={refreshKey}
@@ -286,11 +278,9 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
           onSave={handleUpdateSprint}
           onCancel={() => setEditingSprintId(null)}
           onTaskCreated={onTaskCreated}
-=======
           {...sharedSprintProps(sprint)}
           onComplete={handleCompleteSprint}
           isCompleted={false}
->>>>>>> 699a8a1 (Added sprint completion on frontend and fixed autorefresh for add user)
         />
       ))}
 

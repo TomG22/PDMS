@@ -10,23 +10,16 @@ import ProjectSettings from "./ProjectSettings";
 
 function ProjectDashboard() {
   useAuth();
-<<<<<<< HEAD
 
   const navigate = useNavigate();
-=======
->>>>>>> 001c2d4 (Removed unused vars)
   const { projectId } = useParams();
   const [view, setView] = useState("backlog");
   const [project, setProject] = useState(null);
-<<<<<<< HEAD
   const [editingProject, setEditingProject] = useState(null)
   const [showAddUser, setShowAddUser] = useState(false); 
-=======
->>>>>>> 699a8a1 (Added sprint completion on frontend and fixed autorefresh for add user)
   const [refreshKey, setRefreshKey] = useState(0);
   const triggerRefresh = () => setRefreshKey(prev => prev + 1);
 
-<<<<<<< HEAD
   useEffect(() => {
     const fetchProject = async () => {
       try {
@@ -58,7 +51,7 @@ function ProjectDashboard() {
     }
   };
 
-    const handleRemove = async () => {
+  const handleRemove = async () => {
     try {
 
       await api.delete(`/projects/${projectId}/`);
@@ -70,8 +63,6 @@ function ProjectDashboard() {
     }
   };
 
-=======
->>>>>>> 699a8a1 (Added sprint completion on frontend and fixed autorefresh for add user)
   const logout = useLogout();
 
   const fetchProject = useCallback(async () => {
@@ -135,54 +126,6 @@ function ProjectDashboard() {
             />
           )}
 
-<<<<<<< HEAD
-                <div style={{ display: "flex", gap: "10px" }}>
-                  <button style={primaryBtn} onClick={() => setEditingProject(project)}>
-                    Edit Project
-                  </button>
-
-                  <button style={dangerBtn} onClick={handleRemove}>
-                    Delete Project
-                  </button>
-
-                  {showAddUser && (
-                    <AddUser
-                      projectId={projectId}
-                      onClose={() => setShowAddUser(false)}
-                      project={project}
-                    />
-                  )}
-                </div>
-              </div>
-
-              {/* Card-style container */}
-              <div style={cardStyle}>
-                <div style={fieldStyle}>
-                  <span style={labelStyle}>Name</span>
-                  <p style={valueStyle}>{project.name}</p>
-                </div>
-
-                <div style={fieldStyle}>
-                  <span style={labelStyle}>Description</span>
-                  <p style={valueStyle}>
-                    {project.description || "No description provided."}
-                  </p>
-                </div>
-              </div>
-              
-              <h2 style={{ margin: 0 }}>Project Users</h2>
-
-              <div style={cardStyle}>
-                {
-                  project?.users.map((user) => (
-                    <div key={user.id} style={userRowStyle}>
-                      {user.username}
-                    </div>
-                  ))
-                }
-              </div>
-            </div>
-=======
           {view === "sprint-history" && (
             <SprintHistory
               project={project}
@@ -196,7 +139,6 @@ function ProjectDashboard() {
               projectId={projectId}
               onProjectUpdated={fetchProject}
             />
->>>>>>> 699a8a1 (Added sprint completion on frontend and fixed autorefresh for add user)
           )}
         </div>
       </div>
