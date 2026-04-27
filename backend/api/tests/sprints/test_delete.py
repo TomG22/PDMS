@@ -82,3 +82,22 @@ class SprintDeleteTests(AuthenticatedAPITestCase):
         # Confirm that the existing completed task is removed from the sprint
         completed_sprint_task = Task.objects.get(id=self.completed_sprint_task.id)
         self.assertEqual(completed_sprint_task.sprint, None)
+
+@tag("sprint")
+def test_deleting_tasks_in_deleted_sprint(self):
+    self.client.delete(f"/api/projects/{self.project.id}/sprints/{self.sprint.id}/?on_incomplete_tasks=delete")
+    
+    # Confirm only the 2 incomplete tasks in sprint were deleted
+    self.assertEqual(Task.objects.count(), 2)
+
+    # Confirm that the incomplete tasks no longer exist in the data base
+    self.assertFalse(Task.objects.filter(id=self.sprint_task_one.id).exists())
+    self.assertFalse(Task.objects.filter(id=self.sprint_task_two.id).exists())
+
+    # Confirm that the existing completed task exists but is removed from the sprint
+    completed_sprint_task = Task.objects.get(id=self.completed_sprint_task.id)
+    self.assertEqual(completed_sprint_task.sprint, None)
+    self.assertEqual(completed_sprint_task.completed, True)
+
+    # Confirm the backlog task is untouched
+    self.assertTrue(Task.objects.filter(id=self.backlog_task_one.id).exists())

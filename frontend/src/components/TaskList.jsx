@@ -85,7 +85,9 @@ const handleUpdateTask = async (taskId, fields) => {
             prev.map(t => (t.id === taskId ? res.data : t))
         );
 
-        if (onTaskAction) onTaskAction();
+        if (onTaskAction) {
+            await onTaskAction(); 
+        }
     } catch (err) {
         console.error("Failed to update task:", err.response?.status, err.response?.data);
     }

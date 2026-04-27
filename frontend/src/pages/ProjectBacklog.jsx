@@ -120,7 +120,6 @@ const SprintSection = ({
           </div>
         </div>
       ) : (
-
         isOpen && (
           <div style={{ marginTop: "15px" }}>
             {sprint.goal && <p style={goalTextStyle}>Goal: {sprint.goal}</p>}
@@ -197,26 +196,17 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
     }
   };
 
-  const handleCompleteSprint = async (sprintId) => {
+  const handleDeleteSprint = async (sprintId, taskAction) => {
     try {
-      await api.patch(`/projects/${project.id}/sprints/${sprintId}/`, {
-        completed: true,
-        on_incomplete_tasks: "backlog"
+      await api.delete(`/projects/${project.id}/sprints/${sprintId}/`, {
+        params: { on_incomplete_tasks: taskAction }
       });
       fetchSprints();
       onTaskCreated();
     } catch (err) {
-      console.error("Complete failed", err.response?.data);
-    }
-  };
-
-  const handleDeleteSprint = async (sprintId) => {
-    try {
-      await api.delete(`/projects/${project.id}/sprints/${sprintId}/?on_incomplete_tasks=backlog`);
-      fetchSprints();
-      onTaskCreated();
-    } catch (err) {
-      console.error("Delete failed", err);
+      const errorMsg = err.response?.data ? JSON.stringify(err.response.data) : err.message;
+      console.error("Delete failed:", errorMsg);
+      alert("Backend says: " + errorMsg);
     }
   };
 
@@ -261,11 +251,6 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
       {activeSprints.map((sprint) => (
         <SprintSection
           key={sprint.id}
-<<<<<<< HEAD
-          {...sharedSprintProps(sprint)}
-          onComplete={handleCompleteSprint}
-          isCompleted={false}
-=======
           sprint={sprint}
           project={project}
           refreshKey={refreshKey}
@@ -280,7 +265,6 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
           onSave={handleUpdateSprint}
           onCancel={() => setEditingSprintId(null)}
           onTaskCreated={onTaskCreated}
->>>>>>> f46a547 (move tasks between sprints)
         />
       ))}
 
@@ -308,8 +292,8 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
               project={project}
               type="backlog"
               sprints={sprints}
-              refreshKey={refreshKey}
               projectUsers={project.users || []}
+              refreshKey={refreshKey}
               onTaskAction={onTaskCreated}
             />
           </div>
