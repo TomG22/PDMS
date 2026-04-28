@@ -116,6 +116,10 @@ function ProjectDashboard() {
                 <h2 style={{ margin: 0 }}>Project Settings</h2>
 
                 <div style={{ display: "flex", gap: "10px" }}>
+                  <button style={primaryBtn} onClick={() => setShowAddUser(true)}>
+                    Add User
+                  </button>
+                  
                   <button style={primaryBtn} onClick={() => setEditingProject(project)}>
                     Edit Project
                   </button>
