@@ -35,7 +35,7 @@ const FILTER_OPTIONS = {
     status: STATUS_OPTIONS.map(o => ({ value: o.value, label: o.label })),
 };
 
-const TaskList = ({ project = null, refreshKey = 0, type = "all", sprintId = null, sprints = [], projectUsers = [], onTaskAction }) => {
+const TaskList = ({ project = null, refreshKey = 0, type = "all", sprintId = null, sprints = [], projectUsers = [], onTaskAction, noAssigneeFilter = false }) => {
     const [tasks, setTasks] = useState([]);
     // ID -> name map, only used in my tasks view
     const [projectNameMap, setProjectNameMap] = useState({});
@@ -205,10 +205,14 @@ const handleUpdateTask = async (taskId, fields) => {
         return s ? s.size : 0;
     };
 
+    const visibleColumns = noAssigneeFilter
+    ? COLUMNS.filter(col => col.key !== "assigned_to_username")
+    : COLUMNS;
+
     return (
         <div>
             <div style={headerRowStyle}>
-                {COLUMNS.map(col => (
+                {visibleColumns.map(col => (
                     <div key={col.key} style={headerCellStyle}>
                         <button
                             onClick={() => handleSortClick(col.key)}
@@ -216,7 +220,6 @@ const handleUpdateTask = async (taskId, fields) => {
                         >
                             {col.label}{sortIcon(col.key)}
                         </button>
-
                         <div style={{ position: "relative" }}>
                             <button
                                 onClick={() => setOpenFilter(openFilter === col.key ? null : col.key)}
@@ -250,7 +253,7 @@ const handleUpdateTask = async (taskId, fields) => {
                                 </div>
                             )}
                         </div>
-                    </div>
+                    </div>     
                 ))}
 
                 <button onClick={handleReset} style={resetButtonStyle}>Reset</button>

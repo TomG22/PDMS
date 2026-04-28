@@ -33,7 +33,7 @@ const UserTasksView = () => {
             All tasks currently assigned to you.
           </p>
 
-          <TaskList />
+          <TaskList noAssigneeFilter={true}/>
         </div>
       </div>
     </div>
