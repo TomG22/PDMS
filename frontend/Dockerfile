@@ -12,4 +12,7 @@ FROM nginx
 
 COPY build /usr/share/nginx/html
 
+COPY config/pdms.conf /etc/nginx/conf.d/pdms.conf
+RUN rm -rf /etc/nginx/conf.d/default.conf
+
 EXPOSE 80
