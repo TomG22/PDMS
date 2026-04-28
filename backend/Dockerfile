@@ -20,7 +20,7 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 
 WORKDIR /app
 
-COPY --chown=appuser . .
+COPY --chown=pdms . .
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
