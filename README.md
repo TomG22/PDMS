@@ -5,6 +5,17 @@
 Run the following:
 
 ```bash
+# Frontend prerequisites
+cd frontend
+pnpm install --frozen-lockfile
+cd ..
+
+# Backend prerequisites
+cd backend
+python manage.py migrate
+cd ..
+
+# Run the services
 docker compose up -d --build
 ```
 
