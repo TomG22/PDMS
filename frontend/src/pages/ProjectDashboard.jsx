@@ -105,9 +105,10 @@ function ProjectDashboard() {
           {view === "backlog" && (
             <ProjectBacklog
               project={project}
+              refreshKey={refreshKey}
               onTaskCreated={() => {
                 setRefreshKey(prev => prev + 1);
-              }}
+              }}       
             />
           )}
           {view === "settings" && project && (
