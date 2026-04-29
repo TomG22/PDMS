@@ -236,7 +236,7 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
   return (
     <div style={containerStyle}>
       <div style={headerStyle}>
-        <h2 style={{ margin: 0 }}>Project Backlog</h2>
+        <h2 style={{ margin: 0 }}>Project Tasks</h2>
         <div style={{ display: "flex", gap: "10px" }}>
           <button style={{ ...createBtnStyle, backgroundColor: "#444" }} onClick={() => setShowSprintModal(true)}>+ Create Sprint</button>
           <button style={createBtnStyle} onClick={() => setShowTaskModal(true)}>+ Create Task</button>
