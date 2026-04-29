@@ -70,8 +70,9 @@ const TaskCard = ({ task, projectUsers = [], sprints = [], projectName = null, o
                             style={{...inlineSelectStyle, fontWeight: "bold", color: task.sprint ? "#1976d2" : "#666"}}
                         >
                             <option value="">Backlog</option>
-                            {sprints.map((s) => (
-                                <option key={s.id} value={s.id}>{s.name}</option>
+                            {sprints.filter(s => !s.completed)
+                                    .map((s) => (
+                                      <option key={s.id} value={s.id}>{s.name}</option>
                             ))}
                         </select>
                     </label>
