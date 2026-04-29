@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:20 as builder
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ RUN pnpm run build
 
 FROM nginx
 
-COPY build /usr/share/nginx/html
+COPY --from=builder /app/build /usr/share/nginx/html
 
 COPY config/pdms.conf /etc/nginx/conf.d/pdms.conf
 RUN rm -rf /etc/nginx/conf.d/default.conf
