@@ -25,7 +25,7 @@ function ProjectEdit({project, onEdit, onClose, error}) {
                         </div>
 
                         <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                            <button style={buttonStyle} onClick={()=> {onEdit(project.id, {title, description});}}>Save Changes</button>
+                            <button style={buttonStyle} onClick={()=> {onEdit(project.id, {title, description})}}>Save Changes</button>
                         </div>
                         
                     </div>

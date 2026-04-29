@@ -138,7 +138,7 @@ const Home = () => {
             </div>
             <p > <i>"Those who plan do better than those who do not plan, even though they rarely stick to their plan"</i></p>
             <p>
-              — Winston Churchil
+              — Winston Churchill
             </p>
           </div>
         </div>

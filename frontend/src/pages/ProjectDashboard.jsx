@@ -56,7 +56,7 @@ function ProjectDashboard() {
       setEditingProject(null);
     } catch (err) {
       console.error("Failed to update project:", err);
-      setEditError("Failed ot update project.")
+      setEditError("Failed to update project.")
     }
   };
 
