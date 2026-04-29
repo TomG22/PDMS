@@ -19,11 +19,10 @@ const Navbar = ({ links = [] }) => {
         style={{
           maxWidth: "1400px",
           margin: "0 auto",
-          padding: "16px 12px",
+          padding: "16px 24px",
           display: "flex",
           alignItems: "center",
           gap: "24px",
-          flexWrap: "wrap",
         }}
       >
         {/* Logo */}
