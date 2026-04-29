@@ -6,7 +6,6 @@ const SprintCreate = ({ projectId, onClose, onSave }) => {
         name: "",
         start_date: "",
         end_date: "",
-        goal: ""
     });
     const [isDirty, setIsDirty] = useState(false);
 
@@ -73,16 +72,6 @@ const SprintCreate = ({ projectId, onClose, onSave }) => {
                                 required 
                             />
                         </div>
-                    </div>
-
-                    <div>
-                        <label style={labelStyle}>Sprint Goal</label>
-                        <textarea 
-                            name="goal" 
-                            style={{ ...inputStyle, height: "80px", resize: "none" }} 
-                            placeholder="What are we accomplishing?" 
-                            onChange={handleChange} 
-                        />
                     </div>
 
                     <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "10px" }}>
