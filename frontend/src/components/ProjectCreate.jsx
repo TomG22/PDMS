@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function ProjectCreate({onCreate, onClose}) {
+function ProjectCreate({onCreate, onClose, error}) {
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
 
@@ -30,7 +30,11 @@ function ProjectCreate({onCreate, onClose}) {
                         
                     </div>
                 </div>
-
+                {error && (
+                    <div style={{ color: "red", marginTop: "10px" }}>
+                        {error}
+                    </div>
+                    )}
             </div>
         </div>
     );

@@ -29,9 +29,15 @@ function UserDashboard() {
   const [projects, setProjects] = useState([]);
   const [showCreate, setShowCreate] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
+  const [editError, setEditError] = useState("")
 
   const handleAdd = async (title, description) => {
+    if (!title.trim() || !description.trim()) {
+      setEditError("Please input a title and description")
+      return;
+    }
     try {
+      setEditError("")
       const res = await api.post("/projects/", {
         name: title,
         description: description,
@@ -41,6 +47,7 @@ function UserDashboard() {
       setShowCreate(false);
     } catch (err) {
       console.error("Failed to create project:", err);
+      setEditError("Failed ot update project.")
     }
   }
   
@@ -110,14 +117,7 @@ function UserDashboard() {
         <ProjectCreate
           onCreate={handleAdd}
           onClose={() => setShowCreate(false)}
-        />
-      )}
-
-      {editingProject && (
-        <ProjectEdit
-          project={editingProject}
-          onEdit={handleEdit}
-          onClose={() => setEditingProject(null)}
+          error={editError}
         />
       )}
     </div>

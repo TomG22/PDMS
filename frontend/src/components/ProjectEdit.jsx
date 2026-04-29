@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function ProjectEdit({project, onEdit, onClose}) {
+function ProjectEdit({project, onEdit, onClose, error}) {
     const [title, setTitle] = useState(project.name)
     const [description, setDescription] = useState(project.description)
 
@@ -25,12 +25,17 @@ function ProjectEdit({project, onEdit, onClose}) {
                         </div>
 
                         <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                            <button style={buttonStyle} onClick={()=> {onEdit(project.id, {title, description}); onClose()}}>Save Changes</button>
+                            <button style={buttonStyle} onClick={()=> {onEdit(project.id, {title, description});}}>Save Changes</button>
                         </div>
                         
                     </div>
                 </div>
 
+                {error && (
+                    <div style={{ color: "red", marginTop: "10px" }}>
+                        {error}
+                    </div>
+                    )}
             </div>
         </div>
     );

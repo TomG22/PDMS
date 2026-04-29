@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getAccessToken, getRefreshToken } from "../auth/tokens";
 import {Link} from "react-router";
+import behind_DLTA from "../images/behind_DLTA.jpeg"
+import heading_1 from "../images/heading_1.jpg"
+import heading_2 from "../images/heading_2.webp"
+
 
 const Home = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -27,7 +31,8 @@ const Home = () => {
             color: "white",
           }}
         >
-          <div style={{ display: "flex", gap: "24px" }}>
+          {/* Just changed the color to avoid shifting in the Navbar */}
+          <div style={{ display: "flex", gap: "24px", color:"#862424"}}>
             <div>About Us</div>
             <div>Contact</div>
             <div>More</div>
@@ -79,14 +84,15 @@ const Home = () => {
       </div>
 
       {/* HERO */}
-      <div style={{ padding: "120px 5%", textAlign: "center" }}>
-        <div style={{ fontSize: "clamp(40px, 6vw, 72px)", fontWeight: 700 }}>
+      <div style={{ backgroundImage:`linear-gradient(rgba(134,36,36,0.55), rgba(0,0,0,0.65)), url(${behind_DLTA})`, backgroundSize: "cover" ,backgroundRepeat: "no-repeat", backgroundPosition: "center", padding: "120px 5%", textAlign: "center" }}>
+        <div style={{ fontSize: "clamp(40px, 6vw, 72px)", fontWeight: 700, color: "#FFFFFF", letterSpacing:"-0.5px" }}>
           DLTA
         </div>
         <div
           style={{
             fontSize: "clamp(20px, 3vw, 32px)",
-            color: "#757575",
+            color: "#F2D6D6",
+            marginTop: "12px"
           }}
         >
           Where project management becomes simple
@@ -109,7 +115,7 @@ const Home = () => {
           }}
         >
           <img
-            src="https://placehold.co/484x350"
+            src={heading_1}
             alt="placeholder"
             style={{
               width: "100%",
@@ -120,7 +126,7 @@ const Home = () => {
           />
 
           <div style={{ flex: 1, minWidth: "280px" }}>
-            <div style={{ fontSize: "24px", fontWeight: 600 }}>Heading</div>
+            <div style={{ fontSize: "24px", fontWeight: 600 }}>Better Planning</div>
             <div
               style={{
                 fontSize: "20px",
@@ -128,11 +134,11 @@ const Home = () => {
                 marginBottom: "16px",
               }}
             >
-              Subheading
+              The forefront of success
             </div>
-            <p>Body text for your whole article or post.</p>
+            <p > <i>"Those who plan do better than those who do not plan, even though they rarely stick to their plan"</i></p>
             <p>
-              Excepteur efficient emerging, minim veniam anim aute carefully curated...
+              — Winston Churchil
             </p>
           </div>
         </div>
@@ -153,8 +159,25 @@ const Home = () => {
             borderRadius: "8px",
           }}
         >
+          <div style={{ flex: 1, minWidth: "280px" }}>
+            <div style={{ fontSize: "24px", fontWeight: 600}}>Celebrate Earlier</div>
+            <div
+              style={{
+                fontSize: "20px",
+                color: "#757575",
+                marginBottom: "16px",
+              }}
+            >
+              See progress before the finish line
+            </div>
+            <p > <i>"When love and skill work together, expect a masterpiece."</i></p>
+            <p>
+              — John Ruskin
+            </p>
+          </div>
+
           <img
-            src="https://placehold.co/484x350"
+            src={heading_2}
             alt="placeholder"
             style={{
               width: "100%",
@@ -163,73 +186,35 @@ const Home = () => {
               flex: 1,
             }}
           />
-
-          <div style={{ flex: 1, minWidth: "280px" }}>
-            <div style={{ fontSize: "24px", fontWeight: 600 }}>Heading</div>
-            <div
-              style={{
-                fontSize: "20px",
-                color: "#757575",
-                marginBottom: "16px",
-              }}
-            >
-              Subheading
-            </div>
-            <p>Body text for your whole article or post.</p>
-            <p>
-              Excepteur efficient emerging, minim veniam anim aute carefully curated...
-            </p>
-          </div>
         </div>
       </div>
 
       {/* NEWSLETTER */}
       <div style={{ background: "#862424", padding: "80px 5%" }}>
         <div style={{ background: "white", padding: "80px 5%", textAlign: "center" }}>
-          <div style={{ fontSize: "24px", fontWeight: 600 }}>
-            Follow the latest trends
+          <div style={{ fontSize: "24px", fontWeight: 600, padding: "15px"}}>
+            Register an Account Today
           </div>
           <div style={{ color: "#757575", marginBottom: "24px" }}>
-            With our daily newsletter
+            Start planning your dream projects here, simply, and in one place
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "12px",
-              flexWrap: "wrap",
-            }}
-          >
-            <input
-              type="email"
-              placeholder="you@example.com"
+            <Link to={"/register"}
               style={{
-                padding: "12px 16px",
-                borderRadius: "8px",
-                border: "1px solid #D9D9D9",
-                width: "250px",
-                maxWidth: "100%",
-              }}
-            />
-
-            <button
-              style={{
-                padding: "12px 24px",
-                background: "#2C2C2C",
+                padding: "10px 20px",
+                background: "#1E1E1E",
                 color: "white",
-                borderRadius: "8px",
-                border: "none",
+                borderRadius: "4px",
+                textDecoration: "none"
               }}
             >
-              Submit
-            </button>
+              Register
+            </Link>
           </div>
-        </div>
       </div>
 
       {/* FOOTER */}
-      <div
+      {/* <div
         style={{
           borderTop: "1px solid #D9D9D9",
           padding: "80px 5%",
@@ -262,7 +247,7 @@ const Home = () => {
           <div>Best practices</div>
           <div>Support</div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
