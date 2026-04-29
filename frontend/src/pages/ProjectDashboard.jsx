@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../api/client";
 import { useNavigate, useParams } from "react-router";
 import { useLogout } from "../hooks/useLogout";
@@ -6,6 +6,7 @@ import { useAuth } from "../hooks/useAuth";
 import Navbar from "../components/Navbar";
 import ProjectEdit from "../components/ProjectEdit";
 import ProjectBacklog from "./ProjectBacklog";
+import SprintHistory from "./SprintHistory";
 import AddUser from "../components/AddUser";
 
 
@@ -16,63 +17,50 @@ function ProjectDashboard() {
   const { projectId } = useParams();
   const [view, setView] = useState("backlog");
   const [project, setProject] = useState(null);
-  const [editingProject, setEditingProject] = useState(null)
-  const [editError, setEditError] = useState("")
-  const [showAddUser, setShowAddUser] = useState(false); 
+  const [editingProject, setEditingProject] = useState(null);
+  const [showAddUser, setShowAddUser] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
-  const triggerRefresh = () => setRefreshKey(prev => prev + 1);
+
+  const logout = useLogout();
+
+  const fetchProject = useCallback(async () => {
+    try {
+      const res = await api.get(`/projects/${projectId}/`);
+      setProject(res.data);
+    } catch (err) {
+      console.error("Failed to fetch project:", err);
+    }
+  }, [projectId]);
 
   useEffect(() => {
-    const fetchProject = async () => {
-      try {
-        const res = await api.get(`/projects/${projectId}/`);
-
-        setProject(res.data);
-      } catch (err) {
-        console.error("Failed to fetch project:", err);
-      }
-    };
-
     fetchProject();
-  }, [projectId, navigate]);
+  }, [fetchProject]);
+
+  const handleTaskCreated = useCallback(() => {
+    setRefreshKey(prev => prev + 1);
+  }, []);
 
   const handleEdit = async (id, updatedFields) => {
-    if (!updatedFields.title.trim() || !updatedFields.description.trim()) {
-      setEditError("Please input a title and description")
-      return;
-    }
-
     try {
-      setEditError("")
-      const res = await api.put(
-        `/projects/${id}/`,
-        {
-          name: updatedFields.title,
-          description: updatedFields.description,
-        }
-      );
-
+      const res = await api.put(`/projects/${id}/`, {
+        name: updatedFields.title,
+        description: updatedFields.description,
+      });
       setProject(res.data);
       setEditingProject(null);
     } catch (err) {
       console.error("Failed to update project:", err);
-      setEditError("Failed to update project.")
     }
   };
 
-    const handleRemove = async () => {
+  const handleRemove = async () => {
     try {
-
       await api.delete(`/projects/${projectId}/`);
-
-      // redirect after delete
       navigate("/projects-view");
     } catch (err) {
       console.error("Failed to delete project:", err);
     }
   };
-
-  const logout = useLogout();
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -81,10 +69,7 @@ function ProjectDashboard() {
           { label: "My Tasks", to: "/user-tasks-view" },
           { label: "My Projects", to: "/projects-view" },
           { label: "My Profile", to: "/profile" },
-          {
-            label: "Logout",
-            onClick: logout
-          }
+          { label: "Logout", onClick: logout }
         ]}
       />
       <div style={mainStyle}>
@@ -94,10 +79,15 @@ function ProjectDashboard() {
           <button
             style={view === "backlog" ? activeTabStyle : tabStyle}
             onClick={() => setView("backlog")}
-            refreshKey={refreshKey}
-            onTaskCreated={triggerRefresh}
           >
             Backlog
+          </button>
+
+          <button
+            style={view === "sprint-history" ? activeTabStyle : tabStyle}
+            onClick={() => setView("sprint-history")}
+          >
+            Sprint History
           </button>
 
           <button
@@ -106,19 +96,24 @@ function ProjectDashboard() {
           >
             Settings
           </button>
-
         </nav>
 
         <div style={{ marginTop: "20px" }}>
           {view === "backlog" && (
             <ProjectBacklog
               project={project}
+              onTaskCreated={handleTaskCreated}
               refreshKey={refreshKey}
-              onTaskCreated={() => {
-                setRefreshKey(prev => prev + 1);
-              }}       
             />
           )}
+
+          {view === "sprint-history" && (
+            <SprintHistory
+              project={project}
+              refreshKey={refreshKey}
+            />
+          )}
+
           {view === "settings" && project && (
             <div style={{ maxWidth: "1325px", marginTop: "30px" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -128,7 +123,7 @@ function ProjectDashboard() {
                   <button style={primaryBtn} onClick={() => setShowAddUser(true)}>
                     Add User
                   </button>
-                  
+
                   <button style={primaryBtn} onClick={() => setEditingProject(project)}>
                     Edit Project
                   </button>
@@ -141,6 +136,7 @@ function ProjectDashboard() {
                     <AddUser
                       projectId={projectId}
                       onClose={() => setShowAddUser(false)}
+                      onUserAdded={() => { fetchProject(); setShowAddUser(false); }}
                       project={project}
                     />
                   )}
@@ -161,38 +157,29 @@ function ProjectDashboard() {
                   </p>
                 </div>
               </div>
-              
+
               <h2 style={{ margin: 0 }}>Project Users</h2>
 
               <div style={cardStyle}>
-                {
-                  project?.users.map((user) => (
-                    <div key={user.id} style={userRowStyle}>
-                      {user.username}
-                    </div>
-                  ))
-                }
+                {project?.users.map((user) => (
+                  <div key={user.id} style={userRowStyle}>
+                    {user.first_name} {user.last_name} ({user.email})
+                  </div>
+                ))}
               </div>
             </div>
           )}
         </div>
       </div>
 
-      
-
       {editingProject && (
         <ProjectEdit
           project={editingProject}
           onEdit={handleEdit}
           onClose={() => setEditingProject(null)}
-          error={editError}
         />
       )}
-
-      
     </div>
-
-    
   );
 }
 
@@ -270,4 +257,5 @@ const userRowStyle = {
   borderBottom: "1px solid #eee",
   fontSize: "14px",
 };
+
 export default ProjectDashboard;
