@@ -108,6 +108,7 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [showSprintModal, setShowSprintModal] = useState(false);
   const [editingSprintId, setEditingSprintId] = useState(null);
+  const [editData, setEditData] = useState({});
 
   const fetchSprints = useCallback(async () => {
     if (!project?.id) return;
@@ -272,7 +273,5 @@ const createBtnStyle = { backgroundColor: "#862424", color: "white", border: "no
 const actionBtnStyle = { background: "none", border: "none", color: "#666", cursor: "pointer", fontSize: "13px", textDecoration: "underline" };
 const deleteBtnStyle = { ...actionBtnStyle, color: "#862424" };
 const completeBtnStyle = { background: "none", border: "none", color: "#24864e", cursor: "pointer", fontSize: "13px", textDecoration: "underline" };
-const saveBtnStyle = { background: "#24864e", color: "white", border: "none", padding: "8px 16px", borderRadius: "4px", cursor: "pointer", fontWeight: "bold" };
-const cancelBtnStyle = { background: "#eee", border: "none", padding: "8px 16px", borderRadius: "4px", cursor: "pointer" };
 
 export default ProjectBacklog;
