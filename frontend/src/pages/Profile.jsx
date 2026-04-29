@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../hooks/useAuth";
+import { useLogout } from "../hooks/useLogout";
 import api from "../api/client";
 import DeleteUser from "../components/DeleteUser";
 import Navbar from "../components/Navbar";
 
 const Profile = () => {
+  const logout = useLogout()
   useAuth();
   const [profile, setProfile] = useState({ firstName: "", lastName: "", email: "", bio: "" });
   const [status, setStatus] = useState({ type: "", message: "" });
@@ -79,6 +81,10 @@ const Profile = () => {
           { label: "My Tasks", to: "/user-tasks-view" },
           { label: "My Projects", to: "/user-tasks-view" },
           { label: "My Profile", to: "/profile" },
+          {
+            label: "Logout",
+            onClick : logout
+          }
         ]}
       />
 
