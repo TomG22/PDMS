@@ -5,7 +5,6 @@ import { useLogout } from "../hooks/useLogout";
 import Navbar from "../components/Navbar";
 import ProjectCard from "../components/ProjectCard";
 import ProjectCreate from "../components/ProjectCreate";
-import ProjectEdit from "../components/ProjectEdit";
 
 function UserDashboard() {
   const navigate = useNavigate();
@@ -28,7 +27,7 @@ function UserDashboard() {
 
   const [projects, setProjects] = useState([]);
   const [showCreate, setShowCreate] = useState(false);
-  const [editingProject, setEditingProject] = useState(null);
+  const [setEditingProject] = useState(null);
   const [editError, setEditError] = useState("")
 
   const handleAdd = async (title, description) => {
@@ -50,9 +49,6 @@ function UserDashboard() {
       setEditError("Failed ot update project.")
     }
   }
-  
-    
-
 
   const handleRemove = async (id) => {
     try {
@@ -60,19 +56,6 @@ function UserDashboard() {
       setProjects(prev => prev.filter(p => p.id !== id));
     } catch (err) {
       console.error("Failed to remove project:", err);
-    }
-  }
-
-  const handleEdit = async (id, updatedFields) => {
-    try {
-      const res = await api.put(`/projects/${id}/`,
-        {
-          name: updatedFields.title,
-          description: updatedFields.description,
-        });
-      setProjects(prev => prev.map(p => p.id === id ? res.data : p));
-    } catch (err) {
-      console.error("Failed to edit project:", err);
     }
   }
 
