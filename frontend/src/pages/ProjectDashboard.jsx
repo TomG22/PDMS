@@ -17,6 +17,7 @@ function ProjectDashboard() {
   const [view, setView] = useState("backlog");
   const [project, setProject] = useState(null);
   const [editingProject, setEditingProject] = useState(null)
+  const [editError, setEditError] = useState("")
   const [showAddUser, setShowAddUser] = useState(false); 
   const [refreshKey, setRefreshKey] = useState(0);
   const triggerRefresh = () => setRefreshKey(prev => prev + 1);
@@ -36,7 +37,13 @@ function ProjectDashboard() {
   }, [projectId, navigate]);
 
   const handleEdit = async (id, updatedFields) => {
+    if (!updatedFields.title.trim() || !updatedFields.description.trim()) {
+      setEditError("Please input a title and description")
+      return;
+    }
+
     try {
+      setEditError("")
       const res = await api.put(
         `/projects/${id}/`,
         {
@@ -49,6 +56,7 @@ function ProjectDashboard() {
       setEditingProject(null);
     } catch (err) {
       console.error("Failed to update project:", err);
+      setEditError("Failed to update project.")
     }
   };
 
@@ -176,6 +184,7 @@ function ProjectDashboard() {
           project={editingProject}
           onEdit={handleEdit}
           onClose={() => setEditingProject(null)}
+          error={editError}
         />
       )}
 
