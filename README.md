@@ -8,13 +8,14 @@ Run the following:
 # Frontend prerequisites
 cd frontend
 pnpm install --frozen-lockfile
+cd ..
 
 # Backend prerequisites
-cd ../backend
+cd backend
 python manage.py migrate
+cd ..
 
 # Run the services
-cd ..
 docker compose up -d --build
 ```
 
