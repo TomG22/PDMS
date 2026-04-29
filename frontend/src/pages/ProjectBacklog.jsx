@@ -16,7 +16,6 @@ const formatDate = (dateString) => {
   });
 };
 
-
 const SprintSection = ({
   sprint,
   project,
@@ -32,7 +31,7 @@ const SprintSection = ({
   setEditData,
   onSave,
   onCancel,
-  isCompleted
+  isCompleted,
   onTaskCreated
 }) => {
   const [isOpen, setIsOpen] = useState(true);
@@ -52,7 +51,6 @@ const SprintSection = ({
             ▶
           </span>
           <h3 style={{ margin: 0 }}>{sprint.name}</h3>
-
           <span style={dateRangeStyle}>
             {formatDate(sprint.start_date)} — {formatDate(sprint.end_date)}
           </span>
@@ -196,7 +194,20 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
     }
   };
 
-  const handleDeleteSprint = async (sprintId, taskAction) => {
+  const handleCompleteSprint = async (sprintId) => {
+    try {
+      await api.patch(`/projects/${project.id}/sprints/${sprintId}/`, {
+        completed: true,
+        on_incomplete_tasks: "backlog"
+      });
+      fetchSprints();
+      onTaskCreated();
+    } catch (err) {
+      console.error("Complete failed", err.response?.data);
+    }
+  };
+
+  const handleDeleteSprint = async (sprintId, taskAction = "backlog") => {
     try {
       await api.delete(`/projects/${project.id}/sprints/${sprintId}/`, {
         params: { on_incomplete_tasks: taskAction }
@@ -222,22 +233,6 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
     }
   };
 
-  const sharedSprintProps = (sprint) => ({
-    sprint,
-    project,
-    refreshKey,
-    fetchSprints,
-    projectUsers: project.users || [],
-    sprints,
-    onEdit: handleEditClick,
-    onDelete: handleDeleteSprint,
-    isEditing: editingSprintId === sprint.id,
-    editData,
-    setEditData,
-    onSave: handleUpdateSprint,
-    onCancel: () => setEditingSprintId(null),
-  });
-
   return (
     <div style={containerStyle}>
       <div style={headerStyle}>
@@ -259,12 +254,14 @@ const ProjectBacklog = ({ project, refreshKey, onTaskCreated }) => {
           sprints={sprints}
           onEdit={handleEditClick}
           onDelete={handleDeleteSprint}
+          onComplete={handleCompleteSprint}
           isEditing={editingSprintId === sprint.id}
           editData={editData}
           setEditData={setEditData}
           onSave={handleUpdateSprint}
           onCancel={() => setEditingSprintId(null)}
           onTaskCreated={onTaskCreated}
+          isCompleted={false}
         />
       ))}
 
