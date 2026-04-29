@@ -1,35 +1,29 @@
 import { useState, useEffect } from "react";
 import api from "../api/client";
 
-function AddUser({ projectId, onClose, project }) {
+function AddUser({ projectId, onClose, onUserAdded, project }) {
   const [userEmail, setUserEmail] = useState("");
-  const [availableUsers, setAvailableUsers] = useState([])
+  const [availableUsers, setAvailableUsers] = useState([]);
 
   useEffect(() => {
     const fetchAvailableUsers = async () => {
       try {
         const res = await api.get(`/projects/${projectId}/users/`);
-
         setAvailableUsers(res.data);
       } catch (err) {
         console.error("Failed to fetch available users", err);
       }
-      };
-      fetchAvailableUsers();
-    }, [projectId]);
-
+    };
+    fetchAvailableUsers();
+  }, [projectId]);
 
   const handleAddUser = async () => {
     try {
       await api.post(`/projects/${projectId}/users/`, {
         user_email: userEmail,
       });
-      
-      setAvailableUsers(prev =>
-        prev.filter(user => user.email !== userEmail)
-      );
-
-      onClose();
+      setAvailableUsers(prev => prev.filter(user => user.email !== userEmail));
+      onUserAdded ? onUserAdded() : onClose();
     } catch (err) {
       console.error("Failed to add user:", err);
       alert("Failed to add user");
@@ -40,26 +34,22 @@ function AddUser({ projectId, onClose, project }) {
     <div style={overlayStyle}>
       <div style={modalStyle}>
         <h2>Add User to Project</h2>
-
         <select
-        value={userEmail}
-        onChange={(event) => setUserEmail(event.target.value)}
-        style={inputStyle}
+          value={userEmail}
+          onChange={(event) => setUserEmail(event.target.value)}
+          style={inputStyle}
         >
           <option value="">Select a user</option>
-
           {availableUsers.map((user) => (
             <option key={user.email} value={user.email}>
               {user.last_name}, {user.first_name} ({user.email})
             </option>
           ))}
         </select>
-
         <div style={{ display: "flex", gap: "10px", marginTop: "15px" }}>
           <button style={primaryBtn} onClick={handleAddUser}>
             Add
           </button>
-
           <button style={secondaryBtn} onClick={onClose}>
             Cancel
           </button>
@@ -75,7 +65,7 @@ const overlayStyle = {
   left: 0,
   width: "100vw",
   height: "100vh",
-  backgroundColor: "rgba(0,0,0,0.5)", // dark overlay
+  backgroundColor: "rgba(0,0,0,0.5)",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
