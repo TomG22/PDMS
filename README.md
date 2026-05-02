@@ -19,10 +19,7 @@ cd ..
 docker compose up -d --build
 ```
 
-Either approach launches two Docker containers:
-
-* pdms_backend-1  - localhost:8000
-* pdms_frontend-1 - localhost:3000
+You can access the frontend at `localhost:8080`.
 
 ## Running the Application for Development
 
@@ -40,7 +37,7 @@ python manage.py runserver 0.0.0.0:8000
 #### UI
 
 ```bash
-# Install packages
+# Frontend prerequisites
 cd frontend
 pnpm install --frozen-lockfile
 
@@ -48,13 +45,27 @@ pnpm install --frozen-lockfile
 pnpm start
 ```
 
+You can access the frontend at `localhost:3000`.
+
 ### With Docker
 
 For Docker-based CLI development, run the following:
 
 ```bash
+# Frontend prerequisites
+cd frontend
+pnpm install --frozen-lockfile
+cd ..
+
+# Backend prerequisites
+cd backend
+python manage.py migrate
+cd ..
+
 docker compose -f docker-compose-cli.yml up -d --build
 ```
+
+You can access the frontend at `localhost:3000`.
 
 ## Troubleshooting
 
@@ -78,25 +89,3 @@ If all else fails, remove your local database file before continuing:
 rm db.sqlite3
 python manage.py migrate
 ```
-
-## Latest Development
-
-Currently, the only path that is active on the backend is the following:
-http://localhost:8000/api/tasks/
-
-This can be accessed in the browser or via curl in the command line with:
-curl http://localhost:8000/api/tasks/
-
-Currently, there's two main pages that are active on the frontend:
-http://localhost:3000/          - Static homepage with page navigation
-http://localhost:3000/test      - Fetches the db for testing the backend API
-
-All of the active routes:
-/
-/login
-/register
-/test 
-
-## Developing on the Application
-
-See `CONTRIBUTING.md`.
